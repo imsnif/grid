@@ -1,0 +1,29 @@
+{
+  "name": "grid",
+  "version": "0.0.1",
+  "description": "UNDER CONSTRUCTION",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard && babel-tape-runner /test/cases/*.js"
+  },
+  "author": "Aram Drevekenin <grimsniffer@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-eslint": "^6.1.0",
+    "babel-tape-runner": "^2.0.1",
+    "standard": "^7.1.2",
+    "tape": "^4.6.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      "syntax-async-functions",
+      "transform-regenerator"
+    ]
+  },
+  "standard": {
+    "parser": "babel-eslint"
+  }
+}
