@@ -19,6 +19,7 @@ test('able to open new window', async t => {
     robot.keyTap('w', 'control')
     const windowCount = await app.client.getWindowCount()
     t.equals(windowCount, 2, 'New window was opened')
+    await app.stop()
   } catch (e) {
     t.fail(e)
   }
