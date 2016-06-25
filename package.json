@@ -4,13 +4,17 @@
   "description": "UNDER CONSTRUCTION",
   "main": "index.js",
   "scripts": {
-    "test": "standard && babel-tape-runner /test/cases/*.js"
+    "test": "standard && babel-tape-runner ./test/cases/*.js",
+    "start": "electron main.js"
   },
   "author": "Aram Drevekenin <grimsniffer@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^6.1.0",
     "babel-tape-runner": "^2.0.1",
+    "electron-prebuilt": "^1.2.5",
+    "robotjs": "^0.4.4",
+    "spectron": "^3.2.3",
     "standard": "^7.1.2",
     "tape": "^4.6.0"
   },
@@ -25,5 +29,9 @@
   },
   "standard": {
     "parser": "babel-eslint"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "electron-window": "^0.8.1"
   }
 }
