@@ -17,11 +17,6 @@ test('able to open new window', async t => {
     const app = createApp()
     await app.start()
     robot.keyTap('w', 'control')
-    await app.browserWindow.blur()
-    await app.webContents.sendInputEvent({
-      type: 'char',
-      keyCode: 'w'
-    })
     const windowCount = await app.client.getWindowCount()
     t.equals(windowCount, 2, 'New window was opened')
   } catch (e) {
