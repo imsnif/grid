@@ -4,8 +4,8 @@
   "description": "UNDER CONSTRUCTION",
   "main": "index.js",
   "scripts": {
-    "test": "standard && babel-tape-runner ./test/cases/*.js",
-    "start": "electron main.js"
+    "test": "babel-tape-runner ./test/cases/*.js",
+    "start": "electron electron-app/main.js"
   },
   "author": "Aram Drevekenin <grimsniffer@gmail.com>",
   "license": "MIT",
@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "bluebird": "^3.4.1",
+    "electron-localshortcut": "^0.6.1",
     "electron-window": "^0.8.1"
   }
 }

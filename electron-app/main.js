@@ -21,6 +21,7 @@ app.on('ready', () => {
     const displays = electron.screen.getAllDisplays()
     const screenBounds = displays[0].bounds
     const pane = window.getFocusedWindow()
+    console.log('screenBounds:', screenBounds)
     if (pane) moveLeft(screenBounds, pane)
   })
   globalShortcut.register('CommandOrControl+j', () => {
@@ -87,8 +88,9 @@ function moveUp (workArea, pane) {
   const newBounds = Object.keys(window.windows)
     .filter(id => +id !== +pane.id)
     .some(id => {
+      console.log('in some')
       const windowBounds = window.windows[id].getBounds()
-      return windowBounds.y + windowBounds.height >= bounds.y &&
+      return windowBounds.y + windowBounds.height === bounds.y &&
         bounds.x > windowBounds.x - windowBounds.width &&
         bounds.x < windowBounds.x + windowBounds.width
     })
@@ -116,8 +118,7 @@ function moveDown (workArea, pane) {
 }
 
 function createWindow () {
-  console.log('creating window')
-  const created = window.createWindow({ width: 300, height: 200, frame: false })
+  const created = window.createWindow({ width: 300, height: 200, frame: false, blinkFeatures: {KeyboardEventKey: true} })
   const indexPath = path.resolve(__dirname, 'index.html')
 
   created.showUrl(indexPath, () => {
