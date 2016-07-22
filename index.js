@@ -1,12 +1,12 @@
 'use strict'
 
+const assert = require('assert')
+const validate = require('validate.js')
 module.exports = Grid
 
 function Grid (width, height) {
-  if (!Number.isInteger(width) || !Number.isInteger(height)) {
-    throw new Error('width and height should be numeric')
-    // throw new Error('width and height should be numeric')
-  }
+  assert(validate.isInteger(width))
+  assert(validate.isInteger(height))
   this.width = width
   this.height = height
   this.windows = []

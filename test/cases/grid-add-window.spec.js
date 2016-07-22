@@ -28,7 +28,7 @@ test('can add windows to grid', t => {
   }
 })
 
-test('cannot add window with bad parameters', t => {
+test.skip('cannot add window with bad parameters', t => {
   // TBD
 })
 test.skip('windows should not be created over each other', t => {

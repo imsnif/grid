@@ -27,6 +27,7 @@ test('cannot create grid with bad parameters', t => {
     t.throws(() => new Grid('foo', HEIGHT), Error, 'non numeric width')
     t.throws(() => new Grid(WIDTH, 'bar'), Error, 'non numeric height')
   } catch (e) {
+    console.log(e)
     t.fail(e.toString())
   }
 })
