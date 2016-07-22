@@ -4,7 +4,7 @@
   "description": "UNDER CONSTRUCTION",
   "main": "index.js",
   "scripts": {
-    "test": "babel-tape-runner ./test/cases/*.js",
+    "test": "babel-tape-runner ./test/cases/*.js --tap | tap-spec",
     "start": "electron electron-app/main.js"
   },
   "author": "Aram Drevekenin <grimsniffer@gmail.com>",
@@ -33,6 +33,7 @@
   "dependencies": {
     "bluebird": "^3.4.1",
     "electron-localshortcut": "^0.6.1",
-    "electron-window": "^0.8.1"
+    "electron-window": "^0.8.1",
+    "tap-spec": "^4.1.1"
   }
 }
