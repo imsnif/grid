@@ -16,9 +16,9 @@ function StubWindow (width, height, x, y) {
 }
 
 test('can add windows to grid', t => {
-  t.plan(3)
+  t.plan(2)
   try {
-    const grid = new Grid({width: WIDTH, height: HEIGHT})
+    const grid = new Grid(WIDTH, HEIGHT)
     grid.add(new StubWindow())
     t.equals(grid.windows.length, 1, 'grid has one window')
     grid.add(new StubWindow())
