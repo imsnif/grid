@@ -3,49 +3,28 @@
 import test from 'tape'
 import Grid from '../../'
 
-function createStubWindow () {
-  return Object.create({
-    getBounds: function () {
-      return { width: this.width, height: this.height, x: this.x, y: this.y }
-    },
-    setBounds: function (bounds) {
-      this.width = bounds.width
-      this.height = bounds.height
-      this.x = bounds.x
-      this.y = bounds.y
-    },
-    width: 200,
-    height: 100,
-    x: 500,
-    y: 500
-  })
+const WIDTH = 1600
+const HEIGHT = 900
+
+function StubWindow (width, height, x, y) {
+  return {
+    width: width || 200,
+    height: height || 100,
+    x: x || 0,
+    y: y || 0
+  }
 }
 
-function createStubScreen () {
-}
-
-test('can add window to grid', async t => {
+test('can add windows to grid', async t => {
   t.plan(3)
   try {
-    const grid = new Grid({width: 1600, height: 900})
-    grid.add(createStubWindow())
-    t.equals(grid.windows.length, 1, 'new window successfully added to grid')
-    const firstWindowBounds = grid.windows[0].getBounds
-    grid.add(createStubwindow())
-    t.equals(grid.windows.length, 2, 'second window successfully added to grid')
-    const secondWindowBounds = grid.windows[1].getBounds
-    if (secondWindowBounds.x + secondWindowBounds.width < firstWindowBounds.x ||
-        secondWindowBounds.x > firstWindowBounds.x + firstWindowBounds.width) {
-      t.pass('new Window was created in a different horizontal location')
-    } else if (secondWindowBounds.y + secondWindowBounds.height < firstWindowBounds.y ||
-        secondWindowBounds.y > firstWindowBounds.y + firstWindowBounds.height) {
-      t.pass('new window was created in a different vertical location')
-    } else {
-      t.fail('new Window was created on top of initial window')
-    }
+    const grid = new Grid({width: WIDTH, height: HEIGHT})
+    grid.add(new StubWindow())
+    t.equals(grid.windows.length, 1, 'grid has one window')
+    grid.add(new StubWindow())
+    t.equals(grid.windows.length, 2, 'grid has two windows')
   } catch (e) {
-    console.log('fail')
-    t.fail(e)
+    t.fail(e.toString())
   }
 })
 
