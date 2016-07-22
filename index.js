@@ -24,3 +24,7 @@ Object.defineProperty(Grid.prototype, 'size', {
 Grid.prototype.add = function (window) {
   this.windows.push(window)
 }
+
+Grid.prototype.getWindow = function (id) {
+  return this.windows.filter(w => w.id === id)[0]
+}

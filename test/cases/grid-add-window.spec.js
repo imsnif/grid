@@ -6,31 +6,37 @@ import Grid from '../../'
 const WIDTH = 1600
 const HEIGHT = 900
 
-function StubWindow (width, height, x, y) {
+function StubWindow (id, width, height) {
   return {
-    width: width || 200,
-    height: height || 100,
-    x: x || 0,
-    y: y || 0
+    id,
+    width: width,
+    height: height
   }
 }
 
 test('can add windows to grid', t => {
-  t.plan(2)
+  t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(new StubWindow())
+    const stubWindow1 = new StubWindow(1, 200, 100)
+    const stubWindow2 = new StubWindow(2, 200, 100)
+    grid.add(stubWindow1)
     t.equals(grid.windows.length, 1, 'grid has one window')
-    grid.add(new StubWindow())
+    t.deepEquals(grid.getWindow(1), Object.assign({}, stubWindow1, {
+      x: 0,
+      y: 0
+    }), 'window added in default location')
+    grid.add(stubWindow2, 200, 100, 200, 0)
     t.equals(grid.windows.length, 2, 'grid has two windows')
+    t.deepEquals(grid.getWindow(2), Object.assign({}, stubWindow2, {
+      x: 200,
+      y: 0
+    }), 'window added in custom location')
   } catch (e) {
     t.fail(e.toString())
   }
 })
 
-test.skip('cannot add window with bad parameters', t => {
-  // TBD
-})
 test.skip('windows should not be created over each other', t => {
   // TBD
 })
