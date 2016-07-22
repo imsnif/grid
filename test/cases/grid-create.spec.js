@@ -3,7 +3,7 @@
 import test from 'tape'
 import Grid from '../../'
 
-test('grid info', async t => {
+test('create grid', async t => {
   t.plan(2)
   const width = 1600
   const height = 900
