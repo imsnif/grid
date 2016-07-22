@@ -7,11 +7,9 @@ const WIDTH = 1600
 const HEIGHT = 900
 
 function StubWindow (id, width, height) {
-  return {
-    id,
-    width: width,
-    height: height
-  }
+  this.id = id
+  this.width = width,
+  this.height = height
 }
 
 test('can add windows to grid', t => {
