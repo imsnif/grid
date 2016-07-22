@@ -26,7 +26,7 @@ test('can add windows to grid', t => {
       x: 0,
       y: 0
     }), 'window added in default location')
-    grid.add(stubWindow2, 200, 100, 200, 0)
+    grid.add(stubWindow2, 200, 0)
     t.equals(grid.windows.length, 2, 'grid has two windows')
     t.deepEquals(grid.getWindow(2), Object.assign({}, stubWindow2, {
       x: 200,

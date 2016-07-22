@@ -21,8 +21,11 @@ Object.defineProperty(Grid.prototype, 'size', {
   }
 })
 
-Grid.prototype.add = function (window) {
-  this.windows.push(window)
+Grid.prototype.add = function (window, x, y) {
+  this.windows.push(Object.assign({}, window, {
+    x: x || 0,
+    y: y || 0
+  }))
 }
 
 Grid.prototype.getWindow = function (id) {
