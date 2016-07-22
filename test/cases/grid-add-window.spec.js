@@ -15,7 +15,7 @@ function StubWindow (width, height, x, y) {
   }
 }
 
-test('can add windows to grid', async t => {
+test('can add windows to grid', t => {
   t.plan(3)
   try {
     const grid = new Grid({width: WIDTH, height: HEIGHT})
@@ -26,6 +26,10 @@ test('can add windows to grid', async t => {
   } catch (e) {
     t.fail(e.toString())
   }
+})
+
+test.skip('windows should not be created over each other', t => {
+  // TBD
 })
 
 test.skip('can add window to grid in custom location', async t => {
