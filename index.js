@@ -19,30 +19,24 @@ const createPlacement = (width, height) => {
     .map(row => new Array(width).fill(0)) // zero fill all cells
 }
 
-const occupy = (placement, window) => {
+const occupy = (prevPlacement, window) => {
   const firstVerticalPoint = window.y
   const firstHorizontalPoint = window.x
   const lastVerticalPoint = window.height + window.y
   const lastHorizontalPoint = window.width + window.x
+  let placement = prevPlacement.slice()
   for (let y = firstVerticalPoint; y < lastVerticalPoint; y += 1) {
     for (let x = firstHorizontalPoint; x < lastHorizontalPoint; x += 1) {
+      if (!Array.isArray(prevPlacement[y]) || prevPlacement[y][x] === undefined) {
+        throw new Error('size exceeds grid')
+      }
+      if (prevPlacement[y][x] !== 0) {
+        throw new Error('space is occupied')
+      }
       placement[y][x] = window.id
     }
   }
-}
-
-const spaceIsOccupied = (window, placement) => {
-  return new Array(window.height).fill([])
-    .some((row, rowIndex) => {
-      return new Array(window.width).fill(window.id)
-        .some((cell, cellIndex) => {
-          if (placement[window.y + rowIndex][window.x + cellIndex] !== 0) {
-            return true
-          } else {
-            return false
-          }
-        })
-    })
+  return placement
 }
 
 Object.defineProperty(Grid.prototype, 'size', {
@@ -59,10 +53,7 @@ Grid.prototype.add = function (size, x, y) {
     x: x || 0,
     y: y || 0
   })
-  if (spaceIsOccupied(window, this.placement)) {
-    throw new Error('Failed to create window - space is occupied')
-  }
-  occupy(this.placement, window) // TODO: pure function
+  this.placement = occupy(this.placement, window) // TODO: pure function
   this.windows.push(window)
 }
 
