@@ -36,7 +36,7 @@ test('can add windows to grid', t => {
 })
 
 test('windows should not be created over each other', t => {
-  t.plan(5)
+  t.plan(7)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     const stubWindow1 = new StubWindow(1, 200, 100)
@@ -56,6 +56,16 @@ test('windows should not be created over each other', t => {
       () => grid.add(stubWindow2, 199, 99),
       Error,
       'window cannot be created over existing window on multiple axes'
+    )
+    t.throws(
+      () => grid.add(stubWindow2, 1401, 0),
+      Error,
+      'window cannot exceed grid horizontal bounds'
+    )
+    t.throws(
+      () => grid.add(stubWindow2, 0, 801),
+      Error,
+      'window canonot exceed grid vertical bounds'
     )
     t.equals(grid.windows.length, 1, 'grid still has one window')
     t.deepEquals(grid.getWindow(1), Object.assign({}, stubWindow1, {
