@@ -10,6 +10,36 @@ function Grid (width, height) {
   this.width = width
   this.height = height
   this.windows = []
+  this.placement = createPlacement(width, height)
+}
+
+const createPlacement = (width, height) => {
+  return new Array(height)
+    .fill([]) // create two dimensional array
+    .map(row => new Array(width).fill(0)) // zero fill all cells
+}
+
+const occupy = (placement, window) => {
+  new Array(window.height)
+    .fill([])
+    .forEach((row, rowIndex) => new Array(window.width).fill(window.id)
+      .forEach((cell, cellIndex) => {
+        placement[rowIndex + window.y][cellIndex + window.x] = window.id
+      }))
+}
+
+const spaceIsOccupied = (window, placement) => {
+  return new Array(window.height).fill([])
+    .some((row, rowIndex) => {
+      return new Array(window.width).fill(window.id)
+        .some((cell, cellIndex) => {
+          if (placement[window.y + rowIndex][window.x + cellIndex] !== 0) {
+            return true
+          } else {
+            return false
+          }
+        })
+    })
 }
 
 Object.defineProperty(Grid.prototype, 'size', {
@@ -21,11 +51,16 @@ Object.defineProperty(Grid.prototype, 'size', {
   }
 })
 
-Grid.prototype.add = function (window, x, y) {
-  this.windows.push(Object.assign({}, window, {
+Grid.prototype.add = function (size, x, y) {
+  const window = Object.assign({}, size, {
     x: x || 0,
     y: y || 0
-  }))
+  })
+  if (spaceIsOccupied(window, this.placement)) {
+    throw new Error('Failed to create window - space is occupied')
+  }
+  occupy(this.placement, window) // TODO: pure function
+  this.windows.push(window)
 }
 
 Grid.prototype.getWindow = function (id) {
