@@ -20,12 +20,15 @@ const createPlacement = (width, height) => {
 }
 
 const occupy = (placement, window) => {
-  new Array(window.height)
-    .fill([])
-    .forEach((row, rowIndex) => new Array(window.width).fill(window.id)
-      .forEach((cell, cellIndex) => {
-        placement[rowIndex + window.y][cellIndex + window.x] = window.id
-      }))
+  const firstVerticalPoint = window.y
+  const firstHorizontalPoint = window.x
+  const lastVerticalPoint = window.height + window.y
+  const lastHorizontalPoint = window.width + window.x
+  for (let y = firstVerticalPoint; y < lastVerticalPoint; y += 1) {
+    for (let x = firstHorizontalPoint; x < lastHorizontalPoint; x += 1) {
+      placement[y][x] = window.id
+    }
+  }
 }
 
 const spaceIsOccupied = (window, placement) => {
