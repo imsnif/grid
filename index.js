@@ -2,6 +2,7 @@
 
 const assert = require('assert')
 const validate = require('validate.js')
+
 module.exports = Grid
 
 function Grid (width, height) {
