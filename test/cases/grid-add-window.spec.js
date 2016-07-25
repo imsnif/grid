@@ -35,29 +35,6 @@ test('can add windows to grid', t => {
   }
 })
 
-test('can add windows to grid', t => {
-  t.plan(4)
-  try {
-    const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 600)
-    const stubWindow2 = new StubWindow(2, 400, 600)
-    grid.add(stubWindow1)
-    t.equals(grid.windows.length, 1, 'grid has one window')
-    t.deepEquals(grid.getWindow(1), Object.assign({}, stubWindow1, {
-      x: 0,
-      y: 0
-    }), 'window added in default location')
-    grid.add(stubWindow2, 950, 0)
-    t.equals(grid.windows.length, 2, 'grid has two windows')
-    t.deepEquals(grid.getWindow(2), Object.assign({}, stubWindow2, {
-      x: 950,
-      y: 0
-    }), 'window added in custom location')
-  } catch (e) {
-    t.fail(e.toString())
-  }
-})
-
 test('windows should not be created over each other', t => {
   t.plan(3)
   try {
