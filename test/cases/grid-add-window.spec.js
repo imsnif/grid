@@ -36,7 +36,7 @@ test('can add windows to grid', t => {
 })
 
 test('windows should not be created over each other', t => {
-  t.plan(7)
+  t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     const stubWindow1 = new StubWindow(1, 200, 100)
@@ -57,30 +57,43 @@ test('windows should not be created over each other', t => {
       Error,
       'window cannot be created over existing window on multiple axes'
     )
-    t.throws(
-      () => grid.add(stubWindow2, 1401, 0),
-      Error,
-      'window cannot exceed grid horizontal bounds'
-    )
-    t.throws(
-      () => grid.add(stubWindow2, 0, 801),
-      Error,
-      'window canonot exceed grid vertical bounds'
-    )
-    t.equals(grid.windows.length, 1, 'grid still has one window')
-    t.deepEquals(grid.getWindow(1), Object.assign({}, stubWindow1, {
-      x: 0,
-      y: 0
-    }), 'first window still present')
   } catch (e) {
-    t.fail(e.toString())
+    t.fail(e)
     t.end()
   }
 })
 
-test.skip('can add window to grid in custom location', async t => {
-  // TBD:
-  // window cannot be created outside screen bounds
+test('windows should not be created outside grid', t => {
+  t.plan(4)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow = new StubWindow(1, 200, 100)
+    const fatStubWindow = new StubWindow(2, WIDTH + 1, HEIGHT)
+    const tallStubWindow = new StubWindow(2, WIDTH, HEIGHT + 1)
+    t.throws(
+      () => grid.add(stubWindow, 1401, 0),
+      Error,
+      'window cannot exceed grid horizontal bounds'
+    )
+    t.throws(
+      () => grid.add(stubWindow, 0, 801),
+      Error,
+      'window canonot exceed grid vertical bounds'
+    )
+    t.throws(
+      () => grid.add(fatStubWindow),
+      Error,
+      'cannot add window wider than grid'
+    )
+    t.throws(
+      () => grid.add(tallStubWindow),
+      Error,
+      'cannot add window taller than grid'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
 })
 
 test.skip('cannot add window to grid over another window ', async t => {
