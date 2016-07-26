@@ -95,13 +95,3 @@ test('windows should not be created outside grid', t => {
     t.end()
   }
 })
-
-test.skip('can change window bounds', async t => {
-  // TBD
-})
-
-test.skip('cannot change window bounds over an existing window', async t => {
-  // TBD
-  // fully
-  // partially
-})
