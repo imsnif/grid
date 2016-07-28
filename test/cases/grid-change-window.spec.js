@@ -13,7 +13,22 @@ function StubWindow (id, width, height) {
 }
 
 test('can change window size', t => {
-  // TBD
+  t.plan(4)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow = new StubWindow(1, 400, 600)
+    grid.add(stubWindow)
+    grid.getWindow(1).changeSize(450, 650)
+    t.equals(grid.windows.length, 1, 'grid has one window')
+    t.deepEquals(grid.getWindow(1).bounds, {
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 650
+    }, 'window added in default location')
+  } catch (e) {
+    t.fail(e.toString())
+  }
 })
 
 test.skip('can change window location', t => {
