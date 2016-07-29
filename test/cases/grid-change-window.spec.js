@@ -60,8 +60,24 @@ test('cannot resize window over another window', t => {
   }
 })
 
-test.skip('can change window location', t => {
-  // TBD
+test('can change window location', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow = new StubWindow(1, 400, 600)
+    grid.add(stubWindow)
+    grid.getWindow(1).changeLocation(1, 1)
+    t.equals(grid.windows.length, 1, 'grid has one window')
+    t.deepEquals(_.pick(grid.getWindow(1), ['x', 'y', 'width', 'height']), {
+      x: 1,
+      y: 1,
+      width: 400,
+      height: 600
+    }, 'window location changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
 })
 
 test.skip('can change window size and location', t => {
