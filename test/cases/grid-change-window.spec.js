@@ -33,15 +33,31 @@ test('can change window size', t => {
   }
 })
 
+test('cannot resize window over another window', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow1 = new StubWindow(1, 400, 600)
+    const stubWindow2 = new StubWindow(2, 400, 600)
+    grid.add(stubWindow1)
+    grid.add(stubWindow2, 400)
+    t.throws(
+      () => grid.getWindow(1).changeSize(401, 600),
+      Error,
+      'cannot resize window horizontally over another'
+    )
+    t.equals(grid.windows.length, 2, 'grid windows still present')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test.skip('can change window location', t => {
   // TBD
 })
 
 test.skip('can change window size and location', t => {
-  // TBD
-})
-
-test.skip('cannot resize window over another window', t => {
   // TBD
 })
 
