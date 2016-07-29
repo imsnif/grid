@@ -21,6 +21,7 @@ const createPlacement = (width, height) => {
 }
 
 const occupy = (prevPlacement, window) => {
+  // TODO: clear previous window placement
   const firstVerticalPoint = window.y
   const firstHorizontalPoint = window.x
   const lastVerticalPoint = window.height + window.y
@@ -31,7 +32,7 @@ const occupy = (prevPlacement, window) => {
       if (!Array.isArray(prevPlacement[y]) || prevPlacement[y][x] === undefined) {
         throw new Error('size exceeds grid')
       }
-      if (prevPlacement[y][x] !== 0) {
+      if (prevPlacement[y][x] !== 0 && prevPlacement[y][x] !== window.id) {
         throw new Error('space is occupied')
       }
       placement[y][x] = window.id
@@ -70,6 +71,7 @@ function WindowWrapper (window, x, y) {
 }
 
 WindowWrapper.prototype.changeSize = function(width, height) {
+  this.grid.placement = occupy(this.grid.placement, Object.assign(this, { width, height }))
   this.width = width
   this.height = height
 }
