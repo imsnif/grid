@@ -13,7 +13,7 @@ function StubWindow (id, width, height) {
   this.height = height
 }
 
-test('can change window size', t => {
+test('can increase window size', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -26,6 +26,26 @@ test('can change window size', t => {
       y: 0,
       width: 450,
       height: 650
+    }, 'window size changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('can decrease window size', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow = new StubWindow(1, 400, 600)
+    grid.add(stubWindow)
+    grid.getWindow(1).changeSize(350, 550)
+    t.equals(grid.windows.length, 1, 'grid has one window')
+    t.deepEquals(_.pick(grid.getWindow(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 350,
+      height: 550
     }, 'window size changed')
   } catch (e) {
     t.fail(e.toString())
@@ -93,5 +113,9 @@ test.skip('cannot resize window outside grid', t => {
 })
 
 test.skip('cannot move window outside grid', t => {
+  // TBD
+})
+
+test.skip('can move window into location vacated by another', t => {
   // TBD
 })
