@@ -26,7 +26,7 @@ test('can change window size', t => {
       y: 0,
       width: 450,
       height: 650
-    }, 'window added in default location')
+    }, 'window size changed')
   } catch (e) {
     t.fail(e.toString())
     t.end()
