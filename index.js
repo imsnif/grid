@@ -49,15 +49,27 @@ Object.defineProperty(Grid.prototype, 'size', {
   }
 })
 
-Grid.prototype.add = function (size, x, y) {
-  const window = Object.assign({}, size, {
-    x: x || 0,
-    y: y || 0
-  })
+Grid.prototype.add = function (unwrappedWindow, x, y) {
+  // TODO: assert window opts
+  const window = new WindowWrapper(unwrappedWindow, x, y)
+  window.grid = this
   this.placement = occupy(this.placement, window) // TODO: pure function
   this.windows.push(window)
 }
 
 Grid.prototype.getWindow = function (id) {
   return this.windows.filter(w => w.id === id)[0]
+}
+
+function WindowWrapper (window, x, y) {
+  this.id = window.id
+  this.width = window.width
+  this.height = window.height
+  this.x = x || 0
+  this.y = y || 0
+}
+
+WindowWrapper.prototype.changeSize = function(width, height) {
+  this.width = width
+  this.height = height
 }
