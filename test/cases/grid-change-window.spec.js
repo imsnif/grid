@@ -173,6 +173,31 @@ test('cannot move window outside grid', t => {
   }
 })
 
-test.skip('can move window into location vacated by another', t => {
-  // TBD
+test('can move window into location vacated by another', t => {
+  t.plan(3)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow1 = new StubWindow(1, 400, 100)
+    const stubWindow2 = new StubWindow(2, 400, 100)
+    grid.add(stubWindow1)
+    grid.add(stubWindow2, 400)
+    grid.getWindow(1).changeLocation(0, 100)
+    grid.getWindow(2).changeLocation(0, 0)
+    t.equals(grid.windows.length, 2, 'grid windows still present')
+    t.deepEquals(_.pick(grid.getWindow(2), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 100
+    }, 'window size changed')
+    t.deepEquals(_.pick(grid.getWindow(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 100,
+      width: 400,
+      height: 100
+    }, 'window size changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
 })
