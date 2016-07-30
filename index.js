@@ -1,5 +1,5 @@
 'use strict'
 
-import Grid from './lib/grid'
+const Grid = require('./lib/grid')
 
 module.exports = Grid
