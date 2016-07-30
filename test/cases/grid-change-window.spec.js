@@ -127,8 +127,27 @@ test('cannot move window over another window', t => {
   }
 })
 
-test.skip('cannot resize window outside grid', t => {
-  // TBD
+test('cannot resize window outside grid', t => {
+  t.plan(3)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow1 = new StubWindow(1, 400, 100)
+    grid.add(stubWindow1)
+    t.throws(
+      () => grid.getWindow(1).changeSize(1601, 100),
+      Error,
+      'cannot resize window horizontally outside grid'
+    )
+    t.throws(
+      () => grid.getWindow(1).changeSize(400, 901),
+      Error,
+      'cannot resize window vertically over another'
+    )
+    t.equals(grid.windows.length, 1, 'grid window still present')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
 })
 
 test.skip('cannot move window outside grid', t => {
