@@ -141,7 +141,7 @@ test('cannot resize window outside grid', t => {
     t.throws(
       () => grid.getWindow(1).changeSize(400, 901),
       Error,
-      'cannot resize window vertically over another'
+      'cannot resize window vertically outside grid'
     )
     t.equals(grid.windows.length, 1, 'grid window still present')
   } catch (e) {
