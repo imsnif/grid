@@ -5,13 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "babel-tape-runner ./test/cases/*.js --tap | tap-spec",
-    "start": "electron electron-app/main.js"
+    "coverage": "nyc npm test",
+    "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls"
   },
   "author": "Aram Drevekenin <grimsniffer@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^6.1.0",
     "babel-tape-runner": "^2.0.1",
+    "coveralls": "^2.11.12",
     "electron-prebuilt": "^1.2.5",
     "robotjs": "^0.4.4",
     "spectron": "^3.2.3",
