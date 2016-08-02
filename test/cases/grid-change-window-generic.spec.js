@@ -201,3 +201,23 @@ test('can move window into location vacated by another', t => {
     t.end()
   }
 })
+
+test('cannot move window when representation is corrupt', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const initialRepresentation = grid.representation.map(r => r.slice())
+    const stubWindow = new StubWindow(1, 200, 100)
+    grid.add(stubWindow)
+    grid.representation = initialRepresentation // corrupt the representation
+    t.throws(
+      () => grid.getWindow(1).changeLocation(1, 1),
+      Error,
+      'window cannot be added when grid representation is corrupt'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
