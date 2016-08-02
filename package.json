@@ -15,6 +15,7 @@
     "babel-tape-runner": "^2.0.1",
     "coveralls": "^2.11.12",
     "electron-prebuilt": "^1.2.5",
+    "nyc": "^7.1.0",
     "robotjs": "^0.4.4",
     "spectron": "^3.2.3",
     "standard": "^7.1.2",
