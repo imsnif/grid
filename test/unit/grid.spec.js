@@ -70,6 +70,6 @@ test('grid.getWindow(id): can get window by its id from a grid', t => {
   }
 })
 
-test('grid.getWindow(id): bad parameters', t => {
+test.skip('grid.getWindow(id): bad parameters', t => {
   // TBD
 })
