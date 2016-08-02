@@ -47,8 +47,8 @@ test('can add windows to grid', t => {
     grid.add(stubWindow2, 450, 0)
     t.equals(grid.windows.length, 2, 'grid has two windows')
     gridWindow = grid.getWindow(2)
-    t.deepEquals(grid.getWindow(2).window.getBounds, Object.assign(stubWindow2.getBounds(), {
-      x: 950,
+    t.deepEquals(grid.getWindow(2).window.getBounds(), Object.assign(stubWindow2.getBounds(), {
+      x: 450,
       y: 0
     }), 'window added in custom location')
   } catch (e) {
