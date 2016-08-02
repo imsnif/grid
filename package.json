@@ -4,7 +4,7 @@
   "description": "UNDER CONSTRUCTION",
   "main": "index.js",
   "scripts": {
-    "test": "babel-tape-runner ./test/cases/*.js --tap | tap-spec",
+    "test": "standard && babel-tape-runner ./test/cases/*.js --tap | tap-spec",
     "coverage": "nyc npm test",
     "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls"
   },

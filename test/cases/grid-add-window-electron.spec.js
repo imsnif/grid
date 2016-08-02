@@ -2,7 +2,6 @@
 
 import test from 'tape'
 import Grid from '../../'
-import _ from 'lodash'
 
 const WIDTH = 1600
 const HEIGHT = 900
@@ -36,7 +35,6 @@ test('can add windows to grid', t => {
     const grid = new Grid(WIDTH, HEIGHT)
     const stubWindow1 = new BrowserWindow(1, 400, 600)
     const stubWindow2 = new BrowserWindow(2, 400, 600)
-    let gridWindow
     grid.add(stubWindow1)
     t.equals(grid.windows.length, 1, 'grid has one window')
     const bounds = stubWindow1.getBounds()
@@ -46,7 +44,6 @@ test('can add windows to grid', t => {
     }), 'window added in default location')
     grid.add(stubWindow2, 450, 0)
     t.equals(grid.windows.length, 2, 'grid has two windows')
-    gridWindow = grid.getWindow(2)
     t.deepEquals(grid.getWindow(2).window.getBounds(), Object.assign(stubWindow2.getBounds(), {
       x: 450,
       y: 0

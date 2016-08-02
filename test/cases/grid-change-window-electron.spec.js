@@ -2,7 +2,6 @@
 
 import test from 'tape'
 import Grid from '../../'
-import _ from 'lodash'
 
 const WIDTH = 1600
 const HEIGHT = 900
@@ -29,7 +28,6 @@ BrowserWindow.prototype.setBounds = function (bounds) {
   this.x = bounds.x
   this.y = bounds.y
 }
-
 
 test('can increase window size', t => {
   t.plan(2)

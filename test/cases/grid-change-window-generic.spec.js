@@ -9,7 +9,7 @@ const HEIGHT = 900
 
 function StubWindow (id, width, height) {
   this.id = id
-  this.width = width,
+  this.width = width
   this.height = height
 }
 
