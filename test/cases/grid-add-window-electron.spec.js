@@ -57,7 +57,7 @@ test('can add windows to grid', t => {
   }
 })
 
-test.skip('windows should not be created over each other', t => {
+test('windows should not be created over each other', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -85,7 +85,7 @@ test.skip('windows should not be created over each other', t => {
   }
 })
 
-test.skip('windows should not be created outside grid', t => {
+test('windows should not be created outside grid', t => {
   t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
