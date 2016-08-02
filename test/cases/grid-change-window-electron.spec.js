@@ -7,21 +7,39 @@ import _ from 'lodash'
 const WIDTH = 1600
 const HEIGHT = 900
 
-function StubWindow (id, width, height) {
+function BrowserWindow (id, width, height) {
+  // mock electron BrowserWindow
   this.id = id
-  this.width = width,
+  this.width = width
   this.height = height
 }
+
+BrowserWindow.prototype.getBounds = function () {
+  return {
+    width: this.width,
+    height: this.height,
+    x: this.x,
+    y: this.y
+  }
+}
+
+BrowserWindow.prototype.setBounds = function (bounds) {
+  this.width = bounds.width
+  this.height = bounds.height
+  this.x = bounds.x
+  this.y = bounds.y
+}
+
 
 test('can increase window size', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow = new StubWindow(1, 400, 600)
+    const stubWindow = new BrowserWindow(1, 400, 600)
     grid.add(stubWindow)
     grid.getWindow(1).changeSize(450, 650)
     t.equals(grid.windows.length, 1, 'grid has one window')
-    t.deepEquals(_.pick(grid.getWindow(1), ['x', 'y', 'width', 'height']), {
+    t.deepEquals(grid.getWindow(1).window.getBounds(), {
       x: 0,
       y: 0,
       width: 450,
@@ -37,11 +55,11 @@ test('can decrease window size', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow = new StubWindow(1, 400, 600)
+    const stubWindow = new BrowserWindow(1, 400, 600)
     grid.add(stubWindow)
     grid.getWindow(1).changeSize(350, 550)
     t.equals(grid.windows.length, 1, 'grid has one window')
-    t.deepEquals(_.pick(grid.getWindow(1), ['x', 'y', 'width', 'height']), {
+    t.deepEquals(grid.getWindow(1).window.getBounds(), {
       x: 0,
       y: 0,
       width: 350,
@@ -57,9 +75,9 @@ test('cannot resize window over another window', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
-    const stubWindow2 = new StubWindow(2, 400, 100)
-    const stubWindow3 = new StubWindow(3, 400, 100)
+    const stubWindow1 = new BrowserWindow(1, 400, 100)
+    const stubWindow2 = new BrowserWindow(2, 400, 100)
+    const stubWindow3 = new BrowserWindow(3, 400, 100)
     grid.add(stubWindow1)
     grid.add(stubWindow2, 400)
     grid.add(stubWindow3, 0, 100)
@@ -84,11 +102,11 @@ test('can change window location', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow = new StubWindow(1, 400, 600)
+    const stubWindow = new BrowserWindow(1, 400, 600)
     grid.add(stubWindow)
     grid.getWindow(1).changeLocation(1, 1)
     t.equals(grid.windows.length, 1, 'grid has one window')
-    t.deepEquals(_.pick(grid.getWindow(1), ['x', 'y', 'width', 'height']), {
+    t.deepEquals(grid.getWindow(1).window.getBounds(), {
       x: 1,
       y: 1,
       width: 400,
@@ -104,9 +122,9 @@ test('cannot move window over another window', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
-    const stubWindow2 = new StubWindow(2, 400, 100)
-    const stubWindow3 = new StubWindow(3, 400, 100)
+    const stubWindow1 = new BrowserWindow(1, 400, 100)
+    const stubWindow2 = new BrowserWindow(2, 400, 100)
+    const stubWindow3 = new BrowserWindow(3, 400, 100)
     grid.add(stubWindow1)
     grid.add(stubWindow2, 400)
     grid.add(stubWindow3, 0, 100)
@@ -131,7 +149,7 @@ test('cannot resize window outside grid', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
+    const stubWindow1 = new BrowserWindow(1, 400, 100)
     grid.add(stubWindow1)
     t.throws(
       () => grid.getWindow(1).changeSize(1601, 100),
@@ -154,7 +172,7 @@ test('cannot move window outside grid', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
+    const stubWindow1 = new BrowserWindow(1, 400, 100)
     grid.add(stubWindow1)
     t.throws(
       () => grid.getWindow(1).changeLocation(1201, 100),
@@ -177,20 +195,20 @@ test('can move window into location vacated by another', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
-    const stubWindow2 = new StubWindow(2, 400, 100)
+    const stubWindow1 = new BrowserWindow(1, 400, 100)
+    const stubWindow2 = new BrowserWindow(2, 400, 100)
     grid.add(stubWindow1)
     grid.add(stubWindow2, 400)
     grid.getWindow(1).changeLocation(0, 100)
     grid.getWindow(2).changeLocation(0, 0)
     t.equals(grid.windows.length, 2, 'grid windows still present')
-    t.deepEquals(_.pick(grid.getWindow(2), ['x', 'y', 'width', 'height']), {
+    t.deepEquals(grid.getWindow(2).window.getBounds(), {
       x: 0,
       y: 0,
       width: 400,
       height: 100
     }, 'window size changed')
-    t.deepEquals(_.pick(grid.getWindow(1), ['x', 'y', 'width', 'height']), {
+    t.deepEquals(grid.getWindow(1).window.getBounds(), {
       x: 0,
       y: 100,
       width: 400,
