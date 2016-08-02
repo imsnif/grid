@@ -24,7 +24,7 @@ test('new Grid(width, height): can create grid', t => {
   }
 })
 
-test('new Grid(width, height): cannot create grid with bad parameters', t => {
+test('new Grid(width, height): bad parameters', t => {
   t.plan(5)
   try {
     t.throws(() => new Grid(), Error, 'cannot create grid with no params')
@@ -68,4 +68,8 @@ test('grid.getWindow(id): can get window by its id from a grid', t => {
     t.fail(e.toString())
     t.end()
   }
+})
+
+test('grid.getWindow(id): bad parameters', t => {
+  // TBD
 })
