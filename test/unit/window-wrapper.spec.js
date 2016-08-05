@@ -14,7 +14,7 @@ function StubWindow (id, width, height) {
   this.height = height
 }
 
-test('new WindowWrapper(window, x, y): can create window-wrapper', t => {
+test('new WindowWrapper(window, x, y): can create window-wrapper (default parameters)', t => {
   t.plan(5)
   try {
     const win = new StubWindow(1, 100, 200)
@@ -30,8 +30,40 @@ test('new WindowWrapper(window, x, y): can create window-wrapper', t => {
   }
 })
 
-test.skip('new WindowWrapper(width, height): bad parameters', t => {
-  // TBD
+test('new WindowWrapper(window, x, y): can create window-wrapper (optional parameters)', t => {
+  t.plan(5)
+  try {
+    const win = new StubWindow(1, 100, 200)
+    const wrapper = new WindowWrapper(win, 1, 1)
+    t.equals(wrapper.width, 100, 'window created with proper width')
+    t.equals(wrapper.height, 200, 'window created with proper height')
+    t.equals(wrapper.x, 1, 'window created with custom x position')
+    t.equals(wrapper.y, 1, 'window created with custom y position')
+    t.deepEquals(wrapper.window, win, 'window object preserved in wrapper')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('new WindowWrapper(width, height): bad parameters', t => {
+  t.plan(3)
+  const win = new StubWindow(1, 100, 200)
+  t.throws(
+    () => new WindowWrapper(win, 'a'),
+    Error,
+    'cannot create wrapper with non-nomeric width'
+  )
+  t.throws(
+    () => new WindowWrapper(win, 1, 'a'),
+    Error,
+    'cannot create wrapper with non-nomeric width'
+  )
+  t.throws(
+    () => new WindowWrapper('a'),
+    Error,
+    'cannot create wrapper with non-object window'
+  )
 })
 
 test('wrapper.changeLocation(width, size): can change window location', t => {
