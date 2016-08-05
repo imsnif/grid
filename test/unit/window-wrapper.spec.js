@@ -85,8 +85,26 @@ test('wrapper.changeLocation(width, size): can change window location', t => {
   }
 })
 
-test.skip('wrapper.changeLocation(width, size): bad parameters', t => {
-  // TBD
+test('wrapper.changeLocation(width, size): bad parameters', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow = new StubWindow(1, 400, 600)
+    grid.add(stubWindow)
+    t.throws(
+      () => grid.getWindow(1).changeLocation(undefined, 1),
+      Error,
+      'cannot change location with bad x'
+    )
+    t.throws(
+      () => grid.getWindow(1).changeLocation(1, undefined),
+      Error,
+      'cannot change location with bad y'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
 })
 
 test('wrapper.changeSize(width, height): can change window size', t => {
