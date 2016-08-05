@@ -40,11 +40,10 @@ test('occupy(representation, window): occupy window on representation', t => {
 })
 
 test('occupy(representation, window): bad parameters', t => {
-  t.plan(1)
+  t.plan(2)
   try {
     const initialRepresentation = createRepresentation(1600, 900)
     const window = createWindow(1, 0, 0, 100, 100)
-    const newRepresentation = occupy(initialRepresentation, window)
     t.throws(
       () => occupy('a', window),
       Error,
