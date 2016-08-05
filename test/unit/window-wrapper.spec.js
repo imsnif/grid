@@ -135,6 +135,24 @@ test('wrapper.changeSize(width, height): can change window size', t => {
   }
 })
 
-test.skip('wrapper.changeSize(width, size): bad parameters', t => {
-  // TBD
+test('wrapper.changeSize(width, size): bad parameters', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow = new StubWindow(1, 400, 600)
+    grid.add(stubWindow)
+    t.throws(
+      () => grid.getWindow(1).changeSize(undefined, 1),
+      Error,
+      'cannot change location with bad width'
+    )
+    t.throws(
+      () => grid.getWindow(1).changeSize(1, undefined),
+      Error,
+      'cannot change location with bad height'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
 })
