@@ -26,6 +26,21 @@ function isOccupied (representation, window) {
   return true
 }
 
+function isNotOccupied (representation, window) {
+  const firstVerticalPoint = window.y
+  const firstHorizontalPoint = window.x
+  const lastVerticalPoint = window.height + window.y
+  const lastHorizontalPoint = window.width + window.x
+  for (let y = firstVerticalPoint; y < lastVerticalPoint; y += 1) {
+    for (let x = firstHorizontalPoint; x < lastHorizontalPoint; x += 1) {
+      if (representation[y][x] === window.id) {
+        return false
+      }
+    }
+  }
+  return true
+}
+
 test('occupy(representation, window): occupy window on representation', t => {
   t.plan(1)
   try {
@@ -60,8 +75,21 @@ test('occupy(representation, window): bad parameters', t => {
   }
 })
 
-test.skip('occupy(representation, window, windowPrev): occupy window on representation', t => {
-  // TBD
+test('occupy(representation, window, windowPrev): occupy window on representation', t => {
+  t.plan(2)
+  try {
+    const initialRepresentation = createRepresentation(1600, 900)
+    const window1 = createWindow(1, 0, 0, 100, 100)
+    const window2 = createWindow(1, 200, 200, 100, 100)
+    const newRepresentation = occupy(initialRepresentation, window1)
+    const finalRepresentation = occupy(newRepresentation, window2, window1)
+    t.ok(isOccupied(finalRepresentation, window2), 'window occupied on grid representation')
+    t.ok(isNotOccupied(finalRepresentation, window1), 'previous window location not occupied on grid representation')
+    // This test is only possible if the first and second location do not have any overlap
+  } catch (err) {
+    t.fail(err.toString())
+    t.end()
+  }
 })
 
 test.skip('occupy(representation, windowm windowPrev): bad parameters', t => {
