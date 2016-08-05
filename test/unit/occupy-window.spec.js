@@ -108,8 +108,20 @@ test('occupy(representation, window, windowPrev): bad parameters', t => {
   }
 })
 
-test.skip('occupy(representation, window, windowPrev): size exceeds grid', t => {
-  // TBD
+test('occupy(representation, window, windowPrev): size exceeds representation', t => {
+  t.plan(1)
+  try {
+    const initialRepresentation = createRepresentation(200, 200)
+    const window = createWindow(1, 0, 0, 300, 300)
+    t.throws(
+      () => occupy(initialRepresentation, window),
+      Error,
+      'window size exceeds representation'
+    )
+  } catch (err) {
+    t.fail(err.toString())
+    t.end()
+  }
 })
 
 test.skip('occupy(representation, window, windowPrev): space is occupied', t => {
