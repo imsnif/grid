@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "standard && babel-tape-runner ./test/**/*.spec.js --tap | tap-spec",
-    "coverage": "nyc npm test",
+    "coverage": "nyc --reporter=lcov npm test",
     "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls"
   },
   "author": "Aram Drevekenin <grimsniffer@gmail.com>",
