@@ -124,10 +124,37 @@ test('occupy(representation, window, windowPrev): size exceeds representation', 
   }
 })
 
-test.skip('occupy(representation, window, windowPrev): space is occupied', t => {
-  // TBD
+test('occupy(representation, window, windowPrev): space is occupied', t => {
+  t.plan(1)
+  try {
+    const initialRepresentation = createRepresentation(200, 200)
+    const window1 = createWindow(1, 0, 0, 200, 200)
+    const window2 = createWindow(2, 0, 0, 200, 200)
+    const newRepresentation = occupy(initialRepresentation, window1)
+    t.throws(
+      () => occupy(newRepresentation, window2),
+      Error,
+      'space is occupied on representation'
+    )
+  } catch (err) {
+    t.fail(err.toString())
+    t.end()
+  }
 })
 
-test.skip('occupy(representation, window, windowPrev): representation is corrupt', t => {
-  // TBD
+test('occupy(representation, window, windowPrev): representation is corrupt', t => {
+  t.plan(1)
+  try {
+    const initialRepresentation = createRepresentation(500, 500)
+    const window1 = createWindow(1, 0, 0, 200, 200)
+    const window2 = createWindow(1, 100, 100, 200, 200)
+    t.throws(
+      () => occupy(initialRepresentation, window2, window1), // outdated representation
+      Error,
+      'representation is corrupt'
+    )
+  } catch (err) {
+    t.fail(err.toString())
+    t.end()
+  }
 })
