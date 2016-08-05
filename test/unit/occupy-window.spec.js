@@ -92,18 +92,30 @@ test('occupy(representation, window, windowPrev): occupy window on representatio
   }
 })
 
-test.skip('occupy(representation, windowm windowPrev): bad parameters', t => {
+test('occupy(representation, window, windowPrev): bad parameters', t => {
+  t.plan(1)
+  try {
+    const initialRepresentation = createRepresentation(200, 200)
+    const window = createWindow(1, 0, 0, 100, 100)
+    t.throws(
+      () => occupy(initialRepresentation, window, 'notWindow'),
+      Error,
+      'occupy with bad prevWindow'
+    )
+  } catch (err) {
+    t.fail(err.toString())
+    t.end()
+  }
+})
+
+test.skip('occupy(representation, window, windowPrev): size exceeds grid', t => {
   // TBD
 })
 
-test.skip('occupy(representation, windowm windowPrev): size exceeds grid', t => {
+test.skip('occupy(representation, window, windowPrev): space is occupied', t => {
   // TBD
 })
 
-test.skip('occupy(representation, windowm windowPrev): space is occupied', t => {
-  // TBD
-})
-
-test.skip('occupy(representation, windowm windowPrev): representation is corrupt', t => {
+test.skip('occupy(representation, window, windowPrev): representation is corrupt', t => {
   // TBD
 })
