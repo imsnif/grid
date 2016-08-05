@@ -39,8 +39,26 @@ test('occupy(representation, window): occupy window on representation', t => {
   }
 })
 
-test.skip('occupy(representation, window): bad parameters', t => {
-  // TBD
+test('occupy(representation, window): bad parameters', t => {
+  t.plan(1)
+  try {
+    const initialRepresentation = createRepresentation(1600, 900)
+    const window = createWindow(1, 0, 0, 100, 100)
+    const newRepresentation = occupy(initialRepresentation, window)
+    t.throws(
+      () => occupy('a', window),
+      Error,
+      'occupy with bad representation'
+    )
+    t.throws(
+      () => occupy(initialRepresentation, 'a'),
+      Error,
+      'occupy with bad window'
+    )
+  } catch (err) {
+    t.fail(err.toString())
+    t.end()
+  }
 })
 
 test.skip('occupy(representation, window, windowPrev): occupy window on representation', t => {
