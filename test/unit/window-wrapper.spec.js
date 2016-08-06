@@ -66,7 +66,7 @@ test('new WindowWrapper(width, height): bad parameters', t => {
   )
 })
 
-test('wrapper.changeLocation(width, size): can change window location', t => {
+test('wrapper.changeLocation(x, y): can change window location', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -85,7 +85,7 @@ test('wrapper.changeLocation(width, size): can change window location', t => {
   }
 })
 
-test('wrapper.changeLocation(width, size): bad parameters', t => {
+test('wrapper.changeLocation(x, y): bad parameters', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
