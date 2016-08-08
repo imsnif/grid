@@ -77,7 +77,7 @@ test('grid.getWindow(id): bad parameters', t => {
     const stubWindow1 = new StubWindow(1, 400, 600)
     grid.add(stubWindow1)
     t.throws(
-      grid.getWindow(2),
+      () => grid.getWindow(2),
       Error,
       'cannot get non-existent window'
     )
