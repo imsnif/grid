@@ -3,7 +3,6 @@
 import test from 'tape'
 import Grid from '../../'
 import _ from 'lodash'
-import occupy from '../../lib/occupy-window'
 
 const WIDTH = 1600
 const HEIGHT = 900
@@ -163,27 +162,17 @@ test('cannot move window when representation is corrupt', t => {
 })
 
 test('grid can decide window location', t => {
-  t.plan(3)
+  t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     const stubWindow1 = new StubWindow(1, 400, 100)
     const stubWindow2 = new StubWindow(2, 400, 100)
-    const initialRepresentation = grid.representation.map(r => r.slice())
     grid.add(stubWindow1, {chooseLocation: true})
     t.equals(grid.windows.length, 1, 'grid window added to grid')
-    t.deepEquals(
-      grid.representation,
-      occupy(initialRepresentation, Object.assign({}, stubWindow1, {x: 0, y: 0})),
-      'window location chosen at grid\'s root when there are no windows'
-    )
-    const newRepresentation = grid.representation.map(r => r.slice())
+    t.deepEquals(_.pick(grid.getWindow(1), ['x', 'y']), {x: 0, y: 0}, 'window added directly to the right')
     grid.add(stubWindow2, {chooseLocation: true})
-    t.equals(grid.windows.length, 2, 'grid windows still present')
-    t.deepEquals(
-      grid.representation,
-      occupy(newRepresentation, Object.assign({}, stubWindow1, {x: 200, y: 0})),
-      'window location chosen to the immediate right of current window'
-    )
+    t.deepEquals(_.pick(grid.getWindow(2), ['x', 'y']), {x: 400, y: 0}, 'window added directly to the right')
+    t.equals(grid.windows.length, 2, 'second grid window added to grid')
   } catch (e) {
     t.fail(e.toString())
     t.end()
