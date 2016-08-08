@@ -54,6 +54,31 @@ test('grid.add(window): can add window to grid', t => {
   }
 })
 
+test('grid.add(window): bad parameters', t => {
+  t.plan(3)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    t.throws(
+      () => grid.add({id: 1, width: 2}),
+      Error,
+      'Cannot add window without height'
+    )
+    t.throws(
+      () => grid.add({id: 1, height: 2}),
+      Error,
+      'Cannot add window without width'
+    )
+    t.throws(
+      () => grid.add({width: 1, height: 2}),
+      Error,
+      'Cannot add window without id'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('grid.getWindow(id): can get window by its id from a grid', t => {
   t.plan(2)
   try {
