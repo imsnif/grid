@@ -70,6 +70,19 @@ test('grid.getWindow(id): can get window by its id from a grid', t => {
   }
 })
 
-test.skip('grid.getWindow(id): bad parameters', t => {
-  // TBD
+test('grid.getWindow(id): bad parameters', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow1 = new StubWindow(1, 400, 600)
+    grid.add(stubWindow1)
+    t.throws(
+      grid.getWindow(2),
+      Error,
+      'cannot get non-existent window'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
 })
