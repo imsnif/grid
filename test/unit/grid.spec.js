@@ -46,7 +46,7 @@ test('grid.add(window): can add window to grid', t => {
     const stubWindow2 = new StubWindow(2, 400, 600)
     grid.add(stubWindow1)
     t.equals(grid.windows.length, 1, 'first window added to grid')
-    grid.add(stubWindow2, 950, 0)
+    grid.add(stubWindow2, {x: 950, y: 0})
     t.equals(grid.windows.length, 2, 'second window added to grid')
   } catch (e) {
     t.fail(e.toString())
@@ -86,7 +86,7 @@ test('grid.getWindow(id): can get window by its id from a grid', t => {
     const stubWindow1 = new StubWindow(1, 400, 600)
     const stubWindow2 = new StubWindow(2, 400, 600)
     grid.add(stubWindow1)
-    grid.add(stubWindow2, 950, 0)
+    grid.add(stubWindow2, {x: 950, y: 0})
     t.equals(grid.getWindow(1).id, 1, 'got first window by its id')
     t.equals(grid.getWindow(2).id, 2, 'got second window by its id')
   } catch (e) {

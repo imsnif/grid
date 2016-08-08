@@ -21,8 +21,8 @@ test('cannot resize window over another window', t => {
     const stubWindow2 = new StubWindow(2, 400, 100)
     const stubWindow3 = new StubWindow(3, 400, 100)
     grid.add(stubWindow1)
-    grid.add(stubWindow2, 400)
-    grid.add(stubWindow3, 0, 100)
+    grid.add(stubWindow2, {x: 400})
+    grid.add(stubWindow3, {x: 0, y: 100})
     t.throws(
       () => grid.getWindow(1).changeSize(401, 100),
       Error,
@@ -48,8 +48,8 @@ test('cannot move window over another window', t => {
     const stubWindow2 = new StubWindow(2, 400, 100)
     const stubWindow3 = new StubWindow(3, 400, 100)
     grid.add(stubWindow1)
-    grid.add(stubWindow2, 400)
-    grid.add(stubWindow3, 0, 100)
+    grid.add(stubWindow2, {x: 400})
+    grid.add(stubWindow3, {x: 0, y: 100})
     t.throws(
       () => grid.getWindow(1).changeLocation(1, 0),
       Error,
@@ -120,7 +120,7 @@ test('can move window into location vacated by another', t => {
     const stubWindow1 = new StubWindow(1, 400, 100)
     const stubWindow2 = new StubWindow(2, 400, 100)
     grid.add(stubWindow1)
-    grid.add(stubWindow2, 400)
+    grid.add(stubWindow2, {x: 400})
     grid.getWindow(1).changeLocation(0, 100)
     grid.getWindow(2).changeLocation(0, 0)
     t.equals(grid.windows.length, 2, 'grid windows still present')
