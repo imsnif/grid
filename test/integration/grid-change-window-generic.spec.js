@@ -178,3 +178,7 @@ test('grid can decide window location', t => {
     t.end()
   }
 })
+
+test.skip('grid cannot decide to add window to full grid', t => {
+  // TBD
+})
