@@ -161,7 +161,7 @@ test('cannot move window when representation is corrupt', t => {
   }
 })
 
-test('grid can decide window location', t => {
+test('grid can decide window location horizontally ', t => {
   t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -179,12 +179,28 @@ test('grid can decide window location', t => {
   }
 })
 
+test('grid can decide window location vertically', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow1 = new StubWindow(1, 1600, 100)
+    const stubWindow2 = new StubWindow(2, 1600, 100)
+    grid.add(stubWindow1, {chooseLocation: true})
+    grid.add(stubWindow2, {chooseLocation: true})
+    t.deepEquals(_.pick(grid.getWindow(2), ['x', 'y']), {x: 0, y: 100}, 'window added directly to the right')
+    t.equals(grid.windows.length, 2, 'second grid window added to grid')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('grid cannot decide to add window to full grid', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 700, 900)
-    const stubWindow2 = new StubWindow(2, 700, 900)
+    const stubWindow1 = new StubWindow(1, 700, 460)
+    const stubWindow2 = new StubWindow(2, 700, 460)
     const stubWindow3 = new StubWindow(3, 700, 900)
     grid.add(stubWindow1, {chooseLocation: true})
     grid.add(stubWindow2, {chooseLocation: true})
