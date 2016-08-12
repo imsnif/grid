@@ -183,9 +183,9 @@ test('grid cannot decide to add window to full grid', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 800, 900)
-    const stubWindow2 = new StubWindow(2, 800, 900)
-    const stubWindow3 = new StubWindow(2, 800, 900)
+    const stubWindow1 = new StubWindow(1, 700, 900)
+    const stubWindow2 = new StubWindow(2, 700, 900)
+    const stubWindow3 = new StubWindow(3, 700, 900)
     grid.add(stubWindow1, {chooseLocation: true})
     grid.add(stubWindow2, {chooseLocation: true})
     t.throws(
@@ -193,7 +193,6 @@ test('grid cannot decide to add window to full grid', t => {
       Error,
       'Cannot decide to add a window to a full grid'
     )
-    console.log(4)
   } catch (e) {
     t.fail(e.toString())
     t.end()
