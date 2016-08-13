@@ -201,7 +201,7 @@ test('grid cannot decide to add window to full grid', t => {
     const grid = new Grid(WIDTH, HEIGHT)
     const stubWindow1 = new StubWindow(1, 700, 460)
     const stubWindow2 = new StubWindow(2, 700, 460)
-    const stubWindow3 = new StubWindow(3, 700, 900)
+    const stubWindow3 = new StubWindow(3, 700, 460)
     grid.add(stubWindow1, {chooseLocation: true})
     grid.add(stubWindow2, {chooseLocation: true})
     t.throws(
