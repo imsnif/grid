@@ -7,22 +7,13 @@ import _ from 'lodash'
 const WIDTH = 1600
 const HEIGHT = 900
 
-function StubWindow (id, width, height) {
-  this.id = id
-  this.width = width
-  this.height = height
-}
-
 test('cannot resize window over another window', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
-    const stubWindow2 = new StubWindow(2, 400, 100)
-    const stubWindow3 = new StubWindow(3, 400, 100)
-    grid.add(stubWindow1)
-    grid.add(stubWindow2, {x: 400})
-    grid.add(stubWindow3, {x: 0, y: 100})
+    grid.add(null, {id: 1, width: 400, height: 100})
+    grid.add(null, {id: 2, width: 400, height: 100, x: 400, y: 0})
+    grid.add(null, {id: 3, width: 400, height: 100, x: 0, y: 100})
     t.throws(
       () => grid.getWindow(1).changeSize(401, 100),
       Error,
@@ -44,12 +35,9 @@ test('cannot move window over another window', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
-    const stubWindow2 = new StubWindow(2, 400, 100)
-    const stubWindow3 = new StubWindow(3, 400, 100)
-    grid.add(stubWindow1)
-    grid.add(stubWindow2, {x: 400})
-    grid.add(stubWindow3, {x: 0, y: 100})
+    grid.add(null, {id: 1, width: 400, height: 100})
+    grid.add(null, {id: 2, width: 400, height: 100, x: 400, y: 0})
+    grid.add(null, {id: 3, width: 400, height: 100, x: 0, y: 100})
     t.throws(
       () => grid.getWindow(1).changeLocation(1, 0),
       Error,
@@ -71,8 +59,7 @@ test('cannot resize window outside grid', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
-    grid.add(stubWindow1)
+    grid.add(null, {id: 1, width: 400, height: 100})
     t.throws(
       () => grid.getWindow(1).changeSize(1601, 100),
       Error,
@@ -94,8 +81,7 @@ test('cannot move window outside grid', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
-    grid.add(stubWindow1)
+    grid.add(null, {id: 1, width: 400, height: 100})
     t.throws(
       () => grid.getWindow(1).changeLocation(1201, 100),
       Error,
@@ -117,10 +103,8 @@ test('can move window into location vacated by another', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
-    const stubWindow2 = new StubWindow(2, 400, 100)
-    grid.add(stubWindow1)
-    grid.add(stubWindow2, {x: 400})
+    grid.add(null, {id: 1, width: 400, height: 100})
+    grid.add(null, {id: 2, width: 400, height: 100, x: 400, y: 0})
     grid.getWindow(1).changeLocation(0, 100)
     grid.getWindow(2).changeLocation(0, 0)
     t.equals(grid.windows.length, 2, 'grid windows still present')
@@ -147,8 +131,7 @@ test('cannot move window when representation is corrupt', t => {
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     const initialRepresentation = grid.representation.map(r => r.slice())
-    const stubWindow = new StubWindow(1, 200, 100)
-    grid.add(stubWindow)
+    grid.add(null, {id: 1, width: 200, height: 100})
     grid.representation = initialRepresentation // corrupt the representation
     t.throws(
       () => grid.getWindow(1).changeLocation(1, 1),
@@ -165,12 +148,10 @@ test('grid can decide window location horizontally', t => {
   t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
-    const stubWindow2 = new StubWindow(2, 400, 100)
-    grid.add(stubWindow1, {chooseLocation: true})
+    grid.add(null, {id: 1, width: 400, height: 100})
     t.equals(grid.windows.length, 1, 'grid window added to grid')
     t.deepEquals(_.pick(grid.getWindow(1), ['x', 'y']), {x: 0, y: 0}, 'window added directly to the right')
-    grid.add(stubWindow2, {chooseLocation: true})
+    grid.add(null, {id: 2, width: 400, height: 100})
     t.deepEquals(_.pick(grid.getWindow(2), ['x', 'y']), {x: 400, y: 0}, 'window added directly to the right')
     t.equals(grid.windows.length, 2, 'second grid window added to grid')
   } catch (e) {
@@ -183,12 +164,9 @@ test('grid can decide window location horizontally with vertical blockage', t =>
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
-    const stubWindow2 = new StubWindow(2, 400, 100)
-    const stubWindow3 = new StubWindow(3, 400, 100)
-    grid.add(stubWindow1, {chooseLocation: true})
-    grid.add(stubWindow2, {x: 400, y: 20})
-    grid.add(stubWindow3, {chooseLocation: true})
+    grid.add(null, {id: 1, width: 400, height: 100})
+    grid.add(null, {id: 2, width: 400, height: 100, x: 400, y: 20})
+    grid.add(null, {id: 3, width: 400, height: 100})
     t.deepEquals(_.pick(grid.getWindow(3), ['x', 'y']), {x: 800, y: 0}, 'window skipped horizontal blockage')
   } catch (e) {
     t.fail(e.toString())
@@ -200,12 +178,9 @@ test('grid can decide window location horizontally with horizontal blockage', t 
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
-    const stubWindow2 = new StubWindow(2, 400, 100)
-    const stubWindow3 = new StubWindow(3, 400, 100)
-    grid.add(stubWindow1, {chooseLocation: true})
-    grid.add(stubWindow2, {x: 405, y: 0})
-    grid.add(stubWindow3, {chooseLocation: true})
+    grid.add(null, {id: 1, width: 400, height: 100})
+    grid.add(null, {id: 2, width: 400, height: 100, x: 405, y: 0})
+    grid.add(null, {id: 3, width: 300, height: 100})
     t.deepEquals(_.pick(grid.getWindow(3), ['x', 'y']), {x: 805, y: 0}, 'window skipped horizontal blockage')
   } catch (e) {
     t.fail(e.toString())
@@ -217,14 +192,10 @@ test('grid can decide window location horizontally with multiple horizontal opti
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 100)
-    const stubWindow2 = new StubWindow(2, 400, 100)
-    const stubWindow3 = new StubWindow(3, 400, 100)
-    const stubWindow4 = new StubWindow(4, 400, 100)
-    grid.add(stubWindow1, {chooseLocation: true})
-    grid.add(stubWindow2, {x: 400, y: 10})
-    grid.add(stubWindow3, {x: 800, y: 0})
-    grid.add(stubWindow4, {chooseLocation: true})
+    grid.add(null, {id: 1, width: 400, height: 100})
+    grid.add(null, {id: 2, width: 400, height: 100, x: 400, y: 10})
+    grid.add(null, {id: 3, width: 400, height: 100, x: 800, y: 0})
+    grid.add(null, {id: 4, width: 400, height: 100})
     t.deepEquals(_.pick(grid.getWindow(4), ['x', 'y']), {x: 1200, y: 0}, 'window skipped horizontal blockage')
   } catch (e) {
     t.fail(e.toString())
@@ -236,10 +207,8 @@ test('grid can decide window location vertically', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 1600, 100)
-    const stubWindow2 = new StubWindow(2, 1600, 100)
-    grid.add(stubWindow1, {chooseLocation: true})
-    grid.add(stubWindow2, {chooseLocation: true})
+    grid.add(null, {id: 1, width: 1600, height: 100})
+    grid.add(null, {id: 2, width: 400, height: 100})
     t.deepEquals(_.pick(grid.getWindow(2), ['x', 'y']), {x: 0, y: 100}, 'window added directly to the right')
     t.equals(grid.windows.length, 2, 'second grid window added to grid')
   } catch (e) {
@@ -252,13 +221,10 @@ test('grid cannot decide to add window to full grid', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 700, 460)
-    const stubWindow2 = new StubWindow(2, 700, 460)
-    const stubWindow3 = new StubWindow(3, 700, 460)
-    grid.add(stubWindow1, {chooseLocation: true})
-    grid.add(stubWindow2, {chooseLocation: true})
+    grid.add(null, {id: 1, width: 700, height: 460})
+    grid.add(null, {id: 2, width: 700, height: 460})
     t.throws(
-      () => grid.add(stubWindow3, {chooseLocation: true}),
+      () => grid.add(null, {id: 1, width: 700, height: 460}),
       Error,
       'Cannot decide to add a window to a full grid'
     )
