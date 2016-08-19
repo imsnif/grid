@@ -161,7 +161,7 @@ test('cannot move window when representation is corrupt', t => {
   }
 })
 
-test('grid can decide window location horizontally ', t => {
+test('grid can decide window location horizontally', t => {
   t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -173,6 +173,59 @@ test('grid can decide window location horizontally ', t => {
     grid.add(stubWindow2, {chooseLocation: true})
     t.deepEquals(_.pick(grid.getWindow(2), ['x', 'y']), {x: 400, y: 0}, 'window added directly to the right')
     t.equals(grid.windows.length, 2, 'second grid window added to grid')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('grid can decide window location horizontally with vertical blockage', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow1 = new StubWindow(1, 400, 100)
+    const stubWindow2 = new StubWindow(2, 400, 100)
+    const stubWindow3 = new StubWindow(3, 400, 100)
+    grid.add(stubWindow1, {chooseLocation: true})
+    grid.add(stubWindow2, {x: 400, y: 20})
+    grid.add(stubWindow3, {chooseLocation: true})
+    t.deepEquals(_.pick(grid.getWindow(3), ['x', 'y']), {x: 800, y: 0}, 'window skipped horizontal blockage')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('grid can decide window location horizontally with horizontal blockage', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow1 = new StubWindow(1, 400, 100)
+    const stubWindow2 = new StubWindow(2, 400, 100)
+    const stubWindow3 = new StubWindow(3, 400, 100)
+    grid.add(stubWindow1, {chooseLocation: true})
+    grid.add(stubWindow2, {x: 405, y: 0})
+    grid.add(stubWindow3, {chooseLocation: true})
+    t.deepEquals(_.pick(grid.getWindow(3), ['x', 'y']), {x: 805, y: 0}, 'window skipped horizontal blockage')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('grid can decide window location horizontally with multiple horizontal options', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow1 = new StubWindow(1, 400, 100)
+    const stubWindow2 = new StubWindow(2, 400, 100)
+    const stubWindow3 = new StubWindow(3, 400, 100)
+    const stubWindow4 = new StubWindow(4, 400, 100)
+    grid.add(stubWindow1, {chooseLocation: true})
+    grid.add(stubWindow2, {x: 400, y: 10})
+    grid.add(stubWindow3, {x: 800, y: 0})
+    grid.add(stubWindow4, {chooseLocation: true})
+    t.deepEquals(_.pick(grid.getWindow(4), ['x', 'y']), {x: 1200, y: 0}, 'window skipped horizontal blockage')
   } catch (e) {
     t.fail(e.toString())
     t.end()
