@@ -217,3 +217,31 @@ test('can move window into location vacated by another', t => {
     t.end()
   }
 })
+
+test('grid can decide window location horizontally ', t => {
+  t.plan(4)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const stubWindow1 = new BrowserWindow(1, 400, 100)
+    const stubWindow2 = new BrowserWindow(2, 400, 100)
+    grid.add(stubWindow1, {chooseLocation: true})
+    t.equals(grid.windows.length, 1, 'grid window added to grid')
+    grid.add(stubWindow2, {chooseLocation: true})
+    t.equals(grid.windows.length, 2, 'second grid window added to grid')
+    t.deepEquals(grid.getWindow(1).window.getBounds(), {
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 100
+    }, 'window size changed')
+    t.deepEquals(grid.getWindow(2).window.getBounds(), {
+      x: 400,
+      y: 0,
+      width: 400,
+      height: 100
+    }, 'window size changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
