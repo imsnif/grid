@@ -13,54 +13,56 @@ function StubWindow (id, width, height) {
   this.height = height
 }
 
-test('can add windows to grid', t => {
+test('can add panes to grid', t => {
   t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 600)
-    const stubWindow2 = new StubWindow(2, 400, 600)
-    let gridWindow
-    grid.add(stubWindow1)
-    t.equals(grid.windows.length, 1, 'grid has one window')
-    gridWindow = _.pick(grid.getWindow(1), ['id', 'width', 'height', 'x', 'y'])
-    t.deepEquals(gridWindow, Object.assign({}, stubWindow1, {
+    grid.add(StubWindow, {id: 1, width: 400, height: 600})
+    let gridPane
+    t.equals(grid.panes.length, 1, 'grid has one pane')
+    gridPane = _.pick(grid.getPane(1), ['id', 'width', 'height', 'x', 'y'])
+    t.deepEquals(gridPane, {
+      id: 1,
+      width: 400,
+      height: 600,
       x: 0,
       y: 0
-    }), 'window added in default location')
-    grid.add(stubWindow2, {x: 950, y: 0})
-    t.equals(grid.windows.length, 2, 'grid has two windows')
-    gridWindow = _.pick(grid.getWindow(2), ['id', 'width', 'height', 'x', 'y'])
-    t.deepEquals(gridWindow, Object.assign({}, stubWindow2, {
-      x: 950,
+    }, 'pane added in default location')
+    grid.add(StubWindow, {id: 2, width: 400, height: 600})
+    t.equals(grid.panes.length, 2, 'grid has two panes')
+    gridPane = _.pick(grid.getPane(2), ['id', 'width', 'height', 'x', 'y'])
+    t.deepEquals(gridPane, {
+      id: 2,
+      width: 400,
+      height: 600,
+      x: 400,
       y: 0
-    }), 'window added in custom location')
+    }, 'pane added in custom location')
   } catch (e) {
     t.fail(e.toString())
     t.end()
   }
 })
 
-test('windows should not be created over each other', t => {
+test('panes should not be created over each other', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 200, 100)
-    const stubWindow2 = new StubWindow(2, 200, 100)
-    grid.add(stubWindow1)
+    grid.add(StubWindow, {id: 1, width: 200, height: 100})
     t.throws(
-      () => grid.add(stubWindow2, {x: 199, y: 0}),
+      () => grid.add(StubWindow, {id: 2, width: 200, height: 100, x: 199, y: 0}),
       Error,
-      'window cannot be created over existing window on x axis'
+      'pane cannot be created over existing pane on x axis'
     )
     t.throws(
-      () => grid.add(stubWindow2, {x: 0, y: 99}),
+      () => grid.add(StubWindow, {id: 2, width: 200, height: 100, x: 0, y: 99}),
       Error,
-      'window cannot be created over existing window on y axis'
+      'pane cannot be created over existing pane on y axis'
     )
     t.throws(
-      () => grid.add(stubWindow2, {x: 199, y: 99}),
+      () => grid.add(StubWindow, {id: 2, width: 200, height: 100, x: 199, y: 99}),
       Error,
-      'window cannot be created over existing window on multiple axes'
+      'pane cannot be created over existing pane on multiple axes'
     )
   } catch (e) {
     t.fail(e)
@@ -68,32 +70,29 @@ test('windows should not be created over each other', t => {
   }
 })
 
-test('windows should not be created outside grid', t => {
+test('panes should not be created outside grid', t => {
   t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow = new StubWindow(1, 200, 100)
-    const fatStubWindow = new StubWindow(2, WIDTH + 1, HEIGHT)
-    const tallStubWindow = new StubWindow(2, WIDTH, HEIGHT + 1)
     t.throws(
-      () => grid.add(stubWindow, {x: 1401, y: 0}),
+      () => grid.add(StubWindow, {id: 1, width: 200, height: 100, x: 1401, y: 0}),
       Error,
-      'window cannot exceed grid horizontal bounds'
+      'pane cannot exceed grid horizontal bounds'
     )
     t.throws(
-      () => grid.add(stubWindow, {x: 0, y: 801}),
+      () => grid.add(StubWindow, {id: 1, width: 200, height: 100, x: 0, y: 801}),
       Error,
-      'window canonot exceed grid vertical bounds'
+      'pane canonot exceed grid vertical bounds'
     )
     t.throws(
-      () => grid.add(fatStubWindow),
+      () => grid.add(StubWindow, {id: 2, width: WIDTH + 1, height: HEIGHT}),
       Error,
-      'cannot add window wider than grid'
+      'cannot add pane wider than grid'
     )
     t.throws(
-      () => grid.add(tallStubWindow),
+      () => grid.add(StubWindow, {id: 2, width: WIDTH, height: HEIGHT + 1}),
       Error,
-      'cannot add window taller than grid'
+      'cannot add pane taller than grid'
     )
   } catch (e) {
     t.fail(e.toString())
