@@ -12,7 +12,10 @@ module.exports = function paneAdder (state) {
       assert(validate.isDefined(opts.height))
       assert(validate.isDefined(opts.id))
       assert(state.panes.every(w => w.Id !== opts.id))
-      if (typeof opts.y === 'undefined' || typeof opts.x === 'undefined') {
+      if (
+        typeof opts.y === 'undefined' ||
+        typeof opts.x === 'undefined'
+      ) {
         const chosen = chooseLocation(state.representation, {
           width: opts.width,
           height: opts.height
@@ -21,8 +24,8 @@ module.exports = function paneAdder (state) {
         opts.y = chosen.y
       }
       state.representation = occupy(state.representation, opts)
-      const pane = new PaneWrapper(constructor, Object.assign({}, opts, {grid: this}))
-      this.panes.push(pane)
+      const pane = new PaneWrapper(constructor, Object.assign({}, opts, {grid: state}))
+      state.panes.push(pane)
     }
   })
 }
