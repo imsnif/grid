@@ -1,5 +1,5 @@
 import test from 'tape'
-import occupy from '../../lib/occupy-window'
+import occupy from '../../services/occupy-pane'
 
 function createRepresentation (width, height) {
   return new Array(height)

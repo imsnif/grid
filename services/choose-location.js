@@ -27,11 +27,6 @@ function occupySpace (seq, pane, representation, y) {
 module.exports = function chooseLocation (prevRepresentation, pane) {
   assert(validate.isObject(prevRepresentation))
   assert(validate.isObject(pane))
-  if (pane.constructor && pane.constructor.name === 'BrowserWindow') {
-    const paneBounds = pane.getBounds() // TODO: get wrapper object from grid
-    pane.width = paneBounds.width
-    pane.height = paneBounds.height
-  }
   let representation = prevRepresentation.map(r => r.slice())
   const gridHeight = representation.length
   let occupied
