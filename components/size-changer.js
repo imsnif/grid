@@ -1,6 +1,6 @@
 const assert = require('assert')
 const validate = require('validate.js')
-const occupy = require('../services/occupy-window')
+const occupy = require('../services/occupy-pane')
 
 module.exports = function sizeChanger (state, implementation) {
   return ({
