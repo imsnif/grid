@@ -6,11 +6,13 @@ import Grid from '../../'
 const WIDTH = 1600
 const HEIGHT = 900
 
-function BrowserWindow (id, width, height) {
+function BrowserWindow (opts) {
   // mock electron BrowserWindow
-  this.id = id
-  this.width = width
-  this.height = height
+  this.x = opts.x
+  this.y = opts.y
+  this.width = opts.width
+  this.height = opts.height
+  this.id = opts.id
 }
 
 BrowserWindow.prototype.getBounds = function () {
@@ -29,217 +31,202 @@ BrowserWindow.prototype.setBounds = function (bounds) {
   this.y = bounds.y
 }
 
-test('can increase window size', t => {
+test('can increase pane size', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow = new BrowserWindow(1, 400, 600)
-    grid.add(stubWindow)
-    grid.getWindow(1).changeSize(450, 650)
-    t.equals(grid.windows.length, 1, 'grid has one window')
-    t.deepEquals(grid.getWindow(1).window.getBounds(), {
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 600})
+    grid.getPane(1).changeSize(450, 650)
+    t.equals(grid.panes.length, 1, 'grid has one pane')
+    t.deepEquals(grid.getPane(1).wrapped.getBounds(), {
       x: 0,
       y: 0,
       width: 450,
       height: 650
-    }, 'window size changed')
+    }, 'pane size changed')
   } catch (e) {
     t.fail(e.toString())
     t.end()
   }
 })
 
-test('can decrease window size', t => {
+test('can decrease pane size', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow = new BrowserWindow(1, 400, 600)
-    grid.add(stubWindow)
-    grid.getWindow(1).changeSize(350, 550)
-    t.equals(grid.windows.length, 1, 'grid has one window')
-    t.deepEquals(grid.getWindow(1).window.getBounds(), {
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 600})
+    grid.getPane(1).changeSize(350, 550)
+    t.equals(grid.panes.length, 1, 'grid has one pane')
+    t.deepEquals(grid.getPane(1).wrapped.getBounds(), {
       x: 0,
       y: 0,
       width: 350,
       height: 550
-    }, 'window size changed')
+    }, 'pane size changed')
   } catch (e) {
     t.fail(e.toString())
     t.end()
   }
 })
 
-test('cannot resize window over another window', t => {
+test('cannot resize pane over another pane', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new BrowserWindow(1, 400, 100)
-    const stubWindow2 = new BrowserWindow(2, 400, 100)
-    const stubWindow3 = new BrowserWindow(3, 400, 100)
-    grid.add(stubWindow1)
-    grid.add(stubWindow2, {x: 400})
-    grid.add(stubWindow3, {x: 0, y: 100})
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 100})
+    grid.add(BrowserWindow, {id: 2, width: 400, height: 100, x: 400, y: 0})
+    grid.add(BrowserWindow, {id: 3, width: 400, height: 100, x: 0, y: 100})
     t.throws(
-      () => grid.getWindow(1).changeSize(401, 100),
+      () => grid.getPane(1).changeSize(401, 100),
       Error,
-      'cannot resize window horizontally over another'
+      'cannot resize pane horizontally over another'
     )
     t.throws(
-      () => grid.getWindow(1).changeSize(400, 101),
+      () => grid.getPane(1).changeSize(400, 101),
       Error,
-      'cannot resize window vertically over another'
+      'cannot resize pane vertically over another'
     )
-    t.equals(grid.windows.length, 3, 'grid windows still present')
+    t.equals(grid.panes.length, 3, 'grid panes still present')
   } catch (e) {
     t.fail(e.toString())
     t.end()
   }
 })
 
-test('can change window location', t => {
+test('can change pane location', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow = new BrowserWindow(1, 400, 600)
-    grid.add(stubWindow)
-    grid.getWindow(1).changeLocation(1, 1)
-    t.equals(grid.windows.length, 1, 'grid has one window')
-    t.deepEquals(grid.getWindow(1).window.getBounds(), {
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 600})
+    grid.getPane(1).changeLocation(1, 1)
+    t.equals(grid.panes.length, 1, 'grid has one pane')
+    t.deepEquals(grid.getPane(1).wrapped.getBounds(), {
       x: 1,
       y: 1,
       width: 400,
       height: 600
-    }, 'window location changed')
+    }, 'pane location changed')
   } catch (e) {
     t.fail(e.toString())
     t.end()
   }
 })
 
-test('cannot move window over another window', t => {
+test('cannot move pane over another pane', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new BrowserWindow(1, 400, 100)
-    const stubWindow2 = new BrowserWindow(2, 400, 100)
-    const stubWindow3 = new BrowserWindow(3, 400, 100)
-    grid.add(stubWindow1)
-    grid.add(stubWindow2, {x: 400})
-    grid.add(stubWindow3, {x: 0, y: 100})
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 100})
+    grid.add(BrowserWindow, {id: 2, width: 400, height: 100, x: 400, y: 0})
+    grid.add(BrowserWindow, {id: 3, width: 400, height: 100, x: 0, y: 100})
     t.throws(
-      () => grid.getWindow(1).changeLocation(1, 0),
+      () => grid.getPane(1).changeLocation(1, 0),
       Error,
-      'cannot move window horizontally over another'
+      'cannot move pane horizontally over another'
     )
     t.throws(
-      () => grid.getWindow(1).changeLocation(0, 1),
+      () => grid.getPane(1).changeLocation(0, 1),
       Error,
-      'cannot move window vertically over another'
+      'cannot move pane vertically over another'
     )
-    t.equals(grid.windows.length, 3, 'grid windows still present')
+    t.equals(grid.panes.length, 3, 'grid panes still present')
   } catch (e) {
     t.fail(e.toString())
     t.end()
   }
 })
 
-test('cannot resize window outside grid', t => {
+test('cannot resize pane outside grid', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new BrowserWindow(1, 400, 100)
-    grid.add(stubWindow1)
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 100})
     t.throws(
-      () => grid.getWindow(1).changeSize(1601, 100),
+      () => grid.getPane(1).changeSize(1601, 100),
       Error,
-      'cannot resize window horizontally outside grid'
+      'cannot resize pane horizontally outside grid'
     )
     t.throws(
-      () => grid.getWindow(1).changeSize(400, 901),
+      () => grid.getPane(1).changeSize(400, 901),
       Error,
-      'cannot resize window vertically outside grid'
+      'cannot resize pane vertically outside grid'
     )
-    t.equals(grid.windows.length, 1, 'grid window still present')
+    t.equals(grid.panes.length, 1, 'grid pane still present')
   } catch (e) {
     t.fail(e.toString())
     t.end()
   }
 })
 
-test('cannot move window outside grid', t => {
+test('cannot move pane outside grid', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new BrowserWindow(1, 400, 100)
-    grid.add(stubWindow1)
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 100})
     t.throws(
-      () => grid.getWindow(1).changeLocation(1201, 100),
+      () => grid.getPane(1).changeLocation(1201, 100),
       Error,
-      'cannot move window horizontally outside grid'
+      'cannot move pane horizontally outside grid'
     )
     t.throws(
-      () => grid.getWindow(1).changeLocation(400, 801),
+      () => grid.getPane(1).changeLocation(400, 801),
       Error,
-      'cannot move window vertically outside grid'
+      'cannot move pane vertically outside grid'
     )
-    t.equals(grid.windows.length, 1, 'grid window still present')
+    t.equals(grid.panes.length, 1, 'grid pane still present')
   } catch (e) {
     t.fail(e.toString())
     t.end()
   }
 })
 
-test('can move window into location vacated by another', t => {
+test('can move pane into location vacated by another', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new BrowserWindow(1, 400, 100)
-    const stubWindow2 = new BrowserWindow(2, 400, 100)
-    grid.add(stubWindow1)
-    grid.add(stubWindow2, {x: 400})
-    grid.getWindow(1).changeLocation(0, 100)
-    grid.getWindow(2).changeLocation(0, 0)
-    t.equals(grid.windows.length, 2, 'grid windows still present')
-    t.deepEquals(grid.getWindow(2).window.getBounds(), {
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 100})
+    grid.add(BrowserWindow, {id: 2, width: 400, height: 100, x: 400, y: 0})
+    grid.getPane(1).changeLocation(0, 100)
+    grid.getPane(2).changeLocation(0, 0)
+    t.equals(grid.panes.length, 2, 'grid panes still present')
+    t.deepEquals(grid.getPane(2).wrapped.getBounds(), {
       x: 0,
       y: 0,
       width: 400,
       height: 100
-    }, 'window size changed')
-    t.deepEquals(grid.getWindow(1).window.getBounds(), {
+    }, 'pane size changed')
+    t.deepEquals(grid.getPane(1).wrapped.getBounds(), {
       x: 0,
       y: 100,
       width: 400,
       height: 100
-    }, 'window size changed')
+    }, 'pane size changed')
   } catch (e) {
     t.fail(e.toString())
     t.end()
   }
 })
 
-test('grid can decide window location horizontally ', t => {
+test('grid can decide pane location horizontally ', t => {
   t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new BrowserWindow(1, 400, 100)
-    const stubWindow2 = new BrowserWindow(2, 400, 100)
-    grid.add(stubWindow1, {chooseLocation: true})
-    t.equals(grid.windows.length, 1, 'grid window added to grid')
-    grid.add(stubWindow2, {chooseLocation: true})
-    t.equals(grid.windows.length, 2, 'second grid window added to grid')
-    t.deepEquals(grid.getWindow(1).window.getBounds(), {
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 100})
+    t.equals(grid.panes.length, 1, 'grid pane added to grid')
+    grid.add(BrowserWindow, {id: 2, width: 400, height: 100})
+    t.equals(grid.panes.length, 2, 'second grid pane added to grid')
+    t.deepEquals(grid.getPane(1).wrapped.getBounds(), {
       x: 0,
       y: 0,
       width: 400,
       height: 100
-    }, 'window size changed')
-    t.deepEquals(grid.getWindow(2).window.getBounds(), {
+    }, 'pane location decided properly')
+    t.deepEquals(grid.getPane(2).wrapped.getBounds(), {
       x: 400,
       y: 0,
       width: 400,
       height: 100
-    }, 'window size changed')
+    }, 'pane location decided properly')
   } catch (e) {
     t.fail(e.toString())
     t.end()
