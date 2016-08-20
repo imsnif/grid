@@ -1,16 +1,16 @@
 'use strict'
-
 import test from 'tape'
 import Grid from '../../'
+import _ from 'lodash'
 
 const WIDTH = 1600
 const HEIGHT = 900
 
-function BrowserWindow (id, width, height) {
+function BrowserWindow (opts) {
   // mock electron BrowserWindow
-  this.id = id
-  this.width = width
-  this.height = height
+  this.id = opts.id
+  this.width = opts.width
+  this.height = opts.height
 }
 
 BrowserWindow.prototype.getBounds = function () {
@@ -29,52 +29,49 @@ BrowserWindow.prototype.setBounds = function (bounds) {
   this.y = bounds.y
 }
 
-test('can add windows to grid', t => {
+test('can add panes to grid', t => {
   t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new BrowserWindow(1, 400, 600)
-    const stubWindow2 = new BrowserWindow(2, 400, 600)
-    grid.add(stubWindow1)
-    t.equals(grid.windows.length, 1, 'grid has one window')
-    const bounds = stubWindow1.getBounds()
-    t.deepEquals(grid.getWindow(1).window.getBounds(), Object.assign({}, bounds, {
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 600})
+    t.equals(grid.panes.length, 1, 'grid has one pane')
+    const gridPane1 = _.pick(grid.getPane(1), ['x', 'y'])
+    t.deepEquals(gridPane1, {
       x: 0,
       y: 0
-    }), 'window added in default location')
-    grid.add(stubWindow2, {x: 450, y: 0})
-    t.equals(grid.windows.length, 2, 'grid has two windows')
-    t.deepEquals(grid.getWindow(2).window.getBounds(), Object.assign(stubWindow2.getBounds(), {
+    }, 'pane added in default location')
+    grid.add(BrowserWindow, {id: 2, width: 400, height: 600, x: 450, y: 0})
+    t.equals(grid.panes.length, 2, 'grid has two panes')
+    const gridPane2 = _.pick(grid.getPane(2), ['x', 'y'])
+    t.deepEquals(gridPane2, {
       x: 450,
       y: 0
-    }), 'window added in custom location')
+    }, 'pane added in custom location')
   } catch (e) {
     t.fail(e.toString())
     t.end()
   }
 })
 
-test('windows should not be created over each other', t => {
+test('panes should not be created over each other', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new BrowserWindow(1, 200, 100)
-    const stubWindow2 = new BrowserWindow(2, 200, 100)
-    grid.add(stubWindow1)
+    grid.add(BrowserWindow, {id: 1, width: 200, height: 100})
     t.throws(
-      () => grid.add(stubWindow2, {x: 199, y: 0}),
+      () => grid.add(BrowserWindow, {id: 2, width: 200, height: 100, x: 199, y: 0}),
       Error,
-      'window cannot be created over existing window on x axis'
+      'pane cannot be created over existing pane on x axis'
     )
     t.throws(
-      () => grid.add(stubWindow2, {x: 0, y: 99}),
+      () => grid.add(BrowserWindow, {id: 2, width: 200, height: 100, x: 0, y: 99}),
       Error,
-      'window cannot be created over existing window on y axis'
+      'pane cannot be created over existing pane on y axis'
     )
     t.throws(
-      () => grid.add(stubWindow2, {x: 199, y: 99}),
+      () => grid.add(BrowserWindow, {id: 2, width: 200, height: 100, x: 199, y: 99}),
       Error,
-      'window cannot be created over existing window on multiple axes'
+      'pane cannot be created over existing pane on multiple axes'
     )
   } catch (e) {
     t.fail(e)
@@ -82,32 +79,29 @@ test('windows should not be created over each other', t => {
   }
 })
 
-test('windows should not be created outside grid', t => {
+test('panes should not be created outside grid', t => {
   t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow = new BrowserWindow(1, 200, 100)
-    const fatBrowserWindow = new BrowserWindow(2, WIDTH + 1, HEIGHT)
-    const tallBrowserWindow = new BrowserWindow(2, WIDTH, HEIGHT + 1)
     t.throws(
-      () => grid.add(stubWindow, {x: 1401, y: 0}),
+      () => grid.add(BrowserWindow, {id: 1, width: 200, height: 100, x: 1401, y: 0}),
       Error,
-      'window cannot exceed grid horizontal bounds'
+      'pane cannot exceed grid horizontal bounds'
     )
     t.throws(
-      () => grid.add(stubWindow, {x: 0, y: 801}),
+      () => grid.add(BrowserWindow, {id: 1, width: 200, height: 100, x: 0, y: 801}),
       Error,
-      'window canonot exceed grid vertical bounds'
+      'pane canonot exceed grid vertical bounds'
     )
     t.throws(
-      () => grid.add(fatBrowserWindow),
+      () => grid.add(BrowserWindow, {id: 2, width: WIDTH + 1, height: HEIGHT}),
       Error,
-      'cannot add window wider than grid'
+      'cannot add pane wider than grid'
     )
     t.throws(
-      () => grid.add(tallBrowserWindow),
+      () => grid.add(BrowserWindow, {id: 2, width: WIDTH, height: HEIGHT + 1}),
       Error,
-      'cannot add window taller than grid'
+      'cannot add pane taller than grid'
     )
   } catch (e) {
     t.fail(e.toString())
