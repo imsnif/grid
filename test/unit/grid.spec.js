@@ -6,18 +6,18 @@ import Grid from '../../'
 const WIDTH = 1600
 const HEIGHT = 900
 
-function StubWindow (id, width, height) {
-  this.id = id
-  this.width = width
-  this.height = height
+function StubWindow (opts) {
+  this.id = opts.id
+  this.width = opts.width
+  this.height = opts.height
 }
 
 test('new Grid(width, height): can create grid', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    t.deepEquals(grid.size, {width: WIDTH, height: HEIGHT}, 'grid.size() returns grid size')
-    t.equals(grid.windows.length, 0, 'grid.windows is a 0 length array')
+    t.deepEquals({width: grid.width, height: grid.height}, {width: WIDTH, height: HEIGHT}, 'grid created with correct size')
+    t.equals(grid.panes.length, 0, 'grid.panes is a 0 length array')
   } catch (e) {
     t.fail(e.toString())
     t.end()
@@ -38,40 +38,38 @@ test('new Grid(width, height): bad parameters', t => {
   }
 })
 
-test('grid.add(window): can add window to grid', t => {
+test('grid.add(pane): can add pane to grid', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 600)
-    const stubWindow2 = new StubWindow(2, 400, 600)
-    grid.add(stubWindow1)
-    t.equals(grid.windows.length, 1, 'first window added to grid')
-    grid.add(stubWindow2, {x: 950, y: 0})
-    t.equals(grid.windows.length, 2, 'second window added to grid')
+    grid.add(StubWindow, {id: 1, width: 400, height: 600})
+    t.equals(grid.panes.length, 1, 'first pane added to grid')
+    grid.add(StubWindow, {id: 2, width: 400, height: 600})
+    t.equals(grid.panes.length, 2, 'second pane added to grid')
   } catch (e) {
     t.fail(e.toString())
     t.end()
   }
 })
 
-test('grid.add(window): bad parameters', t => {
+test('grid.add(pane): bad parameters', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     t.throws(
-      () => grid.add({id: 1, width: 2}),
+      () => grid.add(StubWindow, {id: 1, width: 2}),
       Error,
-      'Cannot add window without height'
+      'Cannot add pane without height'
     )
     t.throws(
-      () => grid.add({id: 1, height: 2}),
+      () => grid.add(StubWindow, {id: 1, height: 2}),
       Error,
-      'Cannot add window without width'
+      'Cannot add pane without width'
     )
     t.throws(
-      () => grid.add({width: 1, height: 2}),
+      () => grid.add(StubWindow, {width: 1, height: 2}),
       Error,
-      'Cannot add window without id'
+      'Cannot add pane without id'
     )
   } catch (e) {
     t.fail(e.toString())
@@ -79,32 +77,29 @@ test('grid.add(window): bad parameters', t => {
   }
 })
 
-test('grid.getWindow(id): can get window by its id from a grid', t => {
+test('grid.getPane(id): can get pane by its id from a grid', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 600)
-    const stubWindow2 = new StubWindow(2, 400, 600)
-    grid.add(stubWindow1)
-    grid.add(stubWindow2, {x: 950, y: 0})
-    t.equals(grid.getWindow(1).id, 1, 'got first window by its id')
-    t.equals(grid.getWindow(2).id, 2, 'got second window by its id')
+    grid.add(StubWindow, {id: 1, width: 400, height: 600})
+    grid.add(StubWindow, {id: 2, width: 400, height: 600})
+    t.equals(grid.getPane(1).id, 1, 'got first pane by its id')
+    t.equals(grid.getPane(2).id, 2, 'got second pane by its id')
   } catch (e) {
     t.fail(e.toString())
     t.end()
   }
 })
 
-test('grid.getWindow(id): bad parameters', t => {
+test('grid.getPane(id): bad parameters', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    const stubWindow1 = new StubWindow(1, 400, 600)
-    grid.add(stubWindow1)
+    grid.add(StubWindow, {id: 1, width: 400, height: 600})
     t.throws(
-      () => grid.getWindow(2),
+      () => grid.getPane(2),
       Error,
-      'cannot get non-existent window'
+      'cannot get non-existent pane'
     )
   } catch (e) {
     t.fail(e.toString())
