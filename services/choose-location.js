@@ -4,6 +4,7 @@ const assert = require('assert')
 const validate = require('validate.js')
 const findSequence = require('find-sequence')
 const occupy = require('./occupy-pane')
+const checkDiagonally = require('./check-diagonally')
 
 function occupySpace (seq, pane, representation, y) {
   try {
@@ -25,38 +26,6 @@ function occupySpace (seq, pane, representation, y) {
       return occupySpace(Object.assign({}, seq, {start: e.coords.x + 1}), pane, representation, y)
     }
     return occupySpace(Object.assign({}, seq, {start: e.coords.x}), pane, representation, y)
-  }
-}
-
-function checkDiagonally (representation, pane) {
-  if (pane.width >= pane.height) {
-    let x = pane.x
-    for (let y = pane.y; y <= pane.height; y += 1) {
-      if (
-        !Array.isArray(representation[y]) ||
-        typeof representation[y][x] === 'undefined' ||
-        representation[y][x] !== 0
-      ) {
-        const err = new Error('blocked')
-        err.coords = {x, y}
-        throw err
-      }
-      x = x === pane.x + pane.width ? pane.x : x + 1
-    }
-  } else { // TODO: fix this
-    let y = pane.y
-    for (let x = pane.x; x <= pane.width; x += 1) {
-      if (
-        !Array.isArray(representation[y]) ||
-        typeof representation[y][x] === 'undefined' ||
-        representation[y][x] !== 0
-      ) {
-        const err = new Error('blocked')
-        err.coords = {x, y}
-        throw err
-      }
-      y = y === pane.y + pane.height ? pane.y : y + 1
-    }
   }
 }
 
