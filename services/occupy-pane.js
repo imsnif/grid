@@ -4,7 +4,6 @@ const assert = require('assert')
 const validate = require('validate.js')
 
 const removePreviousLocation = (prevRepresentation, pane) => {
-  // TODO: combine remove and add loop, no need to do this twice
   let representation = prevRepresentation.map(r => r.slice())
   const firstVerticalPoint = pane.y
   const firstHorizontalPoint = pane.x
@@ -12,9 +11,7 @@ const removePreviousLocation = (prevRepresentation, pane) => {
   const lastHorizontalPoint = pane.width + pane.x
   for (let y = firstVerticalPoint; y < lastVerticalPoint; y += 1) {
     for (let x = firstHorizontalPoint; x < lastHorizontalPoint; x += 1) {
-      if (prevRepresentation[y][x] !== pane.id) {
-        throw new Error('representation is corrupt')
-      }
+      if (prevRepresentation[y][x] !== pane.id) throw new Error('representation is corrupt')
       representation[y][x] = 0
     }
   }
@@ -24,9 +21,7 @@ const removePreviousLocation = (prevRepresentation, pane) => {
 module.exports = function occupy (prevRepresentation, pane, panePrev) {
   assert(validate.isObject(prevRepresentation))
   assert(validate.isObject(pane))
-  if (panePrev !== undefined) {
-    assert(validate.isObject(panePrev))
-  }
+  if (panePrev !== undefined) assert(validate.isObject(panePrev))
   let representation = panePrev
     ? removePreviousLocation(prevRepresentation, panePrev)
     : prevRepresentation.map(r => r.slice())
