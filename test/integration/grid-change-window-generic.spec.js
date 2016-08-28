@@ -126,24 +126,6 @@ test('can move pane into location vacated by another', t => {
   }
 })
 
-test('cannot move pane when representation is corrupt', t => {
-  t.plan(1)
-  try {
-    const grid = new Grid(WIDTH, HEIGHT)
-    const initialRepresentation = grid.representation.map(r => r.slice())
-    grid.add(null, {id: 1, width: 200, height: 100})
-    grid.representation = initialRepresentation // corrupt the representation
-    t.throws(
-      () => grid.getPane(1).changeLocation(1, 1),
-      Error,
-      'pane cannot be added when grid representation is corrupt'
-    )
-  } catch (e) {
-    t.fail(e.toString())
-    t.end()
-  }
-})
-
 test('grid can decide pane location horizontally', t => {
   t.plan(4)
   try {

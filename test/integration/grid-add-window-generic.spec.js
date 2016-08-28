@@ -28,12 +28,14 @@ test('can add panes to grid', t => {
       x: 0,
       y: 0
     }, 'pane added in default location')
-    grid.add(StubWindow, {id: 2, width: 400, height: 600})
-    t.equals(grid.panes.length, 2, 'grid has two panes')
+    grid.add(StubWindow, {id: 2, width: 200, height: 600})
+    grid.add(StubWindow, {id: 3, width: 200, height: 500})
+    grid.add(StubWindow, {id: 4, width: 200, height: 700})
+    t.equals(grid.panes.length, 4, 'grid has four panes')
     gridPane = _.pick(grid.getPane(2), ['id', 'width', 'height', 'x', 'y'])
     t.deepEquals(gridPane, {
       id: 2,
-      width: 400,
+      width: 200,
       height: 600,
       x: 400,
       y: 0
