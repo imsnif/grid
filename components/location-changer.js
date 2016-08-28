@@ -7,10 +7,17 @@ module.exports = function locationChanger (state, implementation) {
     changeLocation: function changeLocation (x, y) {
       assert(validate.isInteger(x))
       assert(validate.isInteger(y))
-      state.grid.representation = occupy(
-        state.grid.representation,
-        Object.assign({}, state, { x, y }),
-        state
+      if (
+        state.grid.width < state.width + x ||
+        state.grid.height < state.height + y ||
+        x < 0 ||
+        y < 0
+      ) {
+        throw new Error('location is outside of grid')
+      }
+      occupy(
+        state.grid,
+        Object.assign({}, state, {x, y})
       )
       state.x = x
       state.y = y

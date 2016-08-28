@@ -7,10 +7,17 @@ module.exports = function sizeChanger (state, implementation) {
     changeSize: function changeSize (width, height) {
       assert(validate.isInteger(width))
       assert(validate.isInteger(height))
-      state.grid.representation = occupy(
-        state.grid.representation,
-        Object.assign({}, state, { width, height }),
-        Object.assign({}, state)
+      if (
+        state.grid.width < state.x + width ||
+        state.grid.height < state.y + height ||
+        width < 0 ||
+        height < 0
+      ) {
+        throw new Error('size exceeds grid')
+      }
+      occupy(
+        state.grid,
+        Object.assign({}, state, {width, height})
       )
       state.width = width
       state.height = height

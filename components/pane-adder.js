@@ -1,8 +1,8 @@
 const assert = require('assert')
 const validate = require('validate.js')
-const occupy = require('../services/occupy-pane')
 const chooseLocation = require('../services/choose-location')
 const PaneWrapper = require('../lib/pane-wrapper')
+const occupy = require('../services/occupy-pane')
 
 module.exports = function paneAdder (state) {
   return ({
@@ -16,14 +16,15 @@ module.exports = function paneAdder (state) {
         typeof opts.y === 'undefined' ||
         typeof opts.x === 'undefined'
       ) {
-        const chosen = chooseLocation(state.representation, {
+        const chosen = chooseLocation(state, {
           width: opts.width,
           height: opts.height
         })
         opts.x = chosen.x
         opts.y = chosen.y
+      } else {
+        occupy(state, opts)
       }
-      state.representation = occupy(state.representation, opts)
       const pane = new PaneWrapper(constructor, Object.assign({}, opts, {grid: state}))
       state.panes.push(pane)
     }
