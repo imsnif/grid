@@ -10,7 +10,10 @@ function checkLines (opts) {
   } catch (e) {
     if (opts.grid.height >= Math.min(...e.blockedLines) + opts.pane.height) {
       // if there's room left below highest block point, check that line
-      return checkLines(Object.assign({}, opts, {y: Math.min(...e.blockedLines)}))
+      return checkLines(Object.assign({}, opts, {
+        y: Math.min(...e.blockedLines),
+        blockedLines: []
+      }))
     } else {
       throw new Error('no space for new pane')
     }
