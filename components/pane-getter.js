@@ -5,7 +5,7 @@ module.exports = function paneAdder (state) {
   return ({
     getPane: function getPane (id) {
       const pane = state.panes.filter(w => w.id === id)[0]
-      assert(validate.isDefined(pane))
+      assert(validate.isDefined(pane), `${id} does not exist`)
       return pane
     }
   })

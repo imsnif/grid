@@ -7,10 +7,10 @@ const occupy = require('../services/occupy-pane')
 module.exports = function paneAdder (state) {
   return ({
     add: function add (constructor, opts) {
-      assert(validate.isDefined(opts.width))
-      assert(validate.isDefined(opts.height))
-      assert(validate.isDefined(opts.id))
-      assert(state.panes.every(w => w.Id !== opts.id))
+      assert(validate.isDefined(opts.width), 'width is not defined')
+      assert(validate.isDefined(opts.height), 'height is not defined')
+      assert(validate.isDefined(opts.id), 'id is not defined')
+      assert(state.panes.every(w => w.Id !== opts.id), `${opts.id} already exists`)
       if (
         typeof opts.y === 'undefined' ||
         typeof opts.x === 'undefined'

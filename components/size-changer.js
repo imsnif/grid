@@ -5,16 +5,12 @@ const occupy = require('../services/occupy-pane')
 module.exports = function sizeChanger (state, implementation) {
   return ({
     changeSize: function changeSize (width, height) {
-      assert(validate.isInteger(width))
-      assert(validate.isInteger(height))
-      if (
-        state.grid.width < state.x + width ||
-        state.grid.height < state.y + height ||
-        width < 0 ||
-        height < 0
-      ) {
-        throw new Error('size exceeds grid')
-      }
+      assert(validate.isInteger(width), `${width} is not numeric`)
+      assert(validate.isInteger(height), `${height} is not numeric`)
+      assert(state.grid.width >= state.x + width, 'size exceeds grid')
+      assert(state.grid.height >= state.y + height, 'size exceeds grid')
+      assert(width >= 0, 'size exceeds grid')
+      assert(height >= 0, 'size exceeds grid')
       occupy(
         state.grid,
         Object.assign({}, state, {width, height})

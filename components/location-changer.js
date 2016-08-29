@@ -5,16 +5,12 @@ const occupy = require('../services/occupy-pane')
 module.exports = function locationChanger (state, implementation) {
   return ({
     changeLocation: function changeLocation (x, y) {
-      assert(validate.isInteger(x))
-      assert(validate.isInteger(y))
-      if (
-        state.grid.width < state.width + x ||
-        state.grid.height < state.height + y ||
-        x < 0 ||
-        y < 0
-      ) {
-        throw new Error('location is outside of grid')
-      }
+      assert(validate.isInteger(x), `${x} is not numeric`)
+      assert(validate.isInteger(y), `${y} is not numeric`)
+      assert(state.grid.width >= state.width + x, 'location is outside of grid')
+      assert(state.grid.height >= state.height + y, 'location is outside of grid')
+      assert(x >= 0, 'location is outside of grid')
+      assert(y >= 0, 'location is outside of grid')
       occupy(
         state.grid,
         Object.assign({}, state, {x, y})
