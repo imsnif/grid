@@ -7,7 +7,6 @@ const occupy = require('../services/occupy-pane')
 module.exports = function paneAdder (state) {
   return ({
     add: function add (constructor, opts) {
-      opts = opts || {}
       assert(validate.isDefined(opts.width))
       assert(validate.isDefined(opts.height))
       assert(validate.isDefined(opts.id))
