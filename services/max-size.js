@@ -23,6 +23,16 @@ function detectUpperVerticalObstruction (pane, sibling) {
   }
 }
 
+function detectRightHorizontalObstruction (pane, sibling) {
+  if (
+    sibling.y < pane.y + pane.height &&
+    sibling.y + sibling.height > pane.y &&
+    sibling.x > pane.x
+  ) {
+    return true
+  }
+}
+
 module.exports = {
   up: function (pane) {
     assert(validate.isObject(pane), `${pane} must be an object`)
@@ -51,6 +61,14 @@ module.exports = {
     // TBD
   },
   right: function (pane) {
-    // TBD
+    assert(validate.isObject(pane), `${pane} must be an object`)
+    const grid = pane.grid
+    const obstructions = grid.panes
+      .filter(p => p.id !== pane.id)
+      .filter((sibling) => detectRightHorizontalObstruction(pane, sibling))
+    const width = obstructions.length > 0
+      ? Math.min(...obstructions.map(o => o.x)) - pane.x
+      : grid.width - pane.x
+    return { width, x: pane.x }
   }
 }
