@@ -147,7 +147,7 @@ test('wrapper.maxSize(opts): can max pane size down', t => {
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 0,
-      width: 450,
+      width: 400,
       height: 900
     }, 'pane size changed')
   } catch (e) {

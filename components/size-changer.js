@@ -1,6 +1,7 @@
 const assert = require('assert')
 const validate = require('validate.js')
 const occupy = require('../services/occupy-pane')
+const max = require('../services/max-size')
 
 module.exports = function sizeChanger (state, implementation) {
   return ({
@@ -19,6 +20,24 @@ module.exports = function sizeChanger (state, implementation) {
       state.height = height
       if (implementation && typeof implementation.changeSize === 'function') {
         implementation.changeSize(state, width, height)
+      }
+    },
+    maxSize: function maxSize (directions) {
+      assert(validate.isObject(directions), `${directions} shold be an object`)
+      const changed = Object.keys(directions)
+        .filter(d => d)
+        .filter(d => {
+          if (d === 'up' || d === 'down') {
+            state.height = max[d](state)
+          } else if (d === 'left' || d === 'right') {
+            state.width = max[d](state)
+          } else {
+            return false
+          }
+          return true
+        })
+      if (changed && implementation && typeof implementation.changeSize === 'function') {
+        implementation.changeSize(state, state.width, state.height) // TODO: fix this, no need to pass these explicitly
       }
     }
   })
