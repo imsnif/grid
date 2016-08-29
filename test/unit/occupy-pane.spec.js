@@ -40,11 +40,11 @@ test('occupy(grid, pane): bad parameters', t => {
   }
 })
 
-test('occupy(grid, pane): occupy pane on representation', t => {
+test('occupy(grid, pane): occupy pane', t => {
   t.plan(1)
   try {
-    const pane1 = createpane(1, 0, 0, 100, 100)
-    const pane2 = createpane(1, 200, 200, 100, 100)
+    const pane1 = createpane({id: 1, x: 0, y: 0, width: 100, height: 100})
+    const pane2 = createpane({id: 2, x: 200, y: 200, width: 100, height: 100})
     const grid = createGrid({width: 500, height: 500, panes: [pane1]})
     occupy(grid, pane2)
     t.pass('second pane occupied on grid')
@@ -55,7 +55,7 @@ test('occupy(grid, pane): occupy pane on representation', t => {
   }
 })
 
-test('occupy(grid, pane): size exceeds representation', t => {
+test('occupy(grid, pane): size exceeds grid', t => {
   t.plan(1)
   try {
     const grid = createGrid({width: 200, height: 200})
