@@ -25,9 +25,7 @@ module.exports = function occupy (grid, candidate) {
       }
     })
     .sort((a, b) => {
-      console.log('a:', a)
-      console.log('b:', b)
-      if (a.y <= b.y) {
+      if (a.y + a.height <= b.y + b.height) {
         return -1
       } else {
         return 1
