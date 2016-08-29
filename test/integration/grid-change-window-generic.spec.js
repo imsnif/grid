@@ -185,6 +185,21 @@ test('grid can decide pane location horizontally with multiple horizontal blocka
   }
 })
 
+test('grid can decide pane location horizontally with multiple horizontal and vertical blockage', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(null, {id: 1, width: 10, height: 100, x: 10, y: 0})
+    grid.add(null, {id: 2, width: 10, height: 150, x: 20, y: 0})
+    grid.add(null, {id: 3, width: 1560, height: 10, x: 30, y: 0})
+    grid.add(null, {id: 4, width: 400, height: 100})
+    t.deepEquals(_.pick(grid.getPane(4), ['x', 'y']), {x: 30, y: 10}, 'pane skipped blockage')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('grid can decide pane location vertically', t => {
   t.plan(2)
   try {
