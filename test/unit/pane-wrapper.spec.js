@@ -137,3 +137,21 @@ test('wrapper.changeSize(width, size): bad parameters', t => {
     t.end()
   }
 })
+
+test('wrapper.maxSize(opts): can max pane size down', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubWindow, {id: 1, width: 400, height: 600})
+    grid.getPane(1).maxSize({down: true})
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 450,
+      height: 900
+    }, 'pane size changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
