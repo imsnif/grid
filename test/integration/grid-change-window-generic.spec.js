@@ -170,7 +170,7 @@ test('grid can decide pane location horizontally with horizontal blockage', t =>
   }
 })
 
-test('grid can decide pane location horizontally with multiple horizontal options', t => {
+test('grid can decide pane location horizontally with multiple horizontal blockage', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
