@@ -28,16 +28,20 @@ module.exports = function sizeChanger (state, implementation) {
         .filter(d => d)
         .filter(d => {
           if (d === 'up' || d === 'down') {
-            state.height = max[d](state)
+            const { height, y } = max[d](state)
+            state.height = height
+            state.y = y
           } else if (d === 'left' || d === 'right') {
-            state.width = max[d](state)
+            const { width, x } = max[d](state)
+            state.width = width
+            state.x = x
           } else {
             return false
           }
           return true
         })
-      if (changed && implementation && typeof implementation.changeSize === 'function') {
-        implementation.changeSize(state, state.width, state.height) // TODO: fix this, no need to pass these explicitly
+      if (changed && implementation && typeof implementation.changeBounds === 'function') {
+        implementation.changeBounds(state)
       }
     }
   })
