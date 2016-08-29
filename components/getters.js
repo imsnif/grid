@@ -5,7 +5,8 @@ module.exports = function getters (state) {
   Object.keys(state).forEach(k => {
     ret[k] = {
       get: () => state[k],
-      set: (val) => { state[k] = val }
+      set: undefined, // disallow setting externally
+      enumerable: true
     }
   })
   return ret
