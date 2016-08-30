@@ -270,6 +270,22 @@ test('wrapper.maxSize(opts): can max pane size left', t => {
   }
 })
 
-test.skip('wrapper.maxSize(opts): can max pane size left with obstructing window', t => {
-  // TBD
+test('wrapper.maxSize(opts): can max pane size left with obstructing window', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubWindow, {id: 1, width: 400, height: 200, x: 1200, y: 0})
+    grid.add(StubWindow, {id: 2, width: 400, height: 200, x: 500, y: 0})
+    grid.add(StubWindow, {id: 3, width: 400, height: 200, x: 100, y: 0})
+    grid.getPane(1).maxSize({left: true})
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 900,
+      y: 0,
+      width: 700,
+      height: 200
+    }, 'pane size changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
 })
