@@ -36,7 +36,7 @@ module.exports = function sizeChanger (state, implementation) {
             state.width = width
             state.x = x
           } else {
-            return false
+            throw new Error(`${d} should be one of 'up/down/left/right'`)
           }
           return true
         })
