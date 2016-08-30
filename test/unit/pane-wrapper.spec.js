@@ -178,7 +178,8 @@ test('wrapper.maxSize(opts): can max pane size down with obstructing windows', t
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubWindow, {id: 1, width: 400, height: 200})
     grid.add(StubWindow, {id: 2, width: 400, height: 200, x: 0, y: 400})
-    grid.add(StubWindow, {id: 2, width: 400, height: 200, x: 0, y: 700})
+    grid.add(StubWindow, {id: 3, width: 400, height: 200, x: 0, y: 700})
+    grid.add(StubWindow, {id: 4, width: 400, height: 200, x: 500, y: 700})
     grid.getPane(1).maxSize({down: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
@@ -217,6 +218,7 @@ test('wrapper.maxSize(opts): can max pane size up with obstructing windows', t =
     grid.add(StubWindow, {id: 1, width: 400, height: 200, x: 0, y: 700})
     grid.add(StubWindow, {id: 2, width: 400, height: 200, x: 0, y: 400})
     grid.add(StubWindow, {id: 3, width: 400, height: 200, x: 0, y: 200})
+    grid.add(StubWindow, {id: 4, width: 400, height: 200, x: 500, y: 200})
     grid.getPane(1).maxSize({up: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
@@ -255,6 +257,7 @@ test('wrapper.maxSize(opts): can max pane size right with obstructing windows', 
     grid.add(StubWindow, {id: 1, width: 400, height: 200})
     grid.add(StubWindow, {id: 2, width: 400, height: 200, x: 600, y: 0})
     grid.add(StubWindow, {id: 3, width: 400, height: 200, x: 1000, y: 0})
+    grid.add(StubWindow, {id: 4, width: 400, height: 200, x: 1000, y: 300})
     grid.getPane(1).maxSize({right: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
@@ -293,6 +296,7 @@ test('wrapper.maxSize(opts): can max pane size left with obstructing window', t 
     grid.add(StubWindow, {id: 1, width: 400, height: 200, x: 1200, y: 0})
     grid.add(StubWindow, {id: 2, width: 400, height: 200, x: 500, y: 0})
     grid.add(StubWindow, {id: 3, width: 400, height: 200, x: 100, y: 0})
+    grid.add(StubWindow, {id: 4, width: 400, height: 200, x: 100, y: 400})
     grid.getPane(1).maxSize({left: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 900,
