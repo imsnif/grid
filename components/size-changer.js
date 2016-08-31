@@ -28,11 +28,11 @@ module.exports = function sizeChanger (state, implementation) {
         .filter(d => d)
         .filter(d => {
           if (d === 'up' || d === 'down') {
-            const { height, y } = max[d](state)
+            const { height, y } = max(state, d)
             state.height = height
             state.y = y
           } else if (d === 'left' || d === 'right') {
-            const { width, x } = max[d](state)
+            const { width, x } = max(state, d)
             state.width = width
             state.x = x
           } else {
