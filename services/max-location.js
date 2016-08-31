@@ -8,31 +8,13 @@ module.exports = maxLocation
 
 function buildRetParams (pane, grid, obstruction, direction) {
   if (obstruction) {
-    if (direction === 'up') {
-      return {y: obstruction}
-    }
-    if (direction === 'down') {
-      return {y: obstruction - pane.height}
-    }
-    if (direction === 'left') {
-      return {x: obstruction}
-    }
-    if (direction === 'right') {
-      return {x: obstruction - pane.width}
-    }
+    const y = direction === 'up' ? obstruction : obstruction - pane.height
+    const x = direction === 'left' ? obstruction : obstruction - pane.width
+    return {y, x}
   } else {
-    if (direction === 'up') {
-      return {y: 0}
-    }
-    if (direction === 'down') {
-      return {y: grid.height - pane.height}
-    }
-    if (direction === 'left') {
-      return {x: 0}
-    }
-    if (direction === 'right') {
-      return {x: grid.width - pane.width}
-    }
+    const y = direction === 'up' ? 0 : grid.height - pane.height
+    const x = direction === 'left' ? 0 : grid.width - pane.width
+    return {y, x}
   }
 }
 

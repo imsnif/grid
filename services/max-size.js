@@ -14,12 +14,8 @@ function buildRetParams (pane, grid, obstruction, direction) {
     const height = direction === 'up'
       ? pane.height + pane.y - obstruction
       : obstruction - pane.y
-    const y = direction === 'up'
-      ? obstruction
-      : pane.y
-    const x = direction === 'left'
-      ? obstruction
-      : pane.x
+    const y = direction === 'up' ? obstruction : pane.y
+    const x = direction === 'left' ? obstruction : pane.x
     return {width, height, y, x}
   } else {
     const width = direction === 'left'
@@ -28,12 +24,8 @@ function buildRetParams (pane, grid, obstruction, direction) {
     const height = direction === 'up'
       ? pane.height + pane.y
       : grid.height - pane.y
-    const y = direction === 'up'
-      ? 0
-      : pane.y
-    const x = direction === 'left'
-      ? 0
-      : pane.x
+    const y = direction === 'up' ? 0 : pane.y
+    const x = direction === 'left' ? 0 : pane.x
     return {width, height, y, x}
   }
 }
