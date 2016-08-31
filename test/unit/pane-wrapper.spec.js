@@ -328,7 +328,7 @@ test('wrapper.maxLoc(opts): can max pane location left', t => {
   }
 })
 
-test('wrapper.maxSize(opts): can max pane size left with obstructing window', t => {
+test('wrapper.maxLoc(opts): can max pane location left with obstructing window', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -349,7 +349,7 @@ test('wrapper.maxSize(opts): can max pane size left with obstructing window', t 
   }
 })
 
-test('wrapper.maxSize(opts): can max pane size right', t => {
+test('wrapper.maxLoc(opts): can max pane location right', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -357,6 +357,27 @@ test('wrapper.maxSize(opts): can max pane size right', t => {
     grid.getPane(1).maxLoc({right: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 1200,
+      y: 0,
+      width: 400,
+      height: 200
+    }, 'pane size changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.maxLoc(opts): can max pane location right with obstructing windows', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubWindow, {id: 1, width: 400, height: 200})
+    grid.add(StubWindow, {id: 2, width: 400, height: 200, x: 600, y: 0})
+    grid.add(StubWindow, {id: 3, width: 400, height: 200, x: 1000, y: 0})
+    grid.add(StubWindow, {id: 4, width: 400, height: 200, x: 1000, y: 300})
+    grid.getPane(1).maxLoc({right: true})
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 200,
       y: 0,
       width: 400,
       height: 200
