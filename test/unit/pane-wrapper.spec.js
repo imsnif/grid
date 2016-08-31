@@ -348,3 +348,21 @@ test('wrapper.maxSize(opts): can max pane size left with obstructing window', t 
     t.end()
   }
 })
+
+test('wrapper.maxSize(opts): can max pane size right', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubWindow, {id: 1, width: 400, height: 200})
+    grid.getPane(1).maxLoc({right: true})
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 1200,
+      y: 0,
+      width: 400,
+      height: 200
+    }, 'pane size changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
