@@ -465,3 +465,19 @@ test('wrapper.maxSize(opts): can max pane location up with obstructing windows',
     t.end()
   }
 })
+
+test('wrapper.maxLoc(opts): bad params', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubWindow, {id: 1, width: 400, height: 600})
+    t.throws(
+      () => grid.getPane(1).maxLoc({down: true, foo: 'bar'}),
+      Error,
+      'cannot change location with bad params'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
