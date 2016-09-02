@@ -13,11 +13,24 @@ function StubWindow (opts) {
 }
 
 test('new Grid(width, height): can create grid', t => {
-  t.plan(2)
+  t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     t.deepEquals({width: grid.width, height: grid.height}, {width: WIDTH, height: HEIGHT}, 'grid created with correct size')
     t.equals(grid.panes.length, 0, 'grid.panes is a 0 length array')
+    t.deepEquals(grid.offset, {x: 0, y: 0}, 'default offset is 0')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('new Grid(width, height): can create grid with offset', t => {
+  t.plan(1)
+  try {
+    const gridOffset = { x: 50, y: 0 }
+    const grid = new Grid(WIDTH, HEIGHT, gridOffset)
+    t.deepEquals(grid.offset, gridOffset, 'grid created with custom offset')
   } catch (e) {
     t.fail(e.toString())
     t.end()
