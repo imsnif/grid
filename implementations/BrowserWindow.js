@@ -23,5 +23,8 @@ module.exports = {
       x: state.x + offset.x,
       y: state.y + offset.y
     })
+  },
+  close: (state) => {
+    state.wrapped.close()
   }
 }
