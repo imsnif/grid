@@ -90,6 +90,42 @@ test('grid.add(pane): bad parameters', t => {
   }
 })
 
+test('grid.remove(pane): can remove pane from grid', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubWindow, {id: 1, width: 400, height: 600})
+    grid.add(StubWindow, {id: 2, width: 400, height: 600})
+    grid.remove(1)
+    t.equals(grid.panes.length, 1, 'first pane removed from grid')
+    t.equals(grid.panes[0].id, 2, 'second pane still present')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('grid.remove(pane): bad parameters', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubWindow, {id: 1, width: 400, height: 600})
+    t.throws(
+      () => grid.remove(2),
+      Error,
+      'Cannot remove non-existent pane'
+    )
+    t.throws(
+      () => grid.remove(),
+      Error,
+      'Cannot remove pane without providing pane id'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('grid.getPane(id): can get pane by its id from a grid', t => {
   t.plan(2)
   try {
