@@ -15,6 +15,12 @@ function StubWindow (opts) {
   this.height = opts.height
 }
 
+function StubWindowWithId (opts) {
+  this.id = opts.id || 1
+  this.width = opts.width
+  this.height = opts.height
+}
+
 test('new PaneWrapper(Constructor, opts): can create pane-wrapper (default parameters)', t => {
   t.plan(4)
   try {
@@ -23,6 +29,28 @@ test('new PaneWrapper(Constructor, opts): can create pane-wrapper (default param
     t.equals(wrapper.height, 200, 'pane created with proper height')
     t.equals(wrapper.x, 0, 'pane created with default x position')
     t.equals(wrapper.y, 0, 'pane created with default y position')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('new PaneWrapper(Constructor, opts): can create pane-wrapper with id of wrapped window', t => {
+  t.plan(1)
+  try {
+    const wrapper = new PaneWrapper(StubWindowWithId, {width: 100, height: 200, x: 0, y: 0})
+    t.equals(wrapper.id, 1, 'wrapper created with id of window')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('new PaneWrapper(Constructor, opts): opts overrides native id of wrapped window', t => {
+  t.plan(1)
+  try {
+    const wrapper = new PaneWrapper(StubWindowWithId, {id: 2, width: 100, height: 200, x: 0, y: 0})
+    t.equals(wrapper.id, 2, 'wrapper created with provided id')
   } catch (e) {
     t.fail(e.toString())
     t.end()
