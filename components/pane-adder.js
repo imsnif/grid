@@ -9,8 +9,7 @@ module.exports = function paneAdder (state) {
     add: function add (constructor, opts) {
       assert(validate.isDefined(opts.width), 'width is not defined')
       assert(validate.isDefined(opts.height), 'height is not defined')
-      assert(validate.isDefined(opts.id), 'id is not defined')
-      assert(state.panes.every(w => w.Id !== opts.id), `${opts.id} already exists`)
+      assert(state.panes.every(w => w.id !== opts.id), `${opts.id} already exists`)
       if (
         typeof opts.y === 'undefined' ||
         typeof opts.x === 'undefined'
@@ -24,7 +23,10 @@ module.exports = function paneAdder (state) {
       } else {
         occupy(state, opts)
       }
-      const pane = new PaneWrapper(constructor, Object.assign({}, opts, {grid: state}))
+      const pane = new PaneWrapper(
+        constructor,
+        Object.assign({}, opts, {grid: state})
+      )
       state.panes.push(pane)
     }
   })
