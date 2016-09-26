@@ -4,6 +4,7 @@ import test from 'tape'
 import Grid from '../../lib/grid'
 import PaneWrapper from '../../lib/pane-wrapper'
 import _ from 'lodash'
+import sinon from 'sinon'
 
 const WIDTH = 1600
 const HEIGHT = 900
@@ -31,25 +32,41 @@ test('new PaneWrapper(Constructor, opts): can create pane-wrapper (default param
 test('new PaneWrapper(constructor, opts): bad parameters', t => {
   t.plan(4)
   t.throws(
-    () => new PaneWrapper(StubWindow, {x: 1, y: 1, width: 'a', height: 1}),
+    () => new PaneWrapper(StubWindow, {id: 1, x: 1, y: 1, width: 'a', height: 1}),
     Error,
     'cannot create wrapper with non-nomeric width'
   )
   t.throws(
-    () => new PaneWrapper(StubWindow, {x: 1, y: 1, width: 1, height: 'a'}),
+    () => new PaneWrapper(StubWindow, {id: 2, x: 1, y: 1, width: 1, height: 'a'}),
     Error,
     'cannot create wrapper with non-nomeric height'
   )
   t.throws(
-    () => new PaneWrapper(StubWindow, {x: 'a', y: 1, width: 1, height: 1}),
+    () => new PaneWrapper(StubWindow, {id: 3, x: 'a', y: 1, width: 1, height: 1}),
     Error,
     'cannot create wrapper with non-nomeric x'
   )
   t.throws(
-    () => new PaneWrapper(StubWindow, {x: 1, y: 'a', width: 1, height: 1}),
+    () => new PaneWrapper(StubWindow, {id: 4, x: 1, y: 'a', width: 1, height: 1}),
     Error,
     'cannot create wrapper with non-nomeric y'
   )
+})
+
+test('new PaneWrapper(constructor, opts): bad parameters - no id', t => {
+  t.plan(2)
+  const spy = sinon.spy()
+  StubWindow.prototype.close = spy
+  t.throws(
+    () => new PaneWrapper(StubWindow, {x: 1, y: 1, width: 1, height: 1}),
+    Error,
+    'cannot create pane without id'
+  )
+  t.ok(
+    spy.calledOnce,
+    'close method was called when no id was provided'
+  )
+  StubWindow.prototype.close = undefined
 })
 
 test('wrapper.changeLocation(x, y): can change pane location', t => {

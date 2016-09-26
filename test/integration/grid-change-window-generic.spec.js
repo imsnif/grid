@@ -221,7 +221,7 @@ test('grid cannot decide to add pane to full grid', t => {
     grid.add(null, {id: 1, width: 700, height: 460})
     grid.add(null, {id: 2, width: 700, height: 460})
     t.throws(
-      () => grid.add(null, {id: 1, width: 700, height: 460}),
+      () => grid.add(null, {id: 3, width: 700, height: 460}),
       Error,
       'Cannot decide to add a pane to a full grid'
     )
