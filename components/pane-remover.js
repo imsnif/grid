@@ -8,7 +8,10 @@ module.exports = function paneRemover (state) {
       assert(state.panes.some(p => p.id === paneId), `${paneId} does not exist`)
       const pane = state.panes.filter(p => p.id === paneId)[0]
       state.panes = state.panes.filter(p => p.id !== pane.id)
-      pane.close()
+      if (!pane.closed) {
+        pane.closed = true
+        pane.close()
+      }
     }
   })
 }
