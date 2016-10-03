@@ -22,16 +22,18 @@ module.exports = function locationChanger (state, implementation) {
         implementation.changeLocation(state, x, y)
       }
     },
-    maxLoc: function maxSize (directions) {
+    maxLoc: function maxLoc (directions) {
       assert(validate.isObject(directions), `${directions} shold be an object`)
       const changed = Object.keys(directions)
         .filter(d => d)
         .filter(d => {
           if (d === 'up' || d === 'down') {
             const { y } = mLoc(state, d)
+            if (state.y === y) throw new Error('location blocked')
             state.y = y
           } else if (d === 'left' || d === 'right') {
             const { x } = mLoc(state, d)
+            if (state.x === x) throw new Error('location blocked')
             state.x = x
           } else {
             throw new Error(`${d} should be one of 'up/down/left/right'`)
