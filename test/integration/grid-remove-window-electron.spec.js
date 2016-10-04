@@ -101,7 +101,7 @@ test('can expel pane from grid', t => {
 })
 
 test('cannot expel pane with bad params', t => {
-  t.plan(4)
+  t.plan(5)
   try {
     const closeSpy = sinon.spy(BrowserWindow.prototype, 'close')
     const removeListenersSpy = sinon.spy(BrowserWindow.prototype, 'removeAllListeners')
@@ -119,6 +119,7 @@ test('cannot expel pane with bad params', t => {
     )
     t.ok(closeSpy.notCalled, 'close method of existing window was not called')
     t.ok(removeListenersSpy.notCalled, 'removeListeners was not called on existing window')
+    t.equal(grid.panes.length, 1, 'existing pane remains in grid')
     closeSpy.restore()
     removeListenersSpy.restore()
   } catch (e) {
