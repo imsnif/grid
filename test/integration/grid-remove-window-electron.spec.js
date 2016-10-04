@@ -99,3 +99,30 @@ test('can expel pane from grid', t => {
     t.end()
   }
 })
+
+test('cannot expel pane with bad params', t => {
+  t.plan(4)
+  try {
+    const closeSpy = sinon.spy(BrowserWindow.prototype, 'close')
+    const removeListenersSpy = sinon.spy(BrowserWindow.prototype, 'removeAllListeners')
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 600})
+    t.throws(
+      () => grid.expel(),
+      /Error: id is not defined/,
+      'cannot expel window without id'
+    )
+    t.throws(
+      () => grid.expel(2),
+      /Error: 2 does not exist/,
+      'cannot expel window without id'
+    )
+    t.ok(closeSpy.notCalled, 'close method of existing window was not called')
+    t.ok(removeListenersSpy.notCalled, 'removeListeners was not called on existing window')
+    closeSpy.restore()
+    removeListenersSpy.restore()
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
