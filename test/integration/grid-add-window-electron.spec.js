@@ -108,3 +108,22 @@ test('panes should not be created outside grid', t => {
     t.end()
   }
 })
+
+test('can add constructed window to grid', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const win = new BrowserWindow({id: 1, width: 400, height: 600})
+    grid.add(win, {width: 400, height: 600})
+    t.equals(grid.panes.length, 1, 'grid has one pane')
+    const gridPane1 = _.pick(grid.getPane(1), ['x', 'y'])
+    t.deepEquals(gridPane1, {
+      x: 0,
+      y: 0
+    }, 'constructed window added in default location')
+  } catch (e) {
+    console.log('e is:', e)
+    t.fail(e.toString())
+    t.end()
+  }
+})
