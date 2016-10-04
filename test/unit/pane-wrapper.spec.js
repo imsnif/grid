@@ -512,7 +512,7 @@ test('wrapper.maxSize(opts): can max pane location up with obstructing panes', t
 })
 
 test('wrapper.maxLoc(opts): bad params', t => {
-  t.plan(2)
+  t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 600})
@@ -524,7 +524,12 @@ test('wrapper.maxLoc(opts): bad params', t => {
     t.throws(
       () => grid.getPane(1).maxLoc({up: true}),
       /Error: location blocked/,
-      'cannot max location when at the edge of the grid'
+      'cannot max location when at the edge of the grid horizontally'
+    )
+    t.throws(
+      () => grid.getPane(1).maxLoc({left: true}),
+      /Error: location blocked/,
+      'cannot max location when at the edge of the grid vertically'
     )
   } catch (e) {
     t.fail(e.toString())
