@@ -12,6 +12,14 @@ module.exports = function paneRemover (state) {
         pane.closed = true
         pane.close()
       }
+    },
+    expel: function expel (paneId) {
+      assert(validate.isDefined(paneId), 'id is not defined')
+      assert(state.panes.some(p => p.id === paneId), `${paneId} does not exist`)
+      const pane = state.panes.filter(p => p.id === paneId)[0]
+      state.panes = state.panes.filter(p => p.id !== pane.id)
+      pane.wrapped.removeAllListeners('close')
+      return pane.wrapped
     }
   })
 }
