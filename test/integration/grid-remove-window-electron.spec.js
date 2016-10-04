@@ -42,6 +42,10 @@ BrowserWindow.prototype.setBounds = function (bounds) {
   this.y = bounds.y
 }
 
+BrowserWindow.prototype.removeAllListeners = function (type) {
+  // no-op
+}
+
 test('can remove electron BrowserWindow', t => {
   t.plan(2)
   try {
@@ -51,6 +55,7 @@ test('can remove electron BrowserWindow', t => {
     grid.remove(1)
     t.equal(grid.panes.length, 0, 'grid removed from pane')
     t.ok(spy.calledOnce, 'close method of BrowserWindow was caled only once')
+    spy.restore()
   } catch (e) {
     t.fail(e.toString())
     t.end()
@@ -65,6 +70,30 @@ test('BrowserWindow.close() removes pane from grid', t => {
     const pane = grid.getPane(1)
     pane.close()
     t.equal(grid.panes.length, 0, 'grid removed from pane')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('can expel pane from grid', t => {
+  t.plan(4)
+  try {
+    const closeSpy = sinon.spy(BrowserWindow.prototype, 'close')
+    const removeListenersSpy = sinon.spy(BrowserWindow.prototype, 'removeAllListeners')
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 600})
+    const winInGrid = grid.getPane(1).wrapped
+    const expelledWin = grid.expel(1)
+    t.equal(grid.panes.length, 0, 'grid removed from pane')
+    t.deepEqual(winInGrid, expelledWin, 'expelledWin equals window in grid')
+    t.ok(
+      removeListenersSpy.withArgs('close').calledOnce,
+      'close listener removed from window before expulsion'
+    )
+    t.ok(closeSpy.notCalled, 'close method was not called on window')
+    closeSpy.restore()
+    removeListenersSpy.restore()
   } catch (e) {
     t.fail(e.toString())
     t.end()
