@@ -205,3 +205,35 @@ test('can choose partial location down with full column obstructed', t => {
     t.fail(e)
   }
 })
+
+test('cannot choose partial location when direction is full vertically', t => {
+  t.plan(1)
+  try {
+    const obstructingPane = new StubPane(0, 100, 800, 500)
+    const grid = new StubGrid(800, 600, [obstructingPane])
+    const pane = new StubPane(0, 0, 100, 100)
+    t.throws(
+      () => choosePartial(grid, pane, 'down'),
+      /Error: no space for new pane/,
+      'location not chosen when direction is full'
+    )
+  } catch (e) {
+    t.fail(e)
+  }
+})
+
+test('cannot choose partial location when direction is full horizontally', t => {
+  t.plan(1)
+  try {
+    const obstructingPane = new StubPane(100, 0, 700, 600)
+    const grid = new StubGrid(800, 600, [obstructingPane])
+    const pane = new StubPane(0, 0, 100, 100)
+    t.throws(
+      () => choosePartial(grid, pane, 'right'),
+      /Error: no space for new pane/,
+      'location not chosen when direction is full'
+    )
+  } catch (e) {
+    t.fail(e)
+  }
+})
