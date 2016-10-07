@@ -4,7 +4,7 @@
   "description": "UNDER CONSTRUCTION",
   "main": "index.js",
   "scripts": {
-    "test": "standard && babel-tape-runner ./test/*/*.spec.js --tap | tap-spec",
+    "test": "standard && babel-tape-runner ./test/**/*.spec.js --tap | tap-spec",
     "coverage": "nyc --reporter=lcov npm test",
     "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls"
   },
@@ -21,7 +21,8 @@
     "sinon": "^1.17.6",
     "standard": "^8.0.0",
     "tap-spec": "^4.1.1",
-    "tape": "^4.6.0"
+    "tape": "^4.6.0",
+    "uuid": "^2.0.3"
   },
   "babel": {
     "presets": [
