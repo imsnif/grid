@@ -1,6 +1,7 @@
 const assert = require('assert')
 const validate = require('validate.js')
 const occupy = require('../services/occupy-pane')
+const choosePartialLocation = require('../services/choose-partial-location')
 const mLoc = require('../services/max-location')
 
 module.exports = function locationChanger (state, implementation) {
@@ -29,12 +30,47 @@ module.exports = function locationChanger (state, implementation) {
         .filter(d => {
           if (d === 'up' || d === 'down') {
             const { y } = mLoc(state, d)
-            if (state.y === y) throw new Error('location blocked')
-            state.y = y
+            // if (state.y === y) throw new Error('location blocked')
+            if (state.y === y) {
+              try {
+                const skippedLocation = choosePartialLocation(
+                  state.grid,
+                  state,
+                  d
+                )
+                if (skippedLocation) {
+                  state.x = skippedLocation.x
+                  state.y = skippedLocation.y
+                } else {
+                  throw new Error(`no room to the ${d}`)
+                }
+              } catch (e) {
+                throw new Error('location blocked')
+              }
+            } else {
+              state.y = y
+            }
           } else if (d === 'left' || d === 'right') {
             const { x } = mLoc(state, d)
-            if (state.x === x) throw new Error('location blocked')
-            state.x = x
+            if (state.x === x) {
+              try {
+                const skippedLocation = choosePartialLocation(
+                  state.grid,
+                  state,
+                  d
+                )
+                if (skippedLocation) {
+                  state.x = skippedLocation.x
+                  state.y = skippedLocation.y
+                } else {
+                  throw new Error(`no room to the ${d}`)
+                }
+              } catch (e) {
+                throw new Error('location blocked')
+              }
+            } else {
+              state.x = x
+            }
           } else {
             throw new Error(`${d} should be one of 'up/down/left/right'`)
           }

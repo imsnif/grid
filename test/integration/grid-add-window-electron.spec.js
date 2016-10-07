@@ -122,7 +122,6 @@ test('can add constructed window to grid', t => {
       y: 0
     }, 'constructed window added in default location')
   } catch (e) {
-    console.log('e is:', e)
     t.fail(e.toString())
     t.end()
   }

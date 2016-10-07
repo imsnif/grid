@@ -14,24 +14,30 @@ function detectCollision (pane, candidate) {
   }
 }
 
-function heightOffsetOrder (a, b) {
-  return (a.y + a.height <= b.y + b.height ? -1 : 1)
+function widthOffsetOrder (a, b) {
+  return (a.x + a.width <= b.x + b.width ? -1 : 1)
 }
 
-module.exports = function occupy (grid, candidate) {
+module.exports = function occupy (grid, candidate, baseCoords) {
+  // baseCoords means the error coordinates will be given as the base values (x, y) of the collider, rather than the end values (x + width, y + height)
+  // this is an ugly ugly and very temporary hack, TODO: fix this
   assert(validate.isObject(grid), `${grid} is not an object`)
   assert(validate.isObject(candidate), `${candidate} is not an object`)
   assert(candidate.x + candidate.width <= grid.width, 'size exceeds grid')
   assert(candidate.y + candidate.height <= grid.height, 'size exceeds grid')
+  assert(candidate.x >= 0, 'size exceeds grid')
+  assert(candidate.y >= 0, 'size exceeds grid')
   const colliders = grid.panes
     .filter(p => p.id !== candidate.id)
     .filter((pane) => detectCollision(pane, candidate))
-    .sort(heightOffsetOrder)
+    .sort(widthOffsetOrder)
   if (colliders.length > 0) {
     const err = new Error('space is occupied')
     err.coords = {
-      x: colliders[0].x + colliders[0].width,
-      y: colliders[0].y + colliders[0].height
+      x: baseCoords ? colliders[0].x : colliders[0].x + colliders[0].width,
+      y: baseCoords ? colliders[0].y : colliders[0].y + colliders[0].height,
+      width: colliders[0].width,
+      height: colliders[0].height
     }
     throw err
   }

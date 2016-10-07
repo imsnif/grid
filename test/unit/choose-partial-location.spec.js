@@ -150,7 +150,6 @@ test('can choose partial location up with full column obstructed', t => {
     const grid = new StubGrid(800, 600, [obstructingPane])
     const pane = new StubPane(0, 500, 100, 100)
     const chosen = choosePartial(grid, pane, 'up')
-    console.log('chosen:', chosen)
     t.ok(
       chosen.y <= pane.y,
       'new location is above the previous location'
