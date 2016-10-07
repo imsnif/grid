@@ -536,3 +536,79 @@ test('wrapper.maxLoc(opts): bad params', t => {
     t.end()
   }
 })
+
+test('wrapper.maxLoc(opts): max pane location left skips over obstructing pane', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 900, y: 0})
+    grid.add(StubPane, {id: 2, width: 400, height: 200, x: 500, y: 0})
+    grid.getPane(1).maxLoc({left: true})
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 100,
+      y: 0,
+      width: 400,
+      height: 200
+    }, 'pane location changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.maxLoc(opts): max pane location right skips over obstructing pane', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 0})
+    grid.add(StubPane, {id: 2, width: 400, height: 200, x: 400, y: 0})
+    grid.getPane(1).maxLoc({right: true})
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 800,
+      y: 0,
+      width: 400,
+      height: 200
+    }, 'pane location changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.maxLoc(opts): max pane up skips over obstructing pane', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 500})
+    grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 300})
+    grid.getPane(1).maxLoc({up: true})
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 100,
+      width: 400,
+      height: 200
+    }, 'pane location changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.maxLoc(opts): max pane down skips over obstructing pane', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 300})
+    grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 500})
+    grid.getPane(1).maxLoc({down: true})
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 700,
+      width: 400,
+      height: 200
+    }, 'pane location changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
