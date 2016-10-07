@@ -30,7 +30,6 @@ module.exports = function locationChanger (state, implementation) {
         .filter(d => {
           if (d === 'up' || d === 'down') {
             const { y } = mLoc(state, d)
-            // if (state.y === y) throw new Error('location blocked')
             if (state.y === y) {
               try {
                 const skippedLocation = choosePartialLocation(
@@ -38,12 +37,8 @@ module.exports = function locationChanger (state, implementation) {
                   state,
                   d
                 )
-                if (skippedLocation) {
-                  state.x = skippedLocation.x
-                  state.y = skippedLocation.y
-                } else {
-                  throw new Error(`no room to the ${d}`)
-                }
+                state.x = skippedLocation.x
+                state.y = skippedLocation.y
               } catch (e) {
                 throw new Error('location blocked')
               }
@@ -59,12 +54,8 @@ module.exports = function locationChanger (state, implementation) {
                   state,
                   d
                 )
-                if (skippedLocation) {
-                  state.x = skippedLocation.x
-                  state.y = skippedLocation.y
-                } else {
-                  throw new Error(`no room to the ${d}`)
-                }
+                state.x = skippedLocation.x
+                state.y = skippedLocation.y
               } catch (e) {
                 throw new Error('location blocked')
               }
