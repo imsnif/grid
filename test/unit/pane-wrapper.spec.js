@@ -511,32 +511,6 @@ test('wrapper.maxSize(opts): can max pane location up with obstructing panes', t
   }
 })
 
-test('wrapper.maxLoc(opts): bad params', t => {
-  t.plan(3)
-  try {
-    const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, width: 400, height: 600})
-    t.throws(
-      () => grid.getPane(1).maxLoc({foo: 'bar'}),
-      /Error: foo should be one of 'up\/down\/left\/right'/,
-      'cannot change location with bad params'
-    )
-    t.throws(
-      () => grid.getPane(1).maxLoc({up: true}),
-      /Error: location blocked/,
-      'cannot max location when at the edge of the grid horizontally'
-    )
-    t.throws(
-      () => grid.getPane(1).maxLoc({left: true}),
-      /Error: location blocked/,
-      'cannot max location when at the edge of the grid vertically'
-    )
-  } catch (e) {
-    t.fail(e.toString())
-    t.end()
-  }
-})
-
 test('wrapper.maxLoc(opts): max pane location left skips over obstructing pane', t => {
   t.plan(1)
   try {
@@ -607,6 +581,71 @@ test('wrapper.maxLoc(opts): max pane down skips over obstructing pane', t => {
       width: 400,
       height: 200
     }, 'pane location changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.maxLoc(opts): bad params', t => {
+  t.plan(3)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 600})
+    t.throws(
+      () => grid.getPane(1).maxLoc({foo: 'bar'}),
+      /Error: foo should be one of 'up\/down\/left\/right'/,
+      'cannot change location with bad params'
+    )
+    t.throws(
+      () => grid.getPane(1).maxLoc({up: true}),
+      /Error: location blocked/,
+      'cannot max location when at the edge of the grid horizontally'
+    )
+    t.throws(
+      () => grid.getPane(1).maxLoc({left: true}),
+      /Error: location blocked/,
+      'cannot max location when at the edge of the grid vertically'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.maxLoc(opts): cannot skip over the edge of the grid', t => {
+  t.plan(4)
+  try {
+    const grid = new Grid(900, 900)
+    grid.add(StubPane, {id: 1, width: 300, height: 300, x: 0, y: 0})
+    grid.add(StubPane, {id: 2, width: 300, height: 300, x: 300, y: 0})
+    grid.add(StubPane, {id: 3, width: 300, height: 300, x: 600, y: 0})
+    grid.add(StubPane, {id: 4, width: 300, height: 300, x: 0, y: 300})
+    grid.add(StubPane, {id: 5, width: 300, height: 300, x: 300, y: 300})
+    grid.add(StubPane, {id: 6, width: 300, height: 300, x: 600, y: 300})
+    grid.add(StubPane, {id: 7, width: 300, height: 300, x: 0, y: 600})
+    grid.add(StubPane, {id: 8, width: 300, height: 300, x: 300, y: 600})
+    grid.add(StubPane, {id: 9, width: 300, height: 300, x: 600, y: 600})
+    t.throws(
+      () => grid.getPane(5).maxLoc({up: true}),
+      /Error: location blocked/,
+      'cannot skip over the upper edge of the grid'
+    )
+    t.throws(
+      () => grid.getPane(5).maxLoc({down: true}),
+      /Error: location blocked/,
+      'cannot skip over the lower edge of the grid'
+    )
+    t.throws(
+      () => grid.getPane(1).maxLoc({left: true}),
+      /Error: location blocked/,
+      'cannot skip over the left edge of the grid'
+    )
+    t.throws(
+      () => grid.getPane(1).maxLoc({right: true}),
+      /Error: location blocked/,
+      'cannot skip over the right edge of the grid'
+    )
   } catch (e) {
     t.fail(e.toString())
     t.end()
