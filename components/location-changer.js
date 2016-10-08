@@ -4,6 +4,26 @@ const occupy = require('../services/occupy-pane')
 const choosePartialLocation = require('../services/choose-partial-location')
 const mLoc = require('../services/max-location')
 
+function maxOrSkipLocation (state, d) {
+  try {
+    const { x, y } = mLoc(state, d)
+    const skippedLocation = movedInDirection(d, x, y, state)
+      ? false
+      : choosePartialLocation(state.grid, state, d)
+    if (skippedLocation) return skippedLocation
+    if (d === 'up' || d === 'down') return {y, x: state.x}
+    if (d === 'left' || d === 'right') return {x, y: state.y}
+  } catch (e) {
+    throw new Error('location blocked')
+  }
+}
+
+function movedInDirection (d, x, y, state) {
+  if ((d === 'up' || d === 'down') && (state.y === y)) return false
+  if ((d === 'left' || d === 'right') && (state.x === x)) return false
+  return true
+}
+
 module.exports = function locationChanger (state, implementation) {
   return ({
     changeLocation: function changeLocation (x, y) {
@@ -28,43 +48,13 @@ module.exports = function locationChanger (state, implementation) {
       const changed = Object.keys(directions)
         .filter(d => d)
         .filter(d => {
-          if (d === 'up' || d === 'down') {
-            const { y } = mLoc(state, d)
-            if (state.y === y) {
-              try {
-                const skippedLocation = choosePartialLocation(
-                  state.grid,
-                  state,
-                  d
-                )
-                state.x = skippedLocation.x
-                state.y = skippedLocation.y
-              } catch (e) {
-                throw new Error('location blocked')
-              }
-            } else {
-              state.y = y
-            }
-          } else if (d === 'left' || d === 'right') {
-            const { x } = mLoc(state, d)
-            if (state.x === x) {
-              try {
-                const skippedLocation = choosePartialLocation(
-                  state.grid,
-                  state,
-                  d
-                )
-                state.x = skippedLocation.x
-                state.y = skippedLocation.y
-              } catch (e) {
-                throw new Error('location blocked')
-              }
-            } else {
-              state.x = x
-            }
-          } else {
-            throw new Error(`${d} should be one of 'up/down/left/right'`)
-          }
+          assert(
+            d === 'up' || d === 'down' || d === 'left' || d === 'right',
+            `${d} should be one of 'up/down/left/right'`
+          )
+          const chosenLocation = maxOrSkipLocation(state, d)
+          state.x = chosenLocation.x
+          state.y = chosenLocation.y
           return true
         })
       if (changed && implementation && typeof implementation.changeBounds === 'function') {
