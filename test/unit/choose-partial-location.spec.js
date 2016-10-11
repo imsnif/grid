@@ -214,7 +214,7 @@ test('cannot choose partial location when direction is full vertically', t => {
     const pane = new StubPane(0, 0, 100, 100)
     t.throws(
       () => choosePartial(grid, pane, 'down'),
-      /Error: no space for new pane/,
+      /Error: space is occupied/,
       'location not chosen when direction is full'
     )
   } catch (e) {
@@ -230,7 +230,7 @@ test('cannot choose partial location when direction is full horizontally', t => 
     const pane = new StubPane(0, 0, 100, 100)
     t.throws(
       () => choosePartial(grid, pane, 'right'),
-      /Error: no space for new pane/,
+      /Error: space is occupied/,
       'location not chosen when direction is full'
     )
   } catch (e) {

@@ -4,115 +4,86 @@ const assert = require('assert')
 const validate = require('validate.js')
 const occupy = require('./occupy-pane')
 
-function checkColumnsInverse (opts) {
+const gaugeAdjacentLocation = (pane, direction, obstruction) => {
+  const obst = obstruction || pane // skip over self if no obstruction
+  const adjacentCoords =
+      direction === 'right' ? { x: obst.x + obst.width }
+    : direction === 'left' ? { x: obst.x - obst.width }
+    : direction === 'down' ? { y: obst.y + obst.height }
+    : direction === 'up' ? { y: obst.y - obst.height } : {}
+  return Object.assign({}, pane, adjacentCoords)
+}
+
+const findPotentialLocation = (grid, pane, obstructions, direction, reducer) => {
+  const closestObst = obstructions.reduce(reducer, {})
+  const paneAtNextLoc = gaugeAdjacentLocation(pane, direction, closestObst)
+  if (
+    paneAtNextLoc.y < 0 ||
+    paneAtNextLoc.x < 0 ||
+    paneAtNextLoc.y + paneAtNextLoc.height > grid.height ||
+    paneAtNextLoc.x + paneAtNextLoc.width > grid.width
+  ) throw new Error('space is occupied')
+  return paneAtNextLoc
+}
+
+const checkLine = (grid, pane, direction, blockedCoords = []) => {
   try {
-    return checkLinesInverse(opts)
+    return occupy(grid, pane, true)
   } catch (e) {
-    if (opts.grid.width >= Math.min(...e.blockedColumns) + opts.pane.width) {
-      // if there's room left to the right of the rightest block point, check that column
-      return checkColumnsInverse(Object.assign({}, opts, {
-        x: Math.min(...e.blockedColumns),
-        blockedColumns: []
-      }))
-    } else {
-      throw new Error('no space for new pane')
+    if (!e.coords) {
+      e.coords = blockedCoords
+      throw e
     }
+    blockedCoords.push(e.coords)
+    const paneAtNextLoc = gaugeAdjacentLocation(pane, direction, e.coords)
+    return checkLine(grid, paneAtNextLoc, direction, blockedCoords)
   }
 }
 
-function checkLinesInverse (opts) {
-  opts.blockedColumns = opts.blockedColumns || []
+const checkMultipleLines = (grid, pane, primaryDirection, secondaryDirection) => {
   try {
-    if (opts.bottomToTop) {
-      return occupy(opts.grid, Object.assign({}, opts.pane, {x: opts.x, y: opts.y}), true)
-    } else {
-      return occupy(opts.grid, Object.assign({}, opts.pane, {x: opts.x, y: opts.y}))
-    }
+    return checkLine(grid, pane, primaryDirection)
   } catch (e) {
-    opts.blockedColumns.push(e.coords.x + e.coords.width)
-    if (opts.bottomToTop) {
-      if (e.coords.y - opts.pane.height >= 0 && opts.y !== 0) {
-        // if there's room left to the left of the block, keep checking...
-        return checkLinesInverse(Object.assign({}, opts, {y: e.coords.y - opts.pane.height}))
-      } else {
-        const err = new Error('end of the column')
-        err.blockedColumns = opts.blockedColumns
-        throw err
-      }
-    } else {
-      if (opts.grid.height - e.coords.y >= opts.pane.height) {
-        // if there's room left below the block, keep checking...
-        return checkColumnsInverse(Object.assign({}, opts, {y: e.coords.y}))
-      } else {
-        const err = new Error('end of the line')
-        err.blockedColumns = opts.blockedColumns
-        throw err
-      }
-    }
-  }
-}
-
-function checkLines (opts) {
-  try {
-    return checkColumns(opts)
-  } catch (e) {
-    if (opts.grid.height >= Math.min(...e.blockedLines) + opts.pane.height) {
-      // if there's room left below highest block point, check that line
-      return checkLines(Object.assign({}, opts, {
-        y: Math.min(...e.blockedLines),
-        blockedLines: []
-      }))
-    } else {
-      throw new Error('no space for new pane')
-    }
-  }
-}
-
-function checkColumns (opts) {
-  opts.blockedLines = opts.blockedLines || []
-  try {
-    if (opts.rightToLeft) {
-      return occupy(opts.grid, Object.assign({}, opts.pane, {x: opts.x, y: opts.y}), true)
-    } else {
-      return occupy(opts.grid, Object.assign({}, opts.pane, {x: opts.x, y: opts.y}))
-    }
-  } catch (e) {
-    opts.blockedLines.push(e.coords.y + e.coords.height)
-    if (opts.rightToLeft) {
-      if (e.coords.x - opts.pane.width >= 0) {
-        // if there's room left to the left of the block, keep checking...
-        return checkColumns(Object.assign({}, opts, {x: e.coords.x - opts.pane.width}))
-      } else {
-        const err = new Error('end of the line')
-        err.blockedLines = opts.blockedLines
-        throw err
-      }
-    } else {
-      if (opts.grid.width >= e.coords.x + opts.pane.width) {
-        // if there's room left to the right of the block, keep checking...
-        return checkColumns(Object.assign({}, opts, {x: e.coords.x}))
-      } else {
-        const err = new Error('end of the line')
-        err.blockedLines = opts.blockedLines
-        throw err
-      }
-    }
+    if (!e.coords) throw e
+    const paneAtNextLoc =
+      secondaryDirection === 'up'
+      ? findPotentialLocation(
+          grid, pane, e.coords, secondaryDirection, (current, candidate) =>
+            validate.isInteger(current.y) &&
+            current.y > candidate.y ? current : candidate
+      ) : secondaryDirection === 'down'
+      ? findPotentialLocation(
+        grid, pane, e.coords, secondaryDirection, (current, candidate) =>
+          validate.isInteger(current.y) &&
+          validate.isInteger(current.height) &&
+          current.y + current.height < candidate.y + candidate.height ? current : candidate
+      ) : secondaryDirection === 'right'
+      ? findPotentialLocation(
+        grid, pane, e.coords, secondaryDirection, (current, candidate) =>
+          validate.isInteger(current.x) &&
+          validate.isInteger(current.height) &&
+          current.x + current.width < candidate.x + candidate.width ? current : candidate
+      ) : secondaryDirection === 'left'
+      ? findPotentialLocation(
+        grid, pane, e.coords, secondaryDirection, (current, candidate) =>
+          validate.isInteger(current.x) &&
+          current.x > candidate.x ? current : candidate
+      ) : {}
+    return checkMultipleLines(grid, paneAtNextLoc, primaryDirection, secondaryDirection)
   }
 }
 
 module.exports = function choosePartialLocation (grid, pane, direction) {
   assert(validate.isObject(grid))
   assert(validate.isObject(pane))
-  if (direction === 'right') {
-    return checkLines({grid, pane, x: pane.x + pane.width, y: pane.y})
+  const paneNewLoc = gaugeAdjacentLocation(pane, direction)
+  const secondaryDirections = {
+    first: direction === 'right' || direction === 'left' ? 'up' : 'right',
+    second: direction === 'right' || direction === 'left' ? 'down' : 'left'
   }
-  if (direction === 'left') {
-    return checkLines({grid, pane, x: pane.x - pane.width, y: pane.y, rightToLeft: true})
-  }
-  if (direction === 'down') {
-    return checkColumnsInverse({grid, pane, x: pane.x, y: pane.y + pane.height})
-  }
-  if (direction === 'up') {
-    return checkColumnsInverse({grid, pane, x: pane.x, y: pane.y - pane.height, bottomToTop: true})
+  try {
+    return checkMultipleLines(grid, paneNewLoc, direction, secondaryDirections.first)
+  } catch (e) {
+    return checkMultipleLines(grid, paneNewLoc, direction, secondaryDirections.second)
   }
 }
