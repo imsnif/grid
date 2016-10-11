@@ -9,7 +9,7 @@ function maxOrSkipLocation (state, d) {
     const { x, y } = mLoc(state, d)
     const skippedLocation = movedInDirection(d, x, y, state)
       ? false
-      : chooseLocation.existingPane(state.grid, state, d)
+      : chooseLocation(state.grid, state, d)
     if (skippedLocation) return skippedLocation
     if (d === 'up' || d === 'down') return {y, x: state.x}
     if (d === 'left' || d === 'right') return {x, y: state.y}

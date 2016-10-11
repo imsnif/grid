@@ -72,32 +72,18 @@ const checkMultipleLines = (grid, pane, primaryDirection, secondaryDirection) =>
   }
 }
 
-module.exports = {
-  existingPane: function chooseLocation (grid, pane, direction) {
-    assert(validate.isObject(grid))
-    assert(validate.isObject(pane))
-    const paneNewLoc = gaugeAdjacentLocation(pane, direction)
-    const secondaryDirections = {
-      first: direction === 'right' || direction === 'left' ? 'up' : 'right',
-      second: direction === 'right' || direction === 'left' ? 'down' : 'left'
-    }
-    try {
-      return checkMultipleLines(grid, paneNewLoc, direction, secondaryDirections.first)
-    } catch (e) {
-      return checkMultipleLines(grid, paneNewLoc, direction, secondaryDirections.second)
-    }
-  },
-  newPane: function chooseNewLocation (grid, pane, direction) {
-    assert(validate.isObject(grid))
-    assert(validate.isObject(pane))
-    const secondaryDirections = {
-      first: direction === 'right' || direction === 'left' ? 'up' : 'right',
-      second: direction === 'right' || direction === 'left' ? 'down' : 'left'
-    }
-    try {
-      return checkMultipleLines(grid, pane, direction, secondaryDirections.first)
-    } catch (e) {
-      return checkMultipleLines(grid, pane, direction, secondaryDirections.second)
-    }
+module.exports = function chooseLocation (grid, pane, direction) {
+  assert(validate.isObject(grid))
+  assert(validate.isObject(pane))
+  const paneExists = grid.panes.filter(p => p.id === pane.id)[0]
+  const paneNewLoc = paneExists ? gaugeAdjacentLocation(pane, direction) : pane
+  const secondaryDirections = {
+    first: direction === 'right' || direction === 'left' ? 'up' : 'right',
+    second: direction === 'right' || direction === 'left' ? 'down' : 'left'
+  }
+  try {
+    return checkMultipleLines(grid, paneNewLoc, direction, secondaryDirections.first)
+  } catch (e) {
+    return checkMultipleLines(grid, paneNewLoc, direction, secondaryDirections.second)
   }
 }

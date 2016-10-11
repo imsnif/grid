@@ -14,7 +14,7 @@ module.exports = function paneAdder (state) {
         typeof opts.y === 'undefined' ||
         typeof opts.x === 'undefined'
       ) {
-        const chosen = chooseLocation.newPane(state, {
+        const chosen = chooseLocation(state, {
           width: opts.width,
           height: opts.height,
           x: 0,

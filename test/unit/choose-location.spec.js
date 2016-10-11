@@ -21,9 +21,9 @@ function StubPane (x, y, width, height) {
 test('can choose partial location to the right', t => {
   t.plan(1)
   try {
-    const grid = new StubGrid(800, 600, [])
     const pane = new StubPane(0, 100, 100, 200)
-    const chosen = chooseLocation.existingPane(grid, pane, 'right')
+    const grid = new StubGrid(800, 600, [pane])
+    const chosen = chooseLocation(grid, pane, 'right')
     t.ok(
       chosen.x >= pane.x + pane.width,
       'new location is to the right of previous location'
@@ -37,9 +37,9 @@ test('can choose partial location to the right with obstruction', t => {
   t.plan(1)
   try {
     const obstructingPane = new StubPane(100, 0, 700, 100)
-    const grid = new StubGrid(800, 600, [obstructingPane])
     const pane = new StubPane(0, 0, 100, 100)
-    const chosen = chooseLocation.existingPane(grid, pane, 'right')
+    const grid = new StubGrid(800, 600, [obstructingPane, pane])
+    const chosen = chooseLocation(grid, pane, 'right')
     t.ok(
       chosen.x >= pane.x + pane.width,
       'new location is to the right of previous location'
@@ -53,9 +53,9 @@ test('can choose partial location to the right with whole row obstructed', t => 
   t.plan(1)
   try {
     const obstructingPane = new StubPane(0, 100, 150, 200)
-    const grid = new StubGrid(800, 600, [obstructingPane])
     const pane = new StubPane(0, 0, 100, 200)
-    const chosen = chooseLocation.existingPane(grid, pane, 'right')
+    const grid = new StubGrid(800, 600, [obstructingPane, pane])
+    const chosen = chooseLocation(grid, pane, 'right')
     t.ok(
       chosen.x >= pane.x + pane.width,
       'new location is to the right of previous location'
@@ -68,9 +68,9 @@ test('can choose partial location to the right with whole row obstructed', t => 
 test('can choose partial location to the left', t => {
   t.plan(1)
   try {
-    const grid = new StubGrid(800, 600, [])
     const pane = new StubPane(100, 100, 100, 200)
-    const chosen = chooseLocation.existingPane(grid, pane, 'left')
+    const grid = new StubGrid(800, 600, [pane])
+    const chosen = chooseLocation(grid, pane, 'left')
     t.ok(
       chosen.x <= pane.x,
       'new location is to the left of previous location'
@@ -84,9 +84,9 @@ test('can choose partial location to the left with obstruction', t => {
   t.plan(1)
   try {
     const obstructingPane = new StubPane(100, 100, 150, 200)
-    const grid = new StubGrid(800, 600, [obstructingPane])
     const pane = new StubPane(300, 100, 100, 200)
-    const chosen = chooseLocation.existingPane(grid, pane, 'left')
+    const grid = new StubGrid(800, 600, [obstructingPane, pane])
+    const chosen = chooseLocation(grid, pane, 'left')
     t.ok(
       chosen.x < pane.x,
       'new location is to the left of previous location'
@@ -100,9 +100,9 @@ test('can choose partial location to the left with whole row obstructed', t => {
   t.plan(1)
   try {
     const obstructingPane = new StubPane(0, 0, 700, 100)
-    const grid = new StubGrid(800, 600, [obstructingPane])
     const pane = new StubPane(700, 0, 100, 100)
-    const chosen = chooseLocation.existingPane(grid, pane, 'left')
+    const grid = new StubGrid(800, 600, [obstructingPane, pane])
+    const chosen = chooseLocation(grid, pane, 'left')
     t.ok(
       chosen.x < pane.x,
       'new location is to the left of previous location'
@@ -115,9 +115,9 @@ test('can choose partial location to the left with whole row obstructed', t => {
 test('can choose partial location up', t => {
   t.plan(1)
   try {
-    const grid = new StubGrid(800, 600, [])
     const pane = new StubPane(100, 200, 100, 200)
-    const chosen = chooseLocation.existingPane(grid, pane, 'up')
+    const grid = new StubGrid(800, 600, [pane])
+    const chosen = chooseLocation(grid, pane, 'up')
     t.ok(
       chosen.y <= pane.y,
       'new location is above the previous location'
@@ -131,9 +131,9 @@ test('can choose partial location up with obstruction', t => {
   t.plan(1)
   try {
     const obstructingPane = new StubPane(100, 100, 150, 200)
-    const grid = new StubGrid(800, 600, [obstructingPane])
     const pane = new StubPane(100, 300, 100, 100)
-    const chosen = chooseLocation.existingPane(grid, pane, 'up')
+    const grid = new StubGrid(800, 600, [obstructingPane, pane])
+    const chosen = chooseLocation(grid, pane, 'up')
     t.ok(
       chosen.y <= pane.y,
       'new location is above the previous location'
@@ -147,9 +147,9 @@ test('can choose partial location up with full column obstructed', t => {
   t.plan(1)
   try {
     const obstructingPane = new StubPane(0, 0, 100, 500)
-    const grid = new StubGrid(800, 600, [obstructingPane])
     const pane = new StubPane(0, 500, 100, 100)
-    const chosen = chooseLocation.existingPane(grid, pane, 'up')
+    const grid = new StubGrid(800, 600, [obstructingPane, pane])
+    const chosen = chooseLocation(grid, pane, 'up')
     t.ok(
       chosen.y <= pane.y,
       'new location is above the previous location'
@@ -162,9 +162,9 @@ test('can choose partial location up with full column obstructed', t => {
 test('can choose partial location down', t => {
   t.plan(1)
   try {
-    const grid = new StubGrid(800, 600, [])
     const pane = new StubPane(100, 200, 100, 200)
-    const chosen = chooseLocation.existingPane(grid, pane, 'down')
+    const grid = new StubGrid(800, 600, [pane])
+    const chosen = chooseLocation(grid, pane, 'down')
     t.ok(
       chosen.y >= pane.y + pane.height,
       'new location is below the previous location'
@@ -178,9 +178,9 @@ test('can choose partial location down with obstruction', t => {
   t.plan(1)
   try {
     const obstructingPane = new StubPane(100, 100, 150, 200)
-    const grid = new StubGrid(800, 600, [obstructingPane])
     const pane = new StubPane(100, 0, 100, 100)
-    const chosen = chooseLocation.existingPane(grid, pane, 'down')
+    const grid = new StubGrid(800, 600, [obstructingPane, pane])
+    const chosen = chooseLocation(grid, pane, 'down')
     t.ok(
       chosen.y >= pane.y + pane.height,
       'new location is below the previous location'
@@ -194,9 +194,9 @@ test('can choose partial location down with full column obstructed', t => {
   t.plan(1)
   try {
     const obstructingPane = new StubPane(0, 100, 100, 500)
-    const grid = new StubGrid(800, 600, [obstructingPane])
     const pane = new StubPane(0, 0, 100, 100)
-    const chosen = chooseLocation.existingPane(grid, pane, 'down')
+    const grid = new StubGrid(800, 600, [obstructingPane, pane])
+    const chosen = chooseLocation(grid, pane, 'down')
     t.ok(
       chosen.y >= pane.y + pane.height,
       'new location is below the previous location'
@@ -210,10 +210,10 @@ test('cannot choose partial location when direction is full vertically', t => {
   t.plan(1)
   try {
     const obstructingPane = new StubPane(0, 100, 800, 500)
-    const grid = new StubGrid(800, 600, [obstructingPane])
     const pane = new StubPane(0, 0, 100, 100)
+    const grid = new StubGrid(800, 600, [obstructingPane, pane])
     t.throws(
-      () => chooseLocation.existingPane(grid, pane, 'down'),
+      () => chooseLocation(grid, pane, 'down'),
       /Error: space is occupied/,
       'location not chosen when direction is full'
     )
@@ -226,10 +226,10 @@ test('cannot choose partial location when direction is full horizontally', t => 
   t.plan(1)
   try {
     const obstructingPane = new StubPane(100, 0, 700, 600)
-    const grid = new StubGrid(800, 600, [obstructingPane])
     const pane = new StubPane(0, 0, 100, 100)
+    const grid = new StubGrid(800, 600, [obstructingPane, pane])
     t.throws(
-      () => chooseLocation.existingPane(grid, pane, 'right'),
+      () => chooseLocation(grid, pane, 'right'),
       /Error: space is occupied/,
       'location not chosen when direction is full'
     )
