@@ -44,7 +44,6 @@ const checkMultipleLines = (grid, pane, primaryDirection, secondaryDirection) =>
   try {
     return checkLine(grid, pane, primaryDirection)
   } catch (e) {
-    if (!e.coords) throw e
     const paneAtNextLoc =
       secondaryDirection === 'up'
       ? findPotentialLocation(
