@@ -1,7 +1,7 @@
 const assert = require('assert')
 const validate = require('validate.js')
 const occupy = require('../services/occupy-pane')
-const choosePartialLocation = require('../services/choose-partial-location')
+const chooseLocation = require('../services/choose-location')
 const mLoc = require('../services/max-location')
 
 function maxOrSkipLocation (state, d) {
@@ -9,7 +9,7 @@ function maxOrSkipLocation (state, d) {
     const { x, y } = mLoc(state, d)
     const skippedLocation = movedInDirection(d, x, y, state)
       ? false
-      : choosePartialLocation(state.grid, state, d)
+      : chooseLocation.existingPane(state.grid, state, d)
     if (skippedLocation) return skippedLocation
     if (d === 'up' || d === 'down') return {y, x: state.x}
     if (d === 'left' || d === 'right') return {x, y: state.y}

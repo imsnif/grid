@@ -14,10 +14,12 @@ module.exports = function paneAdder (state) {
         typeof opts.y === 'undefined' ||
         typeof opts.x === 'undefined'
       ) {
-        const chosen = chooseLocation(state, {
+        const chosen = chooseLocation.newPane(state, {
           width: opts.width,
-          height: opts.height
-        })
+          height: opts.height,
+          x: 0,
+          y: 0
+        }, 'right')
         opts.x = chosen.x
         opts.y = chosen.y
       } else {
