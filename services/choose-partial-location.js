@@ -28,7 +28,7 @@ const findPotentialLocation = (grid, pane, obstructions, direction, reducer) => 
 
 const checkLine = (grid, pane, direction, blockedCoords = []) => {
   try {
-    return occupy(grid, pane, true)
+    return occupy(grid, pane)
   } catch (e) {
     if (!e.coords) {
       e.coords = blockedCoords

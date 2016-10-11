@@ -18,9 +18,7 @@ function widthOffsetOrder (a, b) {
   return (a.x + a.width <= b.x + b.width ? -1 : 1)
 }
 
-module.exports = function occupy (grid, candidate, baseCoords) {
-  // baseCoords means the error coordinates will be given as the base values (x, y) of the collider, rather than the end values (x + width, y + height)
-  // this is an ugly ugly and very temporary hack, TODO: fix this
+module.exports = function occupy (grid, candidate) {
   assert(validate.isObject(grid), `${grid} is not an object`)
   assert(validate.isObject(candidate), `${candidate} is not an object`)
   assert(candidate.x + candidate.width <= grid.width, 'size exceeds grid')
@@ -34,8 +32,8 @@ module.exports = function occupy (grid, candidate, baseCoords) {
   if (colliders.length > 0) {
     const err = new Error('space is occupied')
     err.coords = {
-      x: baseCoords ? colliders[0].x : colliders[0].x + colliders[0].width,
-      y: baseCoords ? colliders[0].y : colliders[0].y + colliders[0].height,
+      x: colliders[0].x,
+      y: colliders[0].y,
       width: colliders[0].width,
       height: colliders[0].height
     }

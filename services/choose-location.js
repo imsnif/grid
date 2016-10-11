@@ -25,10 +25,10 @@ function checkColumns (opts) {
   try {
     return occupy(opts.grid, Object.assign({}, opts.pane, {x: opts.x, y: opts.y}))
   } catch (e) {
-    opts.blockedLines.push(e.coords.y)
-    if (opts.grid.width >= e.coords.x + opts.pane.width) {
+    opts.blockedLines.push(e.coords.y + e.coords.height)
+    if (opts.grid.width >= e.coords.x + e.coords.width + opts.pane.width) {
       // if there's room left to the right of the block, keep checking...
-      return checkColumns(Object.assign({}, opts, {x: e.coords.x}))
+      return checkColumns(Object.assign({}, opts, {x: e.coords.x + e.coords.width}))
     } else {
       const err = new Error('end of the line')
       err.blockedLines = opts.blockedLines
