@@ -21,6 +21,14 @@ function StubPaneWithId (opts) {
   this.height = opts.height
 }
 
+function StubPaneWithIdAndLocation (opts) {
+  this.id = opts.id
+  this.width = opts.width
+  this.height = opts.height
+  this.x = opts.x
+  this.y = opts.y
+}
+
 test('new PaneWrapper(Constructor, opts): can create pane-wrapper (default parameters)', t => {
   t.plan(4)
   try {
@@ -114,6 +122,138 @@ test('wrapper.changeLocation(x, y): can change pane location', t => {
     t.end()
   }
 })
+
+test('wrapper.squashIntoLocation(x, y): can squash pane into location by pushing obstacle', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 400, height: 600, x: 50, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 400, height: 600, x: 450, y: 0})
+    grid.getPane(2).squashIntoLocation(400, 0)
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 400,
+      y: 0,
+      width: 400,
+      height: 600
+    }, 'pane squashed into location')
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 600
+    }, 'pane was pushed left')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.squashIntoLocation(x, y): can squash pane into location by resizing obstacle', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 400, height: 600, x: 0, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 400, height: 600, x: 400, y: 0})
+    grid.getPane(2).squashIntoLocation(350, 0)
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 350,
+      y: 0,
+      width: 400,
+      height: 600
+    }, 'pane squashed into location')
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 350,
+      height: 600
+    }, 'pane was resized left')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.squashIntoLocation(x, y): can squash pane into location by pushing multiple obstacles', t => {
+  t.plan(3)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 400, height: 600, x: 50, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 400, height: 600, x: 450, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 3, width: 400, height: 600, x: 850, y: 0})
+    grid.getPane(3).squashIntoLocation(800, 0)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 600
+    }, 'first obstacle pushed to the left')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 400,
+      y: 0,
+      width: 400,
+      height: 600
+    }, 'second obstacle pushed to the left')
+    t.deepEquals(_.pick(grid.getPane(3), ['x', 'y', 'width', 'height']), {
+      x: 800,
+      y: 0,
+      width: 400,
+      height: 600
+    }, 'second pane was pushed left')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.squashIntoLocation(x, y): can squash pane into location by pushing multiple horizontal and vertical obstacles', t => {
+  t.plan(5)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 400, height: 200, x: 50, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 400, height: 200, x: 50, y: 200})
+    grid.add(StubPaneWithIdAndLocation, {id: 3, width: 400, height: 200, x: 450, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 4, width: 400, height: 200, x: 450, y: 200})
+    grid.add(StubPaneWithIdAndLocation, {id: 5, width: 400, height: 200, x: 850, y: 100})
+    grid.getPane(5).squashIntoLocation(800, 100)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 200
+    }, 'first obstacle pushed to the left')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 200,
+      width: 400,
+      height: 200
+    }, 'second obstacle pushed to the left')
+    t.deepEquals(_.pick(grid.getPane(3), ['x', 'y', 'width', 'height']), {
+      x: 400,
+      y: 0,
+      width: 400,
+      height: 200
+    }, 'third obstacle pushed to the left')
+    t.deepEquals(_.pick(grid.getPane(4), ['x', 'y', 'width', 'height']), {
+      x: 400,
+      y: 200,
+      width: 400,
+      height: 200
+    }, 'fourth obstacle pushed to the left')
+    t.deepEquals(_.pick(grid.getPane(5), ['x', 'y', 'width', 'height']), {
+      x: 800,
+      y: 100,
+      width: 400,
+      height: 200
+    }, 'pane moved to the left')
+  } catch (e) {
+    console.log('e is:', e)
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+// TODO: (CONTINUE FROM HERE) - tests for squash in all direction with multiple obstacles in each
+// tests for uneven push to make sure pushed window maxes in the opposite direction to the pushing pane
 
 test('wrapper.changeLocation(x, y): bad parameters', t => {
   t.plan(2)
