@@ -343,6 +343,226 @@ test('wrapper.squashIntoLocation(x, y): squashed pane resizes second to farthest
   }
 })
 
+test('wrapper.squashIntoLocation(x, y): can squash pane into location by pushing obstacle right', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 200, height: 200, x: 1350, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 200, height: 200, x: 1150, y: 0})
+    grid.getPane(2).squashIntoLocation(1200, 0)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 1400,
+      y: 0,
+      width: 200,
+      height: 200
+    }, 'pane pushed into location')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 1200,
+      y: 0,
+      width: 200,
+      height: 200
+    }, 'pane moved into location')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.squashIntoLocation(x, y): can squash pane into location right by resizing obstacle', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 200, height: 200, x: 1400, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 200, height: 200, x: 1200, y: 0})
+    grid.getPane(2).squashIntoLocation(1250, 0)
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 1250,
+      y: 0,
+      width: 200,
+      height: 200
+    }, 'pane squashed into location')
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 1450,
+      y: 0,
+      width: 150,
+      height: 200
+    }, 'pane was resized right')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.squashIntoLocation(x, y): can squash pane into location by pushing multiple obstacles right', t => {
+  t.plan(3)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 200, height: 200, x: 1350, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 200, height: 200, x: 1150, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 3, width: 200, height: 200, x: 950, y: 0})
+    grid.getPane(3).squashIntoLocation(1000, 0)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 1400,
+      y: 0,
+      width: 200,
+      height: 200
+    }, 'first obstacle pushed to the right')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 1200,
+      y: 0,
+      width: 200,
+      height: 200
+    }, 'second obstacle pushed to the right')
+    t.deepEquals(_.pick(grid.getPane(3), ['x', 'y', 'width', 'height']), {
+      x: 1000,
+      y: 0,
+      width: 200,
+      height: 200
+    }, 'pane moved right')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.squashIntoLocation(x, y): can squash pane into location by pushing multiple horizontal and vertical obstacles right', t => {
+  t.plan(5)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 200, height: 200, x: 1350, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 200, height: 200, x: 1350, y: 200})
+    grid.add(StubPaneWithIdAndLocation, {id: 3, width: 200, height: 200, x: 1150, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 4, width: 200, height: 200, x: 1150, y: 200})
+    grid.add(StubPaneWithIdAndLocation, {id: 5, width: 200, height: 200, x: 950, y: 100})
+    grid.getPane(5).squashIntoLocation(1000, 100)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 1400,
+      y: 0,
+      width: 200,
+      height: 200
+    }, 'first obstacle pushed to the right')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 1400,
+      y: 200,
+      width: 200,
+      height: 200
+    }, 'second obstacle pushed to the right')
+    t.deepEquals(_.pick(grid.getPane(3), ['x', 'y', 'width', 'height']), {
+      x: 1200,
+      y: 0,
+      width: 200,
+      height: 200
+    }, 'third obstacle pushed to the right')
+    t.deepEquals(_.pick(grid.getPane(4), ['x', 'y', 'width', 'height']), {
+      x: 1200,
+      y: 200,
+      width: 200,
+      height: 200
+    }, 'fourth obstacle pushed to the right')
+    t.deepEquals(_.pick(grid.getPane(5), ['x', 'y', 'width', 'height']), {
+      x: 1000,
+      y: 100,
+      width: 200,
+      height: 200
+    }, 'pane moved to the right')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.squashIntoLocation(x, y): squashed pane resizes farthest pane(s) when squashed right', t => {
+  t.plan(5)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 200, height: 200, x: 1400, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 200, height: 200, x: 1400, y: 200})
+    grid.add(StubPaneWithIdAndLocation, {id: 3, width: 200, height: 200, x: 1200, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 4, width: 200, height: 200, x: 1200, y: 200})
+    grid.add(StubPaneWithIdAndLocation, {id: 5, width: 200, height: 200, x: 1000, y: 100})
+    grid.getPane(5).squashIntoLocation(1050, 100)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 1450,
+      y: 0,
+      width: 150,
+      height: 200
+    }, 'first obstacle shrunk into location')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 1450,
+      y: 200,
+      width: 150,
+      height: 200
+    }, 'second obstacle shrunk into location')
+    t.deepEquals(_.pick(grid.getPane(3), ['x', 'y', 'width', 'height']), {
+      x: 1250,
+      y: 0,
+      width: 200,
+      height: 200
+    }, 'third obstacle pushed into location')
+    t.deepEquals(_.pick(grid.getPane(4), ['x', 'y', 'width', 'height']), {
+      x: 1250,
+      y: 200,
+      width: 200,
+      height: 200
+    }, 'fourth obstacle pushed into location')
+    t.deepEquals(_.pick(grid.getPane(5), ['x', 'y', 'width', 'height']), {
+      x: 1050,
+      y: 100,
+      width: 200,
+      height: 200
+    }, 'pane moved to the right')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.squashIntoLocation(x, y): squashed pane resizes second to farthest pane(s) right when squashed and farthest pane is too small', t => {
+  t.plan(5)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 10, height: 200, x: 1590, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 10, height: 200, x: 1590, y: 200})
+    grid.add(StubPaneWithIdAndLocation, {id: 3, width: 200, height: 200, x: 1390, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 4, width: 200, height: 200, x: 1390, y: 200})
+    grid.add(StubPaneWithIdAndLocation, {id: 5, width: 200, height: 200, x: 1190, y: 100})
+    grid.getPane(5).squashIntoLocation(1240, 100)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 1590,
+      y: 0,
+      width: 10,
+      height: 200
+    }, 'first obstacle stayed in place and size')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 1590,
+      y: 200,
+      width: 10,
+      height: 200
+    }, 'second obstacle stayed in place and size')
+    t.deepEquals(_.pick(grid.getPane(3), ['x', 'y', 'width', 'height']), {
+      x: 1440,
+      y: 0,
+      width: 150,
+      height: 200
+    }, 'third obstacle shrunk into location')
+    t.deepEquals(_.pick(grid.getPane(4), ['x', 'y', 'width', 'height']), {
+      x: 1440,
+      y: 200,
+      width: 150,
+      height: 200
+    }, 'fourth obstacle shrunk into location')
+    t.deepEquals(_.pick(grid.getPane(5), ['x', 'y', 'width', 'height']), {
+      x: 1240,
+      y: 100,
+      width: 200,
+      height: 200
+    }, 'pane moved to the right')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 // TODO: (CONTINUE FROM HERE) - tests for squash in all direction with multiple obstacles in each
 // tests for uneven push to make sure pushed window maxes in the opposite direction to the pushing pane
 
