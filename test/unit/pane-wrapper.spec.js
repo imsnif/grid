@@ -251,7 +251,7 @@ test('wrapper.squashIntoLocation(x, y): can squash pane into location by pushing
   }
 })
 
-test.only('wrapper.squashIntoLocation(x, y): squashed pane resizes farthest pane(s) when squashed', t => {
+test('wrapper.squashIntoLocation(x, y): squashed pane resizes farthest pane(s) when squashed', t => {
   t.plan(5)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -287,6 +287,52 @@ test.only('wrapper.squashIntoLocation(x, y): squashed pane resizes farthest pane
     }, 'fourth obstacle pushed into location')
     t.deepEquals(_.pick(grid.getPane(5), ['x', 'y', 'width', 'height']), {
       x: 750,
+      y: 100,
+      width: 400,
+      height: 200
+    }, 'pane moved to the left')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.squashIntoLocation(x, y): squashed pane resizes second to farthest pane(s) when squashed and farthest pane is too small', t => {
+  t.plan(5)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 10, height: 200, x: 0, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 10, height: 200, x: 0, y: 200})
+    grid.add(StubPaneWithIdAndLocation, {id: 3, width: 400, height: 200, x: 10, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 4, width: 400, height: 200, x: 10, y: 200})
+    grid.add(StubPaneWithIdAndLocation, {id: 5, width: 400, height: 200, x: 410, y: 100})
+    grid.getPane(5).squashIntoLocation(390, 100)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 10,
+      height: 200
+    }, 'first obstacle stayed in place and size')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 200,
+      width: 10,
+      height: 200
+    }, 'second obstacle stayed in place and size')
+    t.deepEquals(_.pick(grid.getPane(3), ['x', 'y', 'width', 'height']), {
+      x: 10,
+      y: 0,
+      width: 380,
+      height: 200
+    }, 'third obstacle shrunk into location')
+    t.deepEquals(_.pick(grid.getPane(4), ['x', 'y', 'width', 'height']), {
+      x: 10,
+      y: 200,
+      width: 380,
+      height: 200
+    }, 'fourth obstacle shrunk into location')
+    t.deepEquals(_.pick(grid.getPane(5), ['x', 'y', 'width', 'height']), {
+      x: 390,
       y: 100,
       width: 400,
       height: 200
