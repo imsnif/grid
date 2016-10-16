@@ -1003,6 +1003,49 @@ test('wrapper.squashIntoLocation(x, y): squashed pane resizes second to farthest
   }
 })
 
+test('wrapper.squashIntoLocation(x, y): if cannot squash pane, neighboring panes that cold be squashed are not', t => {
+  t.plan(5)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 10, height: 200, x: 0, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 10, height: 200, x: 10, y: 0})
+    grid.add(StubPaneWithIdAndLocation, {id: 3, width: 20, height: 200, x: 0, y: 200})
+    grid.add(StubPaneWithIdAndLocation, {id: 4, width: 200, height: 200, x: 20, y: 100})
+    t.throws(
+      () => grid.getPane(4).squashIntoLocation(10, 100),
+      /Error: location is blocked by one or more panes/,
+      'cannot squash pane when there is no roim'
+    )
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 10,
+      height: 200
+    }, 'first obstacle stayed in place and size')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 10,
+      y: 0,
+      width: 10,
+      height: 200
+    }, 'second obstacle stayed in place and size')
+    t.deepEquals(_.pick(grid.getPane(3), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 200,
+      width: 20,
+      height: 200
+    }, 'third obstacle stayed in place and size')
+    t.deepEquals(_.pick(grid.getPane(4), ['x', 'y', 'width', 'height']), {
+      x: 20,
+      y: 100,
+      width: 200,
+      height: 200
+    }, 'pane did not move')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('wrapper.changeLocation(x, y): bad parameters', t => {
   t.plan(2)
   try {
