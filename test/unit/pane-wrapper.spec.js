@@ -123,6 +123,46 @@ test('wrapper.changeLocation(x, y): can change pane location', t => {
   }
 })
 
+test('wrapper.changeLocation(x, y): change location maxes pane location in direction if there is not enough room', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, x: 0, y: 0, width: 400, height: 600})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, x: 450, y: 0, width: 400, height: 600})
+    grid.getPane(2).changeLocation(350, 0)
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 400,
+      y: 0,
+      width: 400,
+      height: 600
+    }, 'pane location changed to max in direction')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.changeLocation(x, y): bad parameters', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 600})
+    t.throws(
+      () => grid.getPane(1).changeLocation(undefined, 1),
+      Error,
+      'cannot change location with bad x'
+    )
+    t.throws(
+      () => grid.getPane(1).changeLocation(1, undefined),
+      Error,
+      'cannot change location with bad y'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('wrapper.squashIntoLocation(x, y): can squash pane into location by pushing obstacle', t => {
   t.plan(2)
   try {
@@ -1040,27 +1080,6 @@ test('wrapper.squashIntoLocation(x, y): if cannot squash pane, neighboring panes
       width: 200,
       height: 200
     }, 'pane did not move')
-  } catch (e) {
-    t.fail(e.toString())
-    t.end()
-  }
-})
-
-test('wrapper.changeLocation(x, y): bad parameters', t => {
-  t.plan(2)
-  try {
-    const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, width: 400, height: 600})
-    t.throws(
-      () => grid.getPane(1).changeLocation(undefined, 1),
-      Error,
-      'cannot change location with bad x'
-    )
-    t.throws(
-      () => grid.getPane(1).changeLocation(1, undefined),
-      Error,
-      'cannot change location with bad y'
-    )
   } catch (e) {
     t.fail(e.toString())
     t.end()
