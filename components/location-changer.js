@@ -85,7 +85,7 @@ function pushOrShrinkPane (state, pane, x, y, origLocations) {
   const newLocationForPane = {x: pane.x + amount.x, y: pane.y + amount.y}
   try {
     // ATTEMPT TO PUSH PANE
-    state.grid.getPane(pane.id).changeLocation(newLocationForPane.x, newLocationForPane.y)
+    paneState.changeLocation(newLocationForPane.x, newLocationForPane.y)
     return true
   } catch (e) {
     try {
@@ -173,7 +173,6 @@ module.exports = function locationChanger (state, implementation) {
           state.changeLocation(x, y)
         }
       } catch (e) {
-        console.log('e is:', e)
         const origLocations = e.origLocations ? e.origLocations.concat(origLocation) : []
         origLocations.forEach(o => {
           const pane = state.grid.getPane(o.id)
