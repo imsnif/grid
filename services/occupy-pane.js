@@ -18,7 +18,8 @@ function widthOffsetOrder (a, b) {
   return (a.x + a.width <= b.x + b.width ? -1 : 1)
 }
 
-module.exports = function occupy (grid, candidate) {
+module.exports = function occupy (grid, candidate, getAllColliders) {
+  // TODO: remove the ugly getAllColliders hack
   assert(validate.isObject(grid), `${grid} is not an object`)
   assert(validate.isObject(candidate), `${candidate} is not an object`)
   assert(candidate.x + candidate.width <= grid.width, 'size exceeds grid')
@@ -31,11 +32,22 @@ module.exports = function occupy (grid, candidate) {
     .sort(widthOffsetOrder)
   if (colliders.length > 0) {
     const err = new Error('space is occupied')
-    err.coords = {
-      x: colliders[0].x,
-      y: colliders[0].y,
-      width: colliders[0].width,
-      height: colliders[0].height
+    if (getAllColliders) {
+      err.coords = colliders.map(c => ({
+        id: c.id,
+        x: c.x,
+        y: c.y,
+        width: c.width,
+        height: c.height
+      }))
+    } else {
+      err.coords = {
+        id: colliders[0].id,
+        x: colliders[0].x,
+        y: colliders[0].y,
+        width: colliders[0].width,
+        height: colliders[0].height
+      }
     }
     throw err
   }

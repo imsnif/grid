@@ -43,6 +43,28 @@ module.exports = function sizeChanger (state, implementation) {
       if (changed && implementation && typeof implementation.changeBounds === 'function') {
         implementation.changeBounds(state)
       }
+    },
+    decreaseSizeDirectional: function changeSize (direction, amount) {
+      // TODO: assert params
+      const x = direction === 'left' ? state.x
+        : direction === 'right' ? state.x + amount
+        : state.x
+      const y = direction === 'up' ? state.y
+        : direction === 'down' ? state.y + amount
+        : state.y
+      const width = direction === 'left' || direction === 'right' ? state.width - amount : state.width
+      const height = direction === 'up' || direction === 'down' ? state.height - amount : state.height
+      occupy(
+        state.grid,
+        Object.assign({}, state, {x, y, width, height})
+      )
+      state.x = x
+      state.y = y
+      state.width = width
+      state.height = height
+      if (implementation && typeof implementation.changeSize === 'function') {
+        implementation.changeBounds(state)
+      }
     }
   })
 }

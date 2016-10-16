@@ -8,9 +8,9 @@ const gaugeAdjacentLocation = (pane, direction, obstruction) => {
   const obst = obstruction || pane // skip over self if no obstruction
   const adjacentCoords =
       direction === 'right' ? { x: obst.x + obst.width }
-    : direction === 'left' ? { x: obst.x - obst.width }
+    : direction === 'left' ? { x: obst.x - pane.width }
     : direction === 'down' ? { y: obst.y + obst.height }
-    : direction === 'up' ? { y: obst.y - obst.height } : {}
+    : direction === 'up' ? { y: obst.y - pane.height } : {}
   return Object.assign({}, pane, adjacentCoords)
 }
 
