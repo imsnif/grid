@@ -1043,7 +1043,7 @@ test('wrapper.squashIntoLocation(x, y): squashed pane resizes second to farthest
   }
 })
 
-test('wrapper.squashIntoLocation(x, y): if cannot squash pane, neighboring panes that cold be squashed are not', t => {
+test('wrapper.squashIntoLocation(x, y): if cannot squash pane, neighboring panes that could be squashed are not', t => {
   t.plan(5)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -1054,7 +1054,7 @@ test('wrapper.squashIntoLocation(x, y): if cannot squash pane, neighboring panes
     t.throws(
       () => grid.getPane(4).squashIntoLocation(10, 100),
       /Error: location is blocked by one or more panes/,
-      'cannot squash pane when there is no roim'
+      'cannot squash pane when there is no room'
     )
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
