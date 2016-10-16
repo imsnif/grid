@@ -60,68 +60,64 @@ function findBlockingPanes (state, x, y) {
   return []
 }
 
-function movePanesOutOfTheWay (implementation, state, x, y, origLocations = []) {
-  // MOVE PANE MAX TO NEXT PANE
+function pushOrShrinkPane (state, pane, x, y, origLocations) {
   const direction = findDirection(state, x, y)
-  const axis = findAxis(state, x, y)
-  const maxedLoc = mLoc(state, direction)
-  state.x = axis === 'horizontal' ? maxedLoc.x : state.x
-  state.y = axis === 'vertical' ? maxedLoc.y : state.y
-  if (implementation && typeof implementation.changeSize === 'function') {
-    implementation.changeLocation(state, state.x, state.y)
-  }
   const amount = direction === 'right' ? {x: x - state.x, y: 0}
     : direction === 'left' ? {x: x - state.x, y: 0}
     : direction === 'up' ? {y: y - state.y, x: 0}
     : direction === 'down' ? {y: y - state.y, x: 0}
     : {x: 0, y: 0}
-  const adjacentPanes = findBlockingPanes(state, x, y)
-  const clearedPanesSuccessfully = adjacentPanes.every(pane => {
-    // RECORD ORIG LOCATION
-    if (origLocations.filter(o => o.id === pane.id).length > 0) {
-      if (pane.x > state.x + amount.x || pane.y > state.y + amount.y) return true
-      const err = new Error('will not move pane twice')
-      err.origLocations = origLocations
-      throw err
-    }
-    origLocations.push({id: pane.id, x: pane.x, y: pane.y, width: pane.width, height: pane.height})
-    const paneState = state.grid.getPane(pane.id)
-    // MAX SELF DIRECTION TO PUSHER
-    const oppositeDirection = direction === 'left' ? 'right'
-      : direction === 'right' ? 'left'
-      : direction === 'up' ? 'down'
-      : direction === 'down' ? 'up' : ''
-    paneState.maxSize({[oppositeDirection]: true})
-    const newLocationForPane = {x: pane.x + amount.x, y: pane.y + amount.y}
+  // RECORD ORIG LOCATION
+  if (origLocations.filter(o => o.id === pane.id).length > 0) {
+    if (pane.x > state.x + amount.x || pane.y > state.y + amount.y) return true
+    const err = new Error('will not move pane twice')
+    err.origLocations = origLocations
+    throw err
+  }
+  origLocations.push({id: pane.id, x: pane.x, y: pane.y, width: pane.width, height: pane.height})
+  const paneState = state.grid.getPane(pane.id)
+  // MAX SELF DIRECTION TO PUSHER
+  const oppositeDirection = direction === 'left' ? 'right'
+    : direction === 'right' ? 'left'
+    : direction === 'up' ? 'down'
+    : direction === 'down' ? 'up' : ''
+  paneState.maxSize({[oppositeDirection]: true})
+  const newLocationForPane = {x: pane.x + amount.x, y: pane.y + amount.y}
+  try {
+    // ATTEMPT TO PUSH PANE
+    state.grid.getPane(pane.id).changeLocation(newLocationForPane.x, newLocationForPane.y)
+    return true
+  } catch (e) {
     try {
-      // ATTEMPT TO PUSH PANE
+      // MAX LOCATION TO NEXT PANE
+      paneState.maxLoc({[direction]: true}, true)
+      // ATTEMPT TO MOVE ADJACENT PANES OUT OF THE WAY
+      const [ nextX, nextY ] = direction === 'left' ? [ x - pane.width, pane.y ]
+        : direction === 'right' ? [ state.width + x, pane.y ]
+        : direction === 'up' ? [ pane.x, y - pane.height ]
+        : direction === 'down' ? [ pane.x, state.height + y ] : [ x, y ]
+      const movedOthers = movePanesOutOfTheWay(paneState, nextX, nextY, origLocations)
       state.grid.getPane(pane.id).changeLocation(newLocationForPane.x, newLocationForPane.y)
-      return true
+      return movedOthers
     } catch (e) {
       try {
-        // ATTEMPT TO MOVE ADJACENT PANES OUT OF THE WAY
-        const [ nextX, nextY ] = direction === 'left' ? [ x - pane.width, pane.y ]
-          : direction === 'right' ? [ state.width + x, pane.y ]
-          : direction === 'up' ? [ pane.x, y - pane.height ]
-          : direction === 'down' ? [ pane.x, state.height + y ] : [ x, y ]
-        const movedOthers = movePanesOutOfTheWay(implementation, paneState, nextX, nextY, origLocations)
-        state.grid.getPane(pane.id).changeLocation(newLocationForPane.x, newLocationForPane.y)
-        return movedOthers
+        // ATTEMPT TO SHRINK PANE
+        state.grid.getPane(pane.id).decreaseSizeDirectional(
+          direction,
+          direction === 'left' || direction === 'right' ? Math.abs(amount.x) : Math.abs(amount.y)
+        )
+        return true
       } catch (e) {
-        try {
-          // ATTEMPT TO SHRINK PANE
-          state.grid.getPane(pane.id).decreaseSizeDirectional(
-            direction,
-            direction === 'left' || direction === 'right' ? Math.abs(amount.x) : Math.abs(amount.y)
-          )
-          return true
-        } catch (e) {
-          e.origLocations = origLocations
-          throw e
-        }
+        e.origLocations = origLocations
+        throw e
       }
     }
-  })
+  }
+}
+
+function movePanesOutOfTheWay (state, x, y, origLocations = []) {
+  const adjacentPanes = findBlockingPanes(state, x, y)
+  const clearedPanesSuccessfully = adjacentPanes.every(pane => pushOrShrinkPane(state, pane, x, y, origLocations))
   return clearedPanesSuccessfully
 }
 
@@ -144,6 +140,7 @@ module.exports = function locationChanger (state, implementation) {
       } else {
         const direction = findDirection(state, x, y)
         const axis = findAxis(state, x, y)
+        // TODO: remove maxedLoc and let the API user decide whether this should be done or not
         const maxedLoc = mLoc(state, direction)
         const finalX = axis === 'horizontal' ? maxedLoc.x : state.x
         const finalY = axis === 'vertical' ? maxedLoc.y : state.y
@@ -162,12 +159,22 @@ module.exports = function locationChanger (state, implementation) {
       assert(state.grid.height >= state.height + y, 'location is outside of grid')
       assert(x >= 0, 'location is outside of grid')
       assert(y >= 0, 'location is outside of grid')
+      const origLocation = {
+        id: state.id,
+        x: state.x,
+        y: state.y,
+        width: state.width,
+        height: state.height
+      }
       try {
-        if (movePanesOutOfTheWay(implementation, state, x, y)) {
+        const direction = findDirection(state, x, y)
+        state.maxLoc({[direction]: true}, true)
+        if (movePanesOutOfTheWay(state, x, y)) {
           state.changeLocation(x, y)
         }
       } catch (e) {
-        const origLocations = e.origLocations || []
+        console.log('e is:', e)
+        const origLocations = e.origLocations ? e.origLocations.concat(origLocation) : []
         origLocations.forEach(o => {
           const pane = state.grid.getPane(o.id)
           pane.changeLocation(o.x, o.y)
@@ -176,7 +183,8 @@ module.exports = function locationChanger (state, implementation) {
         throw new Error('location is blocked by one or more panes')
       }
     },
-    maxLoc: function maxLoc (directions) {
+    maxLoc: function maxLoc (directions, noSkip) {
+      // TODO: noSkip should be the only option
       assert(validate.isObject(directions), `${directions} shold be an object`)
       const changed = Object.keys(directions)
         .filter(d => d)
@@ -185,10 +193,18 @@ module.exports = function locationChanger (state, implementation) {
             d === 'up' || d === 'down' || d === 'left' || d === 'right',
             `${d} should be one of 'up/down/left/right'`
           )
-          const chosenLocation = maxOrSkipLocation(state, d)
-          state.x = chosenLocation.x
-          state.y = chosenLocation.y
-          return true
+          if (noSkip) {
+            const chosenLocation = mLoc(state, d)
+            if (d === 'up' || d === 'down') {
+              state.y = chosenLocation.y
+            } else {
+              state.x = chosenLocation.x
+            }
+          } else {
+            const chosenLocation = maxOrSkipLocation(state, d)
+            state.x = chosenLocation.x
+            state.y = chosenLocation.y
+          }
         })
       if (changed && implementation && typeof implementation.changeBounds === 'function') {
         implementation.changeBounds(state)
