@@ -60,49 +60,37 @@ function findBlockingPanes (state, x, y) {
   return []
 }
 
-function pushOrShrinkPane (state, pane, x, y, origLocations) {
-  const direction = findDirection(state, x, y)
-  const amount = direction === 'right' ? {x: x - state.x, y: 0}
-    : direction === 'left' ? {x: x - state.x, y: 0}
-    : direction === 'up' ? {y: y - state.y, x: 0}
-    : direction === 'down' ? {y: y - state.y, x: 0}
-    : {x: 0, y: 0}
+function pushOrShrinkPane (pane, direction, amount, origLocations) {
   // RECORD ORIG LOCATION
   if (origLocations.filter(o => o.id === pane.id).length > 0) {
-    if (pane.x > state.x + amount.x || pane.y > state.y + amount.y) return true
     const err = new Error('will not move pane twice')
     err.origLocations = origLocations
     throw err
   }
   origLocations.push({id: pane.id, x: pane.x, y: pane.y, width: pane.width, height: pane.height})
-  const paneState = state.grid.getPane(pane.id)
   // MAX SELF DIRECTION TO PUSHER
   const oppositeDirection = direction === 'left' ? 'right'
     : direction === 'right' ? 'left'
     : direction === 'up' ? 'down'
     : direction === 'down' ? 'up' : ''
-  paneState.maxSize({[oppositeDirection]: true})
+  pane.maxSize({[oppositeDirection]: true})
   const newLocationForPane = {x: pane.x + amount.x, y: pane.y + amount.y}
   try {
     // ATTEMPT TO PUSH PANE
-    paneState.changeLocation(newLocationForPane.x, newLocationForPane.y)
+    pane.changeLocation(newLocationForPane.x, newLocationForPane.y)
     return true
   } catch (e) {
     try {
       // MAX LOCATION TO NEXT PANE
-      paneState.maxLoc({[direction]: true}, true)
+      pane.maxLoc({[direction]: true}, true)
       // ATTEMPT TO MOVE ADJACENT PANES OUT OF THE WAY
-      const [ nextX, nextY ] = direction === 'left' ? [ x - pane.width, pane.y ]
-        : direction === 'right' ? [ state.width + x, pane.y ]
-        : direction === 'up' ? [ pane.x, y - pane.height ]
-        : direction === 'down' ? [ pane.x, state.height + y ] : [ x, y ]
-      const movedOthers = movePanesOutOfTheWay(paneState, nextX, nextY, origLocations)
-      state.grid.getPane(pane.id).changeLocation(newLocationForPane.x, newLocationForPane.y)
+      const movedOthers = movePanesOutOfTheWay(pane, direction, amount, origLocations)
+      pane.changeLocation(newLocationForPane.x, newLocationForPane.y)
       return movedOthers
     } catch (e) {
       try {
         // ATTEMPT TO SHRINK PANE
-        state.grid.getPane(pane.id).decreaseSizeDirectional(
+        pane.decreaseSizeDirectional(
           direction,
           direction === 'left' || direction === 'right' ? Math.abs(amount.x) : Math.abs(amount.y)
         )
@@ -115,9 +103,10 @@ function pushOrShrinkPane (state, pane, x, y, origLocations) {
   }
 }
 
-function movePanesOutOfTheWay (state, x, y, origLocations = []) {
-  const adjacentPanes = findBlockingPanes(state, x, y)
-  const clearedPanesSuccessfully = adjacentPanes.every(pane => pushOrShrinkPane(state, pane, x, y, origLocations))
+function movePanesOutOfTheWay (pane, direction, amount, origLocations = []) {
+  const {x, y} = {x: pane.x + amount.x, y: pane.y + amount.y}
+  const adjacentPanes = findBlockingPanes(pane, x, y).map(p => pane.grid.getPane(p.id))
+  const clearedPanesSuccessfully = adjacentPanes.every(pane => pushOrShrinkPane(pane, direction, amount, origLocations))
   return clearedPanesSuccessfully
 }
 
@@ -168,8 +157,14 @@ module.exports = function locationChanger (state, implementation) {
       }
       try {
         const direction = findDirection(state, x, y)
+        // TODO: get direction from outside
+        const amount = direction === 'right' ? {x: x - state.x, y: 0}
+          : direction === 'left' ? {x: x - state.x, y: 0}
+          : direction === 'up' ? {y: y - state.y, x: 0}
+          : direction === 'down' ? {y: y - state.y, x: 0}
+          : {x: 0, y: 0}
         state.maxLoc({[direction]: true}, true)
-        if (movePanesOutOfTheWay(state, x, y)) {
+        if (movePanesOutOfTheWay(state, direction, amount)) {
           state.changeLocation(x, y)
         }
       } catch (e) {
