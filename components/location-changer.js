@@ -110,13 +110,6 @@ function movePanesOutOfTheWay (implementation, state, x, y, origLocations = []) 
       } catch (e) {
         try {
           // ATTEMPT TO SHRINK PANE
-          if (
-            // TODO: move ths logic to decrease pane directional
-            ((direction === 'left' || direction === 'right') && Math.abs(amount.x) >= pane.width) ||
-            ((direction === 'up' || direction === 'down') && Math.abs(amount.y) >= pane.height)
-          ) {
-            throw new Error('pane is too small')
-          }
           state.grid.getPane(pane.id).decreaseSizeDirectional(
             direction,
             direction === 'left' || direction === 'right' ? Math.abs(amount.x) : Math.abs(amount.y)

@@ -45,7 +45,18 @@ module.exports = function sizeChanger (state, implementation) {
       }
     },
     decreaseSizeDirectional: function changeSize (direction, amount) {
-      // TODO: assert params
+      assert(
+        direction === 'right' ||
+        direction === 'left' ||
+        direction === 'up' || direction === 'down',
+        `${direction} must be one of right/left/up/down`
+      )
+      assert(validate.isInteger(amount), `${amount} must be numeric`)
+      assert(
+        ((direction === 'left' || direction === 'right') && amount < state.width) ||
+        ((direction === 'up' || direction === 'down') && amount < state.height),
+        'pane is too small'
+      )
       const x = direction === 'left' ? state.x
         : direction === 'right' ? state.x + amount
         : state.x
