@@ -79,7 +79,7 @@ module.exports = function locationChanger (state, implementation) {
       assert(validate.isObject(directions), `${directions} shold be an object`)
       const direction = getDirection(directions)
       const chosenLocation = maxOrSkipLocation(state, direction)
-      updateStateLocation(state, chosenLocation.x, chosenLocation.y)
+      updateStateLocation(state, chosenLocation.x, chosenLocation.y, implementation)
     }
   })
 }
