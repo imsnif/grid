@@ -270,13 +270,13 @@ test('wrapper.maxOrSkipLoc(opts): can max pane location down (electron)', t => {
   }
 })
 
-test('pane is maxed if there is no room to move it fully', t => {
+test('can max pane if there is no room to move it fully', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(BrowserWindow, {id: 1, width: 400, height: 100, x: 0, y: 0})
     grid.add(BrowserWindow, {id: 2, width: 400, height: 100, x: 450, y: 0})
-    grid.getPane(2).changeLocation(350, 0)
+    grid.getPane(2).changeOrMaxLocation(350, 0)
     t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
       x: 400,
       y: 0,

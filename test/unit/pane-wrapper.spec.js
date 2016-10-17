@@ -123,13 +123,13 @@ test('wrapper.changeLocation(x, y): can change pane location', t => {
   }
 })
 
-test('wrapper.changeLocation(x, y): change location maxes pane location in direction if there is not enough room', t => {
+test('wrapper.changeOrMaxLocation(x, y): change location maxes pane location in direction if there is not enough room', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPaneWithIdAndLocation, {id: 1, x: 0, y: 0, width: 400, height: 600})
     grid.add(StubPaneWithIdAndLocation, {id: 2, x: 450, y: 0, width: 400, height: 600})
-    grid.getPane(2).changeLocation(350, 0)
+    grid.getPane(2).changeOrMaxLocation(350, 0)
     t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
       x: 400,
       y: 0,

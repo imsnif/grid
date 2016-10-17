@@ -3,8 +3,9 @@
 const assert = require('assert')
 const validate = require('validate.js')
 const findObstruction = require('./find-obstruction')
+const chooseLocation = require('../services/choose-location')
 
-module.exports = maxLocation
+module.exports = { mLoc, maxOrSkipLocation }
 
 function buildRetParams (pane, grid, obstruction, direction) {
   if (obstruction) {
@@ -18,7 +19,7 @@ function buildRetParams (pane, grid, obstruction, direction) {
   }
 }
 
-function maxLocation (pane, direction) {
+function mLoc (pane, direction) {
   assert(validate.isObject(pane), `${pane} must be an object`)
   const grid = pane.grid
   const obstruction = grid.panes
@@ -34,3 +35,24 @@ function maxLocation (pane, direction) {
     })[0]
   return buildRetParams(pane, grid, obstruction, direction)
 }
+
+function maxOrSkipLocation (state, d) {
+  try {
+    const { x, y } = mLoc(state, d)
+    const skippedLocation = movedInDirection(d, x, y, state)
+      ? false
+      : chooseLocation(state.grid, state, d)
+    if (skippedLocation) return skippedLocation
+    if (d === 'up' || d === 'down') return {y, x: state.x}
+    if (d === 'left' || d === 'right') return {x, y: state.y}
+  } catch (e) {
+    throw new Error('location blocked')
+  }
+}
+
+function movedInDirection (d, x, y, state) {
+  if ((d === 'up' || d === 'down') && (state.y === y)) return false
+  if ((d === 'left' || d === 'right') && (state.x === x)) return false
+  return true
+}
+
