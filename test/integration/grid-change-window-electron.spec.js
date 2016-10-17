@@ -269,3 +269,46 @@ test('wrapper.maxLoc(opts): can max pane location down (electron)', t => {
     t.end()
   }
 })
+
+test('pane is maxed if there is no room to move it fully', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 100, x: 0, y: 0})
+    grid.add(BrowserWindow, {id: 2, width: 400, height: 100, x: 450, y: 0})
+    grid.getPane(2).changeLocation(350, 0)
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 400,
+      y: 0,
+      width: 400,
+      height: 100
+    }, 'pane maxed when no room to move fully')
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 100
+    }, 'obstacle unmoved')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.decreaseSizeDirectional(direction, amount): can decrease size directionally', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 100, x: 0, y: 0})
+    grid.getPane(1).decreaseSizeDirectional('left', 10)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 390,
+      height: 100
+    }, 'pane decreased size to the left')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
