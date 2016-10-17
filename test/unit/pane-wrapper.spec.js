@@ -1305,12 +1305,12 @@ test('wrapper.maxSize(opts): can max pane size left with obstructing pane', t =>
   }
 })
 
-test('wrapper.maxLoc(opts): can max pane location left', t => {
+test('wrapper.maxOrSkipLoc(opts): can max pane location left', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 1200, y: 0})
-    grid.getPane(1).maxLoc({left: true})
+    grid.getPane(1).maxOrSkipLoc({left: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 0,
@@ -1323,7 +1323,7 @@ test('wrapper.maxLoc(opts): can max pane location left', t => {
   }
 })
 
-test('wrapper.maxLoc(opts): can max pane location left with obstructing pane', t => {
+test('wrapper.maxOrSkipLoc(opts): can max pane location left with obstructing pane', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -1331,7 +1331,7 @@ test('wrapper.maxLoc(opts): can max pane location left with obstructing pane', t
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 500, y: 0})
     grid.add(StubPane, {id: 3, width: 400, height: 200, x: 100, y: 0})
     grid.add(StubPane, {id: 4, width: 400, height: 200, x: 100, y: 400})
-    grid.getPane(1).maxLoc({left: true})
+    grid.getPane(1).maxOrSkipLoc({left: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 900,
       y: 0,
@@ -1344,12 +1344,12 @@ test('wrapper.maxLoc(opts): can max pane location left with obstructing pane', t
   }
 })
 
-test('wrapper.maxLoc(opts): can max pane location right', t => {
+test('wrapper.maxOrSkipLoc(opts): can max pane location right', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200})
-    grid.getPane(1).maxLoc({right: true})
+    grid.getPane(1).maxOrSkipLoc({right: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 1200,
       y: 0,
@@ -1362,7 +1362,7 @@ test('wrapper.maxLoc(opts): can max pane location right', t => {
   }
 })
 
-test('wrapper.maxLoc(opts): can max pane location right with obstructing panes', t => {
+test('wrapper.maxOrSkipLoc(opts): can max pane location right with obstructing panes', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -1370,7 +1370,7 @@ test('wrapper.maxLoc(opts): can max pane location right with obstructing panes',
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 600, y: 0})
     grid.add(StubPane, {id: 3, width: 400, height: 200, x: 1000, y: 0})
     grid.add(StubPane, {id: 4, width: 400, height: 200, x: 1000, y: 300})
-    grid.getPane(1).maxLoc({right: true})
+    grid.getPane(1).maxOrSkipLoc({right: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 200,
       y: 0,
@@ -1383,12 +1383,12 @@ test('wrapper.maxLoc(opts): can max pane location right with obstructing panes',
   }
 })
 
-test('wrapper.maxLoc(opts): can max pane location down', t => {
+test('wrapper.maxOrSkipLoc(opts): can max pane location down', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 600})
-    grid.getPane(1).maxLoc({down: true})
+    grid.getPane(1).maxOrSkipLoc({down: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 300,
@@ -1401,7 +1401,7 @@ test('wrapper.maxLoc(opts): can max pane location down', t => {
   }
 })
 
-test('wrapper.maxLoc(opts): can max pane location down with obstructing panes', t => {
+test('wrapper.maxOrSkipLoc(opts): can max pane location down with obstructing panes', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -1409,7 +1409,7 @@ test('wrapper.maxLoc(opts): can max pane location down with obstructing panes', 
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 400})
     grid.add(StubPane, {id: 3, width: 400, height: 200, x: 0, y: 700})
     grid.add(StubPane, {id: 4, width: 400, height: 200, x: 500, y: 700})
-    grid.getPane(1).maxLoc({down: true})
+    grid.getPane(1).maxOrSkipLoc({down: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 200,
@@ -1422,12 +1422,12 @@ test('wrapper.maxLoc(opts): can max pane location down with obstructing panes', 
   }
 })
 
-test('wrapper.maxLoc(opts): can max pane location up', t => {
+test('wrapper.maxOrSkipLoc(opts): can max pane location up', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
-    grid.getPane(1).maxLoc({up: true})
+    grid.getPane(1).maxOrSkipLoc({up: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 0,
@@ -1448,7 +1448,7 @@ test('wrapper.maxSize(opts): can max pane location up with obstructing panes', t
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 400})
     grid.add(StubPane, {id: 3, width: 400, height: 200, x: 0, y: 200})
     grid.add(StubPane, {id: 4, width: 400, height: 200, x: 500, y: 200})
-    grid.getPane(1).maxLoc({up: true})
+    grid.getPane(1).maxOrSkipLoc({up: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 600,
@@ -1461,13 +1461,13 @@ test('wrapper.maxSize(opts): can max pane location up with obstructing panes', t
   }
 })
 
-test('wrapper.maxLoc(opts): max pane location left skips over obstructing pane', t => {
+test('wrapper.maxOrSkipLoc(opts): max pane location left skips over obstructing pane', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 900, y: 0})
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 500, y: 0})
-    grid.getPane(1).maxLoc({left: true})
+    grid.getPane(1).maxOrSkipLoc({left: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 100,
       y: 0,
@@ -1480,13 +1480,13 @@ test('wrapper.maxLoc(opts): max pane location left skips over obstructing pane',
   }
 })
 
-test('wrapper.maxLoc(opts): max pane location left skips over obstructing pane vertically down', t => {
+test('wrapper.maxOrSkipLoc(opts): max pane location left skips over obstructing pane vertically down', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 400, y: 0})
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 0})
-    grid.getPane(1).maxLoc({left: true})
+    grid.getPane(1).maxOrSkipLoc({left: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 200,
@@ -1499,13 +1499,13 @@ test('wrapper.maxLoc(opts): max pane location left skips over obstructing pane v
   }
 })
 
-test('wrapper.maxLoc(opts): max pane location left skips over obstructing pane vertically up', t => {
+test('wrapper.maxOrSkipLoc(opts): max pane location left skips over obstructing pane vertically up', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 400, y: 700})
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 700})
-    grid.getPane(1).maxLoc({left: true})
+    grid.getPane(1).maxOrSkipLoc({left: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 500,
@@ -1518,13 +1518,13 @@ test('wrapper.maxLoc(opts): max pane location left skips over obstructing pane v
   }
 })
 
-test('wrapper.maxLoc(opts): max pane location right skips over obstructing pane', t => {
+test('wrapper.maxOrSkipLoc(opts): max pane location right skips over obstructing pane', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 0})
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 400, y: 0})
-    grid.getPane(1).maxLoc({right: true})
+    grid.getPane(1).maxOrSkipLoc({right: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 800,
       y: 0,
@@ -1537,13 +1537,13 @@ test('wrapper.maxLoc(opts): max pane location right skips over obstructing pane'
   }
 })
 
-test('wrapper.maxLoc(opts): max pane location right skips over obstructing pane vertically down', t => {
+test('wrapper.maxOrSkipLoc(opts): max pane location right skips over obstructing pane vertically down', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 800, y: 0})
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 1200, y: 0})
-    grid.getPane(1).maxLoc({right: true})
+    grid.getPane(1).maxOrSkipLoc({right: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 1200,
       y: 200,
@@ -1556,13 +1556,13 @@ test('wrapper.maxLoc(opts): max pane location right skips over obstructing pane 
   }
 })
 
-test('wrapper.maxLoc(opts): max pane location right skips over obstructing pane vertically up', t => {
+test('wrapper.maxOrSkipLoc(opts): max pane location right skips over obstructing pane vertically up', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 800, y: 700})
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 1200, y: 700})
-    grid.getPane(1).maxLoc({right: true})
+    grid.getPane(1).maxOrSkipLoc({right: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 1200,
       y: 500,
@@ -1575,13 +1575,13 @@ test('wrapper.maxLoc(opts): max pane location right skips over obstructing pane 
   }
 })
 
-test('wrapper.maxLoc(opts): max pane up skips over obstructing pane', t => {
+test('wrapper.maxOrSkipLoc(opts): max pane up skips over obstructing pane', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 500})
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 300})
-    grid.getPane(1).maxLoc({up: true})
+    grid.getPane(1).maxOrSkipLoc({up: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 100,
@@ -1594,13 +1594,13 @@ test('wrapper.maxLoc(opts): max pane up skips over obstructing pane', t => {
   }
 })
 
-test('wrapper.maxLoc(opts): max pane up skips over obstructing pane horizontally right', t => {
+test('wrapper.maxOrSkipLoc(opts): max pane up skips over obstructing pane horizontally right', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 200})
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 0})
-    grid.getPane(1).maxLoc({up: true})
+    grid.getPane(1).maxOrSkipLoc({up: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 400,
       y: 0,
@@ -1613,13 +1613,13 @@ test('wrapper.maxLoc(opts): max pane up skips over obstructing pane horizontally
   }
 })
 
-test('wrapper.maxLoc(opts): max pane up skips over obstructing pane horizontally left', t => {
+test('wrapper.maxOrSkipLoc(opts): max pane up skips over obstructing pane horizontally left', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 1200, y: 200})
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 1200, y: 0})
-    grid.getPane(1).maxLoc({up: true})
+    grid.getPane(1).maxOrSkipLoc({up: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 800,
       y: 0,
@@ -1632,13 +1632,13 @@ test('wrapper.maxLoc(opts): max pane up skips over obstructing pane horizontally
   }
 })
 
-test('wrapper.maxLoc(opts): max pane down skips over obstructing pane', t => {
+test('wrapper.maxOrSkipLoc(opts): max pane down skips over obstructing pane', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 300})
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 500})
-    grid.getPane(1).maxLoc({down: true})
+    grid.getPane(1).maxOrSkipLoc({down: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 700,
@@ -1651,13 +1651,13 @@ test('wrapper.maxLoc(opts): max pane down skips over obstructing pane', t => {
   }
 })
 
-test('wrapper.maxLoc(opts): max pane down skips over obstructing pane horizontally right', t => {
+test('wrapper.maxOrSkipLoc(opts): max pane down skips over obstructing pane horizontally right', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 500})
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 700})
-    grid.getPane(1).maxLoc({down: true})
+    grid.getPane(1).maxOrSkipLoc({down: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 400,
       y: 700,
@@ -1670,13 +1670,13 @@ test('wrapper.maxLoc(opts): max pane down skips over obstructing pane horizontal
   }
 })
 
-test('wrapper.maxLoc(opts): max pane down skips over obstructing pane horizontally left', t => {
+test('wrapper.maxOrSkipLoc(opts): max pane down skips over obstructing pane horizontally left', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 1200, y: 500})
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 1200, y: 700})
-    grid.getPane(1).maxLoc({down: true})
+    grid.getPane(1).maxOrSkipLoc({down: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 800,
       y: 700,
@@ -1689,23 +1689,23 @@ test('wrapper.maxLoc(opts): max pane down skips over obstructing pane horizontal
   }
 })
 
-test('wrapper.maxLoc(opts): bad params', t => {
+test('wrapper.maxOrSkipLoc(opts): bad params', t => {
   t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 600})
     t.throws(
-      () => grid.getPane(1).maxLoc({foo: 'bar'}),
+      () => grid.getPane(1).maxOrSkipLoc({foo: 'bar'}),
       /Error: foo should be one of 'up\/down\/left\/right'/,
       'cannot change location with bad params'
     )
     t.throws(
-      () => grid.getPane(1).maxLoc({up: true}),
+      () => grid.getPane(1).maxOrSkipLoc({up: true}),
       /Error: location blocked/,
       'cannot max location when at the edge of the grid horizontally'
     )
     t.throws(
-      () => grid.getPane(1).maxLoc({left: true}),
+      () => grid.getPane(1).maxOrSkipLoc({left: true}),
       /Error: location blocked/,
       'cannot max location when at the edge of the grid vertically'
     )
@@ -1715,7 +1715,7 @@ test('wrapper.maxLoc(opts): bad params', t => {
   }
 })
 
-test('wrapper.maxLoc(opts): cannot skip over the edge of the grid', t => {
+test('wrapper.maxOrSkipLoc(opts): cannot skip over the edge of the grid', t => {
   t.plan(4)
   try {
     const grid = new Grid(900, 900)
@@ -1729,22 +1729,22 @@ test('wrapper.maxLoc(opts): cannot skip over the edge of the grid', t => {
     grid.add(StubPane, {id: 8, width: 300, height: 300, x: 300, y: 600})
     grid.add(StubPane, {id: 9, width: 300, height: 300, x: 600, y: 600})
     t.throws(
-      () => grid.getPane(5).maxLoc({up: true}),
+      () => grid.getPane(5).maxOrSkipLoc({up: true}),
       /Error: location blocked/,
       'cannot skip over the upper edge of the grid'
     )
     t.throws(
-      () => grid.getPane(5).maxLoc({down: true}),
+      () => grid.getPane(5).maxOrSkipLoc({down: true}),
       /Error: location blocked/,
       'cannot skip over the lower edge of the grid'
     )
     t.throws(
-      () => grid.getPane(1).maxLoc({left: true}),
+      () => grid.getPane(1).maxOrSkipLoc({left: true}),
       /Error: location blocked/,
       'cannot skip over the left edge of the grid'
     )
     t.throws(
-      () => grid.getPane(1).maxLoc({right: true}),
+      () => grid.getPane(1).maxOrSkipLoc({right: true}),
       /Error: location blocked/,
       'cannot skip over the right edge of the grid'
     )

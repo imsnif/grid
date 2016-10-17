@@ -93,7 +93,7 @@ function pushOrShrinkPane (pane, direction, amount) {
     return true
   }
   if (blockingPanes.length > 0) {
-    pane.maxLoc({[direction]: true}, true)
+    pane.maxLoc({[direction]: true})
     if (movePanesOutOfTheWay(pane, direction, amount)) {
       pane.changeLocation(newLocationForPane.x, newLocationForPane.y)
       return true
@@ -166,7 +166,7 @@ module.exports = function locationChanger (state, implementation) {
           : direction === 'up' ? {y: y - state.y, x: 0}
           : direction === 'down' ? {y: y - state.y, x: 0}
           : {x: 0, y: 0}
-        state.maxLoc({[direction]: true}, true)
+        state.maxLoc({[direction]: true})
         if (movePanesOutOfTheWay(state, direction, amount)) {
           state.changeLocation(x, y)
         } else {
@@ -176,7 +176,7 @@ module.exports = function locationChanger (state, implementation) {
         throw new Error('location is blocked by one or more panes')
       }
     },
-    maxLoc: function maxLoc (directions, noSkip) {
+    maxLoc: function maxLoc (directions) {
       // TODO: noSkip should be the only option
       assert(validate.isObject(directions), `${directions} shold be an object`)
       const changed = Object.keys(directions)
@@ -186,18 +186,29 @@ module.exports = function locationChanger (state, implementation) {
             d === 'up' || d === 'down' || d === 'left' || d === 'right',
             `${d} should be one of 'up/down/left/right'`
           )
-          if (noSkip) {
-            const chosenLocation = mLoc(state, d)
-            if (d === 'up' || d === 'down') {
-              state.y = chosenLocation.y
-            } else {
-              state.x = chosenLocation.x
-            }
-          } else {
-            const chosenLocation = maxOrSkipLocation(state, d)
-            state.x = chosenLocation.x
+          const chosenLocation = mLoc(state, d)
+          if (d === 'up' || d === 'down') {
             state.y = chosenLocation.y
+          } else {
+            state.x = chosenLocation.x
           }
+        })
+      if (changed && implementation && typeof implementation.changeBounds === 'function') {
+        implementation.changeBounds(state)
+      }
+    },
+    maxOrSkipLoc: function maxLoc (directions) {
+      assert(validate.isObject(directions), `${directions} shold be an object`)
+      const changed = Object.keys(directions)
+        .filter(d => d)
+        .filter(d => {
+          assert(
+            d === 'up' || d === 'down' || d === 'left' || d === 'right',
+            `${d} should be one of 'up/down/left/right'`
+          )
+          const chosenLocation = maxOrSkipLocation(state, d)
+          state.x = chosenLocation.x
+          state.y = chosenLocation.y
         })
       if (changed && implementation && typeof implementation.changeBounds === 'function') {
         implementation.changeBounds(state)

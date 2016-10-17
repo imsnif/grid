@@ -252,12 +252,12 @@ test('wrapper.maxSize(opts): can max pane size down (electron)', t => {
   }
 })
 
-test('wrapper.maxLoc(opts): can max pane location down (electron)', t => {
+test('wrapper.maxOrSkipLoc(opts): can max pane location down (electron)', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(BrowserWindow, {id: 1, width: 400, height: 600})
-    grid.getPane(1).maxLoc({down: true})
+    grid.getPane(1).maxOrSkipLoc({down: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 300,
