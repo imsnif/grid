@@ -156,7 +156,7 @@ test('cannot move pane over another pane', t => {
   }
 })
 
-test('cannot move pane over another pane', t => {
+test('cannot move pane over another pane with changeOrMaxLocation', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
