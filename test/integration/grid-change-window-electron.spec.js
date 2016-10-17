@@ -113,6 +113,25 @@ test('can change pane location', t => {
   }
 })
 
+test('can change pane location with changeOrMaxLocation', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 600})
+    grid.getPane(1).changeOrMaxLocation(1, 1)
+    t.equals(grid.panes.length, 1, 'grid has one pane')
+    t.deepEquals(grid.getPane(1).wrapped.getBounds(), {
+      x: 1,
+      y: 1,
+      width: 400,
+      height: 600
+    }, 'pane location changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('cannot move pane over another pane', t => {
   t.plan(3)
   try {
@@ -131,6 +150,24 @@ test('cannot move pane over another pane', t => {
       'cannot move pane vertically over another'
     )
     t.equals(grid.panes.length, 3, 'grid panes still present')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('cannot move pane over another pane', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 100, x: 0, y: 0})
+    grid.add(BrowserWindow, {id: 2, width: 400, height: 100, x: 400, y: 0})
+    t.throws(
+      () => grid.getPane(2).changeOrMaxLocation(350, 0),
+      Error,
+      'cannot move pane horizontally over another'
+    )
+    t.equals(grid.panes.length, 2, 'grid panes still present')
   } catch (e) {
     t.fail(e.toString())
     t.end()
