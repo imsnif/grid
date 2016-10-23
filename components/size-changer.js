@@ -44,7 +44,7 @@ module.exports = function sizeChanger (state, implementation) {
         implementation.changeBounds(state)
       }
     },
-    decreaseSizeDirectional: function changeSize (direction, amount) {
+    decreaseSizeDirectional: function decreaseSizeDirectional (direction, amount) {
       assert(
         direction === 'right' ||
         direction === 'left' ||
@@ -69,6 +69,40 @@ module.exports = function sizeChanger (state, implementation) {
         state.grid,
         Object.assign({}, state, {x, y, width, height})
       )
+      state.x = x
+      state.y = y
+      state.width = width
+      state.height = height
+      if (implementation && typeof implementation.changeSize === 'function') {
+        implementation.changeBounds(state)
+      }
+    },
+    increaseSizeDirectional: function increaseSizeDirectional (direction, amount) {
+      assert(
+        direction === 'right' ||
+        direction === 'left' ||
+        direction === 'up' || direction === 'down',
+        `${direction} must be one of right/left/up/down`
+      )
+      assert(validate.isInteger(amount), `${amount} must be numeric`)
+      assert(
+        ((direction === 'right') && state.x + state.width + amount <= state.grid.width) ||
+        ((direction === 'left') && state.x - amount >= 0) ||
+        ((direction === 'up') && state.y - amount >= 0) ||
+        ((direction === 'down') && state.y + state.height + amount <= state.grid.height),
+        'size exceeds grid'
+      )
+      const x = direction === 'left' ? state.x - amount
+        : state.x
+      const y = direction === 'up' ? state.y - amount
+        : state.y
+      const width = direction === 'left' || direction === 'right' ? state.width + amount : state.width
+      const height = direction === 'up' || direction === 'down' ? state.height + amount : state.height
+      occupy(
+        state.grid,
+        Object.assign({}, state, {x, y, width, height})
+      )
+      // TODO: max in direction if occupy fails
       state.x = x
       state.y = y
       state.width = width
