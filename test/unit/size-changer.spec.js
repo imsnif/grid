@@ -383,7 +383,7 @@ test('wrapper.decreaseSizeDirectional(direction, amount): calls implementation i
     const spy = sinon.spy(BrowserWindow.prototype, 'setBounds')
     grid.add(BrowserWindow, {id: 1, width: 400, height: 200, x: 0, y: 700})
     grid.getPane(1).decreaseSizeDirectional('right', 10)
-    t.ok(spy.called, 'setBounds method of BrowserWindow was called')
+    t.ok(spy.calledWith({x: 10, y: 700, width: 390, height: 200}), 'setBounds method of BrowserWindow was called')
     spy.restore()
   } catch (e) {
     t.fail(e.toString())
