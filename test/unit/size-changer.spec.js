@@ -390,3 +390,131 @@ test('wrapper.decreaseSizeDirectional(direction, amount): calls implementation i
     t.end()
   }
 })
+
+test('wrapper.increaseSizeDirectional(direction, amount): can increase size directionally up', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    grid.getPane(1).increaseSizeDirectional('up', 10)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 690,
+      width: 400,
+      height: 210
+    }, 'pane sized increased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): can increase size directionally down', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 200})
+    grid.getPane(1).increaseSizeDirectional('down', 10)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 200,
+      width: 400,
+      height: 210
+    }, 'pane sized increased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): can increase size directionally left', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 100, y: 700})
+    grid.getPane(1).increaseSizeDirectional('left', 10)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 90,
+      y: 700,
+      width: 410,
+      height: 200
+    }, 'pane sized increased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): can increase size directionally right', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    grid.getPane(1).increaseSizeDirectional('right', 10)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 700,
+      width: 410,
+      height: 200
+    }, 'pane sized increased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): bad params', t => {
+  t.plan(6)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 100, y: 700})
+    t.throws(
+      () => grid.getPane(1).increaseSizeDirectional('notADirection', 10),
+      /notADirection must be one of right\/left\/up\/down/,
+      'cannot increase directional size with a bad direction'
+    )
+    t.throws(
+      () => grid.getPane(1).increaseSizeDirectional('left', 'a'),
+      /a must be numeric/,
+      'cannot increase directional size with bad amount'
+    )
+    t.throws(
+      () => grid.getPane(1).increaseSizeDirectional('left', 101),
+      /size exceeds grid/,
+      'cannot increase pane size beyond grid left'
+    )
+    t.throws(
+      () => grid.getPane(1).increaseSizeDirectional('right', 1200),
+      /size exceeds grid/,
+      'cannot increase pane size beyond grid right'
+    )
+    t.throws(
+      () => grid.getPane(1).increaseSizeDirectional('up', 701),
+      /size exceeds grid/,
+      'cannot increase pane size beyond grid up'
+    )
+    t.throws(
+      () => grid.getPane(1).increaseSizeDirectional('down', 800),
+      /size exceeds grid/,
+      'cannot increase pane size beyond grid down'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): calls implementation if present', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const spy = sinon.spy(BrowserWindow.prototype, 'setBounds')
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    grid.getPane(1).increaseSizeDirectional('right', 10)
+    t.ok(spy.calledWith({x: 0, y: 700, width: 410, height: 200}), 'setBounds method of BrowserWindow was called')
+    spy.restore()
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
