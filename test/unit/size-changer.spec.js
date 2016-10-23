@@ -2,7 +2,6 @@
 
 import test from 'tape'
 import Grid from '../../lib/grid'
-import PaneWrapper from '../../lib/pane-wrapper'
 import _ from 'lodash'
 import sinon from 'sinon'
 
@@ -15,19 +14,14 @@ function StubPane (opts) {
   this.height = opts.height
 }
 
-function StubPaneWithId (opts) {
-  this.id = opts.id || 1
+function BrowserWindow (opts) {
+  this.id = opts.id
   this.width = opts.width
   this.height = opts.height
 }
 
-function StubPaneWithIdAndLocation (opts) {
-  this.id = opts.id
-  this.width = opts.width
-  this.height = opts.height
-  this.x = opts.x
-  this.y = opts.y
-}
+BrowserWindow.prototype.setBounds = function () {} // no-op
+BrowserWindow.prototype.getBounds = () => ({})
 
 test('wrapper.changeSize(width, height): can change pane size', t => {
   t.plan(3)
@@ -263,6 +257,134 @@ test('wrapper.maxSize(opts): can max pane location up with obstructing panes', t
       width: 400,
       height: 200
     }, 'pane location changed')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.decreaseSizeDirectional(direction, amount): can decrease size directionally up', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    grid.getPane(1).decreaseSizeDirectional('up', 10)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 700,
+      width: 400,
+      height: 190
+    }, 'pane sized decreased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.decreaseSizeDirectional(direction, amount): can decrease size directionally down', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    grid.getPane(1).decreaseSizeDirectional('down', 10)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 710,
+      width: 400,
+      height: 190
+    }, 'pane sized decreased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.decreaseSizeDirectional(direction, amount): can decrease size directionally left', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    grid.getPane(1).decreaseSizeDirectional('left', 10)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 700,
+      width: 390,
+      height: 200
+    }, 'pane sized decreased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.decreaseSizeDirectional(direction, amount): can decrease size directionally right', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    grid.getPane(1).decreaseSizeDirectional('right', 10)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 10,
+      y: 700,
+      width: 390,
+      height: 200
+    }, 'pane sized decreased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.decreaseSizeDirectional(direction, amount): bad params', t => {
+  t.plan(6)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    t.throws(
+      () => grid.getPane(1).decreaseSizeDirectional('notADirection', 10),
+      /notADirection must be one of right\/left\/up\/down/,
+      'cannot decrease directional size with a bad direction'
+    )
+    t.throws(
+      () => grid.getPane(1).decreaseSizeDirectional('left', 'a'),
+      /a must be numeric/,
+      'cannot decrease directional size with bad amount'
+    )
+    t.throws(
+      () => grid.getPane(1).decreaseSizeDirectional('left', 400),
+      /pane is too small/,
+      'cannot decrease pane size to zero left'
+    )
+    t.throws(
+      () => grid.getPane(1).decreaseSizeDirectional('right', 400),
+      /pane is too small/,
+      'cannot decrease pane size to zero right'
+    )
+    t.throws(
+      () => grid.getPane(1).decreaseSizeDirectional('up', 200),
+      /pane is too small/,
+      'cannot decrease pane size to zero up'
+    )
+    t.throws(
+      () => grid.getPane(1).decreaseSizeDirectional('down', 200),
+      /pane is too small/,
+      'cannot decrease pane size to zero down'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.decreaseSizeDirectional(direction, amount): calls implementation if present', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    const spy = sinon.spy(BrowserWindow.prototype, 'setBounds')
+    grid.add(BrowserWindow, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    grid.getPane(1).decreaseSizeDirectional('right', 10)
+    t.ok(spy.called, 'setBounds method of BrowserWindow was called')
+    spy.restore()
   } catch (e) {
     t.fail(e.toString())
     t.end()
