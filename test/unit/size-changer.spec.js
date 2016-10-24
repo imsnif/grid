@@ -464,7 +464,7 @@ test('wrapper.increaseSizeDirectional(direction, amount): can increase size dire
 })
 
 test('wrapper.increaseSizeDirectional(direction, amount): bad params', t => {
-  t.plan(6)
+  t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 100, y: 700})
@@ -477,26 +477,6 @@ test('wrapper.increaseSizeDirectional(direction, amount): bad params', t => {
       () => grid.getPane(1).increaseSizeDirectional('left', 'a'),
       /a must be numeric/,
       'cannot increase directional size with bad amount'
-    )
-    t.throws(
-      () => grid.getPane(1).increaseSizeDirectional('left', 101),
-      /size exceeds grid/,
-      'cannot increase pane size beyond grid left'
-    )
-    t.throws(
-      () => grid.getPane(1).increaseSizeDirectional('right', 1200),
-      /size exceeds grid/,
-      'cannot increase pane size beyond grid right'
-    )
-    t.throws(
-      () => grid.getPane(1).increaseSizeDirectional('up', 701),
-      /size exceeds grid/,
-      'cannot increase pane size beyond grid up'
-    )
-    t.throws(
-      () => grid.getPane(1).increaseSizeDirectional('down', 800),
-      /size exceeds grid/,
-      'cannot increase pane size beyond grid down'
     )
   } catch (e) {
     t.fail(e.toString())
@@ -513,6 +493,154 @@ test('wrapper.increaseSizeDirectional(direction, amount): calls implementation i
     grid.getPane(1).increaseSizeDirectional('right', 10)
     t.ok(spy.calledWith({x: 0, y: 700, width: 410, height: 200}), 'setBounds method of BrowserWindow was called')
     spy.restore()
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): maxes pane size in direction if not enough room left', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 30, y: 700})
+    grid.getPane(1).increaseSizeDirectional('left', 50)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 700,
+      width: 430,
+      height: 200
+    }, 'pane sized increased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): maxes pane size in direction if not enough room right', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 1170, y: 700})
+    grid.getPane(1).increaseSizeDirectional('right', 50)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 1170,
+      y: 700,
+      width: 430,
+      height: 200
+    }, 'pane sized increased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): maxes pane size in direction if not enough room up', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 30})
+    grid.getPane(1).increaseSizeDirectional('up', 50)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 230
+    }, 'pane sized increased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): maxes pane size in direction if not enough room down', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 670})
+    grid.getPane(1).increaseSizeDirectional('down', 50)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 670,
+      width: 400,
+      height: 230
+    }, 'pane sized increased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): maxes pane size in direction if not enough room left with obstruction', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 430, y: 0})
+    grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 0})
+    grid.getPane(1).increaseSizeDirectional('left', 50)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 400,
+      y: 0,
+      width: 430,
+      height: 200
+    }, 'pane sized increased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): maxes pane size in direction if not enough room right with obstruction', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 770, y: 0})
+    grid.add(StubPane, {id: 2, width: 400, height: 200, x: 1200, y: 0})
+    grid.getPane(1).increaseSizeDirectional('right', 50)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 770,
+      y: 0,
+      width: 430,
+      height: 200
+    }, 'pane sized increased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): maxes pane size in direction if not enough room up with obstruction', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 230})
+    grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 0})
+    grid.getPane(1).increaseSizeDirectional('up', 50)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 200,
+      width: 400,
+      height: 230
+    }, 'pane sized increased directionally')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('wrapper.increaseSizeDirectional(direction, amount): maxes pane size in direction if not enough room down with obstruction', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 0})
+    grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 230})
+    grid.getPane(1).increaseSizeDirectional('down', 50)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 230
+    }, 'pane sized increased directionally')
   } catch (e) {
     t.fail(e.toString())
     t.end()
