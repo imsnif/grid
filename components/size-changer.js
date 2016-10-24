@@ -97,11 +97,7 @@ module.exports = function sizeChanger (state, implementation) {
           Object.assign({}, state, {x, y, width, height})
         )
       } catch (e) {
-        if (e.message === 'space is occupied' || e.message === 'size exceeds grid') {
-          return state.maxSize({[direction]: true})
-        } else {
-          throw e
-        }
+        return state.maxSize({[direction]: true})
       }
       state.x = x
       state.y = y
