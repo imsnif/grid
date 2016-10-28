@@ -13,7 +13,7 @@ function StubPane (opts) {
   this.height = opts.height
 }
 
-test('increaseAndFillsize(direction, amount) - can increase size over other pane', t => {
+test('increaseAndFillsize(direction, amount) - can increase size over other pane right', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -31,6 +31,81 @@ test('increaseAndFillsize(direction, amount) - can increase size over other pane
       y: 0,
       width: 770,
       height: 900
+    }, 'adjacent pane decreased in size')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('increaseAndFillsize(direction, amount) - can increase size over other pane left', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, x: 0, y: 0, width: 800, height: 900})
+    grid.add(StubPane, {id: 2, x: 800, y: 0, width: 800, height: 900})
+    grid.getPane(2).increaseAndFillSize('left', 30)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 770,
+      height: 900
+    }, 'adjacent pane size decreased')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 770,
+      y: 0,
+      width: 830,
+      height: 900
+    }, 'pane size increased')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('increaseAndFillsize(direction, amount) - can increase size over other pane up', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, x: 0, y: 0, width: 800, height: 450})
+    grid.add(StubPane, {id: 2, x: 0, y: 450, width: 800, height: 450})
+    grid.getPane(2).increaseAndFillSize('up', 30)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 800,
+      height: 420
+    }, 'adjacent pane decreased in size')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 420,
+      width: 800,
+      height: 480
+    }, 'pane size increased')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('increaseAndFillsize(direction, amount) - can increase size over other pane down', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, x: 0, y: 0, width: 800, height: 450})
+    grid.add(StubPane, {id: 2, x: 0, y: 450, width: 800, height: 450})
+    grid.getPane(1).increaseAndFillSize('down', 30)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 800,
+      height: 480
+    }, 'pane size increased')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 480,
+      width: 800,
+      height: 420
     }, 'adjacent pane decreased in size')
   } catch (e) {
     t.fail(e.toString())
