@@ -91,63 +91,6 @@ test('increaseAndFillsize(direction, amount) - cascade size increase to multiple
   }
 })
 
-test('increaseAndFillsize(direction, amount) - parallel pane also increases in size to fill in gap', t => {
-  t.plan(3)
-  try {
-    const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, x: 0, y: 0, width: 800, height: 900})
-    grid.add(StubPane, {id: 2, x: 800, y: 0, width: 800, height: 450})
-    grid.add(StubPane, {id: 3, x: 800, y: 450, width: 800, height: 450})
-    grid.getPane(2).increaseAndFillSize('left', 30)
-    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
-      x: 0,
-      y: 0,
-      width: 770,
-      height: 900
-    }, 'adjacent pane resized')
-    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
-      x: 770,
-      y: 0,
-      width: 830,
-      height: 450
-    }, 'pane resized')
-    t.deepEquals(_.pick(grid.getPane(3), ['x', 'y', 'width', 'height']), {
-      x: 770,
-      y: 450,
-      width: 830,
-      height: 450
-    }, 'parallel pane resized')
-  } catch (e) {
-    t.fail(e.toString())
-    t.end()
-  }
-})
-
-test('decreaseAndFillSize(direction, amount) - can decrease size and have adjacent pane fill gaps', t => {
-  t.plan(2)
-  try {
-    const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, x: 0, y: 0, width: 800, height: 900})
-    grid.add(StubPane, {id: 2, x: 800, y: 0, width: 800, height: 900})
-    grid.getPane(1).decreaseAndFillSize('left', 30)
-    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
-      x: 0,
-      y: 0,
-      width: 770,
-      height: 900
-    }, 'pane size decreased')
-    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
-      x: 770,
-      y: 0,
-      width: 830,
-      height: 900
-    }, 'adjacent pane increased in size')
-  } catch (e) {
-    t.fail(e.toString())
-    t.end()
-  }
-})
-
 test('decreaseAndFillSize(direction, amount) - bad params', t => {
   t.plan(2)
   try {
