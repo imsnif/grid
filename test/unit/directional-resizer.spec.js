@@ -166,6 +166,38 @@ test('increaseAndFillsize(direction, amount) - cascade size increase to multiple
   }
 })
 
+test('increaseAndFillsize(direction, amount) - cascade push to multiple panes', t => {
+  t.plan(3)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, x: 100, y: 0, width: 200, height: 900})
+    grid.add(StubPane, {id: 2, x: 300, y: 0, width: 200, height: 900})
+    grid.add(StubPane, {id: 3, x: 500, y: 0, width: 200, height: 900})
+    grid.getPane(3).increaseAndFillSize('left', 100)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 200,
+      height: 900
+    }, 'first pane pushed to the left')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 200,
+      y: 0,
+      width: 200,
+      height: 900
+    }, 'second pane pushed to the left')
+    t.deepEquals(_.pick(grid.getPane(3), ['x', 'y', 'width', 'height']), {
+      x: 400,
+      y: 0,
+      width: 300,
+      height: 900
+    }, 'third pane increased in size to the left')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('increaseAndFillsize(direction, amount) - cannot increase pane size when there is no room to cascade to other panes', t => {
   t.plan(4)
   try {
