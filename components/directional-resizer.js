@@ -1,6 +1,7 @@
 const assert = require('assert')
 const validate = require('validate.js')
 const occupy = require('../services/occupy-pane')
+const { pushOrResizePanesOutOfTheWay } = require('../services/multi-pane-action')
 
 module.exports = function sizeChanger (state, implementation) {
   return ({
@@ -65,6 +66,30 @@ module.exports = function sizeChanger (state, implementation) {
       state.height = height
       if (implementation && typeof implementation.changeSize === 'function') {
         implementation.changeBounds(state)
+      }
+    },
+    increaseAndFillSize: function increaseAndFillSize (direction, amount) {
+      assert(
+        direction === 'right' ||
+        direction === 'left' ||
+        direction === 'up' || direction === 'down',
+        `${direction} must be one of right/left/up/down`
+      )
+      assert(validate.isInteger(amount), `${amount} must be numeric`)
+      try {
+        state.increaseSizeDirectional(direction, amount)
+        const amounts =
+          direction === 'left' ? {x: parseInt(`-${amount}`), y: 0}
+        : direction === 'right' ? {x: amount, y: 0}
+        : direction === 'up' ? {x: 0, y: parseInt(`-${amount}`)}
+        : direction === 'down' ? {x: 0, y: amount} : {x: 0, y: 0}
+        if (pushOrResizePanesOutOfTheWay(state, direction, amounts)) {
+          state.increaseSizeDirectional(direction, amount)
+        } else {
+          throw new Error('no room to increase pane size')
+        }
+      } catch (e) {
+        throw new Error('location is blocked by one or more panes')
       }
     }
   })

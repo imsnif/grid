@@ -34,7 +34,7 @@ function maxSize (pane, direction) {
   assert(validate.isObject(pane), `${pane} must be an object`)
   const grid = pane.grid
   const obstruction = grid.panes
-    .filter(p => p.id !== pane.id)
+    .filter(p => typeof pane.id === 'undefined' || typeof p.id === 'undefined' ? true : p.id !== pane.id)
     .map((sibling) => findObstruction(pane, sibling, direction))
     .filter(o => o)
     .sort((a, b) => {

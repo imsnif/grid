@@ -27,7 +27,7 @@ module.exports = function occupy (grid, candidate, getAllColliders) {
   assert(candidate.x >= 0, 'size exceeds grid')
   assert(candidate.y >= 0, 'size exceeds grid')
   const colliders = grid.panes
-    .filter(p => p.id !== candidate.id)
+    .filter(p => typeof candidate.id === 'undefined' || typeof p.id === 'undefined' ? true : p.id !== candidate.id)
     .filter((pane) => detectCollision(pane, candidate))
     .sort(widthOffsetOrder)
   if (colliders.length > 0) {
