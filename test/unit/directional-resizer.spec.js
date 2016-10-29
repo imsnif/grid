@@ -166,21 +166,36 @@ test('increaseAndFillsize(direction, amount) - cascade size increase to multiple
   }
 })
 
-test('decreaseAndFillSize(direction, amount) - bad params', t => {
-  t.plan(2)
+test('increaseAndFillsize(direction, amount) - cannot increase pane size when there is no room to cascade to other panes', t => {
+  t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, x: 0, y: 0, width: 1600, height: 900})
+    grid.add(StubPane, {id: 1, x: 0, y: 0, width: 10, height: 900})
+    grid.add(StubPane, {id: 2, x: 10, y: 0, width: 10, height: 900})
+    grid.add(StubPane, {id: 3, x: 20, y: 0, width: 800, height: 900})
     t.throws(
-      () => grid.getPane(1).decreaseAndFillSize('notDirection', 30),
-      /notDirection must be one of right\/left\/up\/down/,
-      'cannot call increaseAndFillSize with bad direction'
+      () => grid.getPane(3).increaseAndFillSize('left', 30),
+      /location is blocked by one or more panes/,
+      'proper error is given when trying to resize pane over others'
     )
-    t.throws(
-      () => grid.getPane(1).decreaseAndFillSize('right', 'notANumber'),
-      /notANumber must be numeric/,
-      'cannot call increaseAndFillSize with bad amount'
-    )
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 0,
+      y: 0,
+      width: 10,
+      height: 900
+    }, 'first pane stayed in size and position')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 10,
+      y: 0,
+      width: 10,
+      height: 900
+    }, 'second pane stayed in size and position')
+    t.deepEquals(_.pick(grid.getPane(3), ['x', 'y', 'width', 'height']), {
+      x: 20,
+      y: 0,
+      width: 800,
+      height: 900
+    }, 'third pane stayed in size and position')
   } catch (e) {
     t.fail(e.toString())
     t.end()
