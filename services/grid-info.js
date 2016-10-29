@@ -19,7 +19,7 @@ function findBlockingPanes (state, x, y) {
     occupy(
       state.grid,
       Object.assign({}, state, {x: adjustedX, y: adjustedY}),
-      true // TODO: remove this
+      true
     )
   } catch (e) {
     if (e.message === 'space is occupied') {
