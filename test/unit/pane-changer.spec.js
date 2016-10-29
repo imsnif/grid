@@ -107,3 +107,44 @@ test('findGaps() - can find all gaps in a grid with a single pane', t => {
     t.end()
   }
 })
+
+test('switchPanes(firstId, secondId) - can switch dimensions of two panes', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, x: 400, y: 300, width: 300, height: 200})
+    grid.add(StubPane, {id: 2, x: 800, y: 300, width: 200, height: 300})
+    grid.switchPanes(1, 2)
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 800,
+      y: 300,
+      width: 200,
+      height: 300
+    }, 'first pane switched location to that of second pane')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 400,
+      y: 300,
+      width: 300,
+      height: 200
+    }, 'second pane switched location to that of first pane')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
+test('switchPanes(firstId, secondId) - bad params', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, x: 400, y: 300, width: 300, height: 200})
+    t.throws(
+      () => grid.switchPanes(1, 2),
+      /2 does not exist/,
+      'cannot switch location with non-existent pane'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
