@@ -20,6 +20,22 @@ function updateStateLocation (state, x, y, implementation) {
 
 module.exports = function locationChanger (state, implementation) {
   return ({
+    overrideLocation: function overrideLocation ({x, y, width, height} = {}) {
+      assert(
+        validate.isInteger(x) &&
+        validate.isInteger(y) &&
+        validate.isInteger(width) &&
+        validate.isInteger(height),
+        'x, y, width and height need to be integers'
+      )
+      state.x = x
+      state.y = y
+      state.width = width
+      state.height = height
+      if (implementation && typeof implementation.changeBounds === 'function') {
+        implementation.changeBounds(state)
+      }
+    },
     changeLocation: function changeLocation (x, y) {
       assert(validate.isInteger(x), `${x} is not numeric`)
       assert(validate.isInteger(y), `${y} is not numeric`)
