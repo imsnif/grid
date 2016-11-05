@@ -39,6 +39,6 @@
   "dependencies": {
     "bluebird": "^3.4.1",
     "find-sequence": "^1.0.1",
-    "validate.js": "^0.10.0"
+    "validate.js": "^0.11.0"
   }
 }
