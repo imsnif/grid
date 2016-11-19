@@ -14,9 +14,10 @@ function pushOrShrinkPane (pane, direction, amount) {
     return true
   }
   if (blockingPanes.length > 0) {
-    pane.maxLoc({[direction]: true})
+    pane.maxSize({[direction]: true})
+    const paneNextLocation = {x: pane.x + amount.x, y: pane.y + amount.y}
     if (movePanesOutOfTheWay(pane, direction, amount)) {
-      pane.changeLocation(newLocationForPane.x, newLocationForPane.y)
+      pane.changeLocation(paneNextLocation.x, paneNextLocation.y)
       return true
     }
   }
