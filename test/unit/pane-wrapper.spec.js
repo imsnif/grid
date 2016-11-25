@@ -160,6 +160,23 @@ test('wrapper.changeOrMaxLocation(x, y): changes location of pane if there is ro
   }
 })
 
+test('wrapper.changeOrMaxLocation(x, y): throws if pane is blocked', t => {
+  t.plan(1)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, x: 0, y: 0, width: 400, height: 600})
+    grid.add(StubPaneWithIdAndLocation, {id: 2, x: 400, y: 0, width: 400, height: 600})
+    t.throws(
+      () => grid.getPane(1).changeOrMaxLocation(350, 0),
+      /location blocked by one or more other panes/,
+      'cannot change location to blocked location'
+    )
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('wrapper.changeLocation(x, y): bad parameters', t => {
   t.plan(2)
   try {

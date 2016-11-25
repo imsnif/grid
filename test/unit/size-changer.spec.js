@@ -3,7 +3,6 @@
 import test from 'tape'
 import Grid from '../../lib/grid'
 import _ from 'lodash'
-import sinon from 'sinon'
 
 const WIDTH = 1600
 const HEIGHT = 900
@@ -376,21 +375,6 @@ test('wrapper.decreaseSizeDirectional(direction, amount): bad params', t => {
   }
 })
 
-test('wrapper.decreaseSizeDirectional(direction, amount): calls implementation if present', t => {
-  t.plan(1)
-  try {
-    const grid = new Grid(WIDTH, HEIGHT)
-    const spy = sinon.spy(BrowserWindow.prototype, 'setBounds')
-    grid.add(BrowserWindow, {id: 1, width: 400, height: 200, x: 0, y: 700})
-    grid.getPane(1).decreaseSizeDirectional('right', 10)
-    t.ok(spy.calledWith({x: 10, y: 700, width: 390, height: 200}), 'setBounds method of BrowserWindow was called')
-    spy.restore()
-  } catch (e) {
-    t.fail(e.toString())
-    t.end()
-  }
-})
-
 test('wrapper.increaseSizeDirectional(direction, amount): can increase size directionally up', t => {
   t.plan(1)
   try {
@@ -478,21 +462,6 @@ test('wrapper.increaseSizeDirectional(direction, amount): bad params', t => {
       /a must be numeric/,
       'cannot increase directional size with bad amount'
     )
-  } catch (e) {
-    t.fail(e.toString())
-    t.end()
-  }
-})
-
-test('wrapper.increaseSizeDirectional(direction, amount): calls implementation if present', t => {
-  t.plan(1)
-  try {
-    const grid = new Grid(WIDTH, HEIGHT)
-    const spy = sinon.spy(BrowserWindow.prototype, 'setBounds')
-    grid.add(BrowserWindow, {id: 1, width: 400, height: 200, x: 0, y: 700})
-    grid.getPane(1).increaseSizeDirectional('right', 10)
-    t.ok(spy.calledWith({x: 0, y: 700, width: 410, height: 200}), 'setBounds method of BrowserWindow was called')
-    spy.restore()
   } catch (e) {
     t.fail(e.toString())
     t.end()
