@@ -2,6 +2,7 @@
 
 import test from 'tape'
 import Grid from '../../'
+import sinon from 'sinon'
 
 const WIDTH = 1600
 const HEIGHT = 900
@@ -91,14 +92,17 @@ test('grid.add(pane): bad parameters', t => {
 })
 
 test('grid.remove(pane): can remove pane from grid', t => {
-  t.plan(2)
+  t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubWindow, {id: 1, width: 400, height: 600})
+    const close = sinon.spy()
+    const pane1 = grid.add(StubWindow, {id: 1, width: 400, height: 600})
+    pane1.on('close', () => close())
     grid.add(StubWindow, {id: 2, width: 400, height: 600})
     grid.remove(1)
     t.equals(grid.panes.length, 1, 'first pane removed from grid')
     t.equals(grid.panes[0].id, 2, 'second pane still present')
+    t.ok(close.calledOnce, 'close event emitted on pane remove')
   } catch (e) {
     t.fail(e.toString())
     t.end()
