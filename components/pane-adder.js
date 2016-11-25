@@ -29,19 +29,8 @@ module.exports = function paneAdder (state) {
         constructor,
         Object.assign({}, opts, {grid: state})
       )
-      detectPaneClose(pane)
       state.panes.push(pane)
+      return pane
     }
   })
-}
-
-function detectPaneClose (pane) {
-  if (pane.wrapped && typeof pane.wrapped.on === 'function') {
-    pane.wrapped.on('close', () => {
-      if (!pane.closed) {
-        pane.closed = true
-        pane.grid.remove(pane.id)
-      }
-    })
-  }
 }
