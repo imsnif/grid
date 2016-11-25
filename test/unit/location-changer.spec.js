@@ -24,10 +24,12 @@ BrowserWindow.prototype.setBounds = function () {} // no-op
 BrowserWindow.prototype.getBounds = () => ({})
 
 test('wrapper.overrideLocation({x, y, width, height}): can override pane location', t => {
-  t.plan(1)
+  t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, x: 0, y: 0, width: 400, height: 600})
+    const changeBounds = sinon.spy()
+    const pane = grid.add(StubPane, {id: 1, x: 0, y: 0, width: 400, height: 600})
+    pane.once('changeBounds', changeBounds)
     grid.getPane(1).overrideLocation({x: 1200, y: 300, width: 200, height: 200})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 1200,
@@ -35,6 +37,7 @@ test('wrapper.overrideLocation({x, y, width, height}): can override pane locatio
       width: 200,
       height: 200
     }, 'pane location and size overridden')
+    t.ok(changeBounds.calledOnce, 'emitted location change')
   } catch (e) {
     t.fail(e.toString())
     t.end()

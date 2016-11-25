@@ -106,10 +106,12 @@ test('new PaneWrapper(constructor, opts): bad parameters - no id', t => {
 })
 
 test('wrapper.changeLocation(x, y): can change pane location', t => {
-  t.plan(1)
+  t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, width: 400, height: 600})
+    const pane = grid.add(StubPane, {id: 1, width: 400, height: 600})
+    const changeBounds = sinon.spy()
+    pane.once('changeBounds', changeBounds)
     grid.getPane(1).changeLocation(1, 1)
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 1,
@@ -117,6 +119,7 @@ test('wrapper.changeLocation(x, y): can change pane location', t => {
       width: 400,
       height: 600
     }, 'pane location changed')
+    t.ok(changeBounds.calledOnce, 'changeBounds event emitted')
   } catch (e) {
     t.fail(e.toString())
     t.end()
@@ -124,11 +127,13 @@ test('wrapper.changeLocation(x, y): can change pane location', t => {
 })
 
 test('wrapper.changeOrMaxLocation(x, y): change location maxes pane location in direction if there is not enough room', t => {
-  t.plan(1)
+  t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPaneWithIdAndLocation, {id: 1, x: 0, y: 0, width: 400, height: 600})
-    grid.add(StubPaneWithIdAndLocation, {id: 2, x: 450, y: 0, width: 400, height: 600})
+    const pane = grid.add(StubPaneWithIdAndLocation, {id: 2, x: 450, y: 0, width: 400, height: 600})
+    const changeBounds = sinon.spy()
+    pane.once('changeBounds', changeBounds)
     grid.getPane(2).changeOrMaxLocation(350, 0)
     t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
       x: 400,
@@ -136,6 +141,7 @@ test('wrapper.changeOrMaxLocation(x, y): change location maxes pane location in 
       width: 400,
       height: 600
     }, 'pane location changed to max in direction')
+    t.ok(changeBounds.calledOnce, 'changeBounds event emitted')
   } catch (e) {
     t.fail(e.toString())
     t.end()
@@ -199,11 +205,13 @@ test('wrapper.changeLocation(x, y): bad parameters', t => {
 })
 
 test('wrapper.squashIntoLocation(x, y): can squash pane into location by pushing obstacle', t => {
-  t.plan(2)
+  t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPaneWithIdAndLocation, {id: 1, width: 400, height: 600, x: 50, y: 0})
-    grid.add(StubPaneWithIdAndLocation, {id: 2, width: 400, height: 600, x: 450, y: 0})
+    const pane = grid.add(StubPaneWithIdAndLocation, {id: 2, width: 400, height: 600, x: 450, y: 0})
+    const changeBounds = sinon.spy()
+    pane.once('changeBounds', changeBounds)
     grid.getPane(2).squashIntoLocation(400, 0)
     t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
       x: 400,
@@ -217,6 +225,7 @@ test('wrapper.squashIntoLocation(x, y): can squash pane into location by pushing
       width: 400,
       height: 600
     }, 'pane was pushed left')
+    t.ok(changeBounds.calledOnce, 'changeBounds event emitted')
   } catch (e) {
     t.fail(e.toString())
     t.end()
@@ -1122,10 +1131,12 @@ test('wrapper.squashIntoLocation(x, y): if cannot squash pane, neighboring panes
 })
 
 test('wrapper.maxOrSkipLoc(opts): can max pane location left', t => {
-  t.plan(1)
+  t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 1200, y: 0})
+    const pane = grid.add(StubPane, {id: 1, width: 400, height: 200, x: 1200, y: 0})
+    const changeBounds = sinon.spy()
+    pane.once('changeBounds', changeBounds)
     grid.getPane(1).maxOrSkipLoc({left: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
@@ -1133,6 +1144,7 @@ test('wrapper.maxOrSkipLoc(opts): can max pane location left', t => {
       width: 400,
       height: 200
     }, 'pane location changed')
+    t.ok(changeBounds.calledOnce, 'changeBounds event emitted')
   } catch (e) {
     t.fail(e.toString())
     t.end()

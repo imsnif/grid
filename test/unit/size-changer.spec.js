@@ -3,6 +3,7 @@
 import test from 'tape'
 import Grid from '../../lib/grid'
 import _ from 'lodash'
+import sinon from 'sinon'
 
 const WIDTH = 1600
 const HEIGHT = 900
@@ -23,10 +24,12 @@ BrowserWindow.prototype.setBounds = function () {} // no-op
 BrowserWindow.prototype.getBounds = () => ({})
 
 test('wrapper.changeSize(width, height): can change pane size', t => {
-  t.plan(3)
+  t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, width: 400, height: 600})
+    const pane = grid.add(StubPane, {id: 1, width: 400, height: 600})
+    const changeBounds = sinon.spy()
+    pane.once('changeBounds', changeBounds)
     grid.getPane(1).changeSize(450, 650)
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
@@ -42,6 +45,7 @@ test('wrapper.changeSize(width, height): can change pane size', t => {
       width: 350,
       height: 550
     }, 'pane size changed')
+    t.ok(changeBounds.calledOnce, 'changeBounds event emitter')
   } catch (e) {
     t.fail(e.toString())
     t.end()
@@ -70,10 +74,12 @@ test('wrapper.changeSize(width, size): bad parameters', t => {
 })
 
 test('wrapper.maxSize(opts): can max pane size down', t => {
-  t.plan(1)
+  t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, width: 400, height: 600})
+    const pane = grid.add(StubPane, {id: 1, width: 400, height: 600})
+    const changeBounds = sinon.spy()
+    pane.once('changeBounds', changeBounds)
     grid.getPane(1).maxSize({down: true})
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
@@ -81,6 +87,7 @@ test('wrapper.maxSize(opts): can max pane size down', t => {
       width: 400,
       height: 900
     }, 'pane size changed')
+    t.ok(changeBounds.calledOnce, 'changeBounds event emitted')
   } catch (e) {
     t.fail(e.toString())
     t.end()
@@ -263,10 +270,12 @@ test('wrapper.maxSize(opts): can max pane location up with obstructing panes', t
 })
 
 test('wrapper.decreaseSizeDirectional(direction, amount): can decrease size directionally up', t => {
-  t.plan(1)
+  t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    const pane = grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    const changeBounds = sinon.spy()
+    pane.once('changeBounds', changeBounds)
     grid.getPane(1).decreaseSizeDirectional('up', 10)
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
@@ -274,6 +283,7 @@ test('wrapper.decreaseSizeDirectional(direction, amount): can decrease size dire
       width: 400,
       height: 190
     }, 'pane sized decreased directionally')
+    t.ok(changeBounds.calledOnce, 'changeBounds event emitted')
   } catch (e) {
     t.fail(e.toString())
     t.end()
@@ -376,10 +386,12 @@ test('wrapper.decreaseSizeDirectional(direction, amount): bad params', t => {
 })
 
 test('wrapper.increaseSizeDirectional(direction, amount): can increase size directionally up', t => {
-  t.plan(1)
+  t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    const pane = grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
+    const changeBounds = sinon.spy()
+    pane.once('changeBounds', changeBounds)
     grid.getPane(1).increaseSizeDirectional('up', 10)
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
@@ -387,6 +399,7 @@ test('wrapper.increaseSizeDirectional(direction, amount): can increase size dire
       width: 400,
       height: 210
     }, 'pane sized increased directionally')
+    t.ok(changeBounds.calledOnce, 'changeBounds event emitted')
   } catch (e) {
     t.fail(e.toString())
     t.end()

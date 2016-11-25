@@ -3,6 +3,7 @@
 import test from 'tape'
 import Grid from '../../lib/grid'
 import _ from 'lodash'
+import sinon from 'sinon'
 
 const WIDTH = 1600
 const HEIGHT = 900
@@ -14,10 +15,12 @@ function StubPane (opts) {
 }
 
 test('increaseAndFillsize(direction, amount) - can increase size over other pane right', t => {
-  t.plan(2)
+  t.plan(3)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, x: 0, y: 0, width: 800, height: 900})
+    const pane = grid.add(StubPane, {id: 1, x: 0, y: 0, width: 800, height: 900})
+    const changeBounds = sinon.spy()
+    pane.once('changeBounds', changeBounds)
     grid.add(StubPane, {id: 2, x: 800, y: 0, width: 800, height: 900})
     grid.getPane(1).increaseAndFillSize('right', 30)
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
@@ -32,6 +35,7 @@ test('increaseAndFillsize(direction, amount) - can increase size over other pane
       width: 770,
       height: 900
     }, 'adjacent pane decreased in size')
+    t.ok(changeBounds.calledOnce, 'changeBounds event emitted')
   } catch (e) {
     t.fail(e.toString())
     t.end()
