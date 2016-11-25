@@ -55,6 +55,30 @@ test('cannot move pane over another pane', t => {
   }
 })
 
+test('cannot move pane over another pane with changeOrMaxLocation', t => {
+  t.plan(3)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(null, {id: 1, width: 400, height: 100})
+    grid.add(null, {id: 2, width: 400, height: 100, x: 400, y: 0})
+    grid.add(null, {id: 3, width: 400, height: 100, x: 0, y: 100})
+    t.throws(
+      () => grid.getPane(1).changeLocationOrMaxLocation(1, 0),
+      Error,
+      'cannot move pane horizontally over another'
+    )
+    t.throws(
+      () => grid.getPane(1).changeLocationOrMaxLocation(0, 1),
+      Error,
+      'cannot move pane vertically over another'
+    )
+    t.equals(grid.panes.length, 3, 'grid panes still present')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('cannot resize pane outside grid', t => {
   t.plan(3)
   try {
