@@ -3,7 +3,7 @@ const validate = require('validate.js')
 const occupy = require('../services/occupy-pane')
 const max = require('../services/max-size')
 
-module.exports = function sizeChanger (state, implementation) {
+module.exports = function sizeChanger (state) {
   return ({
     changeSize: function changeSize (width, height) {
       assert(validate.isInteger(width), `${width} is not numeric`)
@@ -18,9 +18,7 @@ module.exports = function sizeChanger (state, implementation) {
       )
       state.width = width
       state.height = height
-      if (implementation && typeof implementation.changeSize === 'function') {
-        implementation.changeSize(state, width, height)
-      }
+      state.emit('changeBounds', {x: state.x, y: state.y, width, height, offset: state.grid.offset})
     },
     maxSize: function maxSize (directions) {
       assert(validate.isObject(directions), `${directions} shold be an object`)
@@ -40,8 +38,14 @@ module.exports = function sizeChanger (state, implementation) {
           }
           return true
         })
-      if (changed && implementation && typeof implementation.changeBounds === 'function') {
-        implementation.changeBounds(state)
+      if (changed) {
+        state.emit('changeBounds', {
+          x: state.x,
+          y: state.y,
+          width: state.width,
+          height: state.height,
+          offset: state.grid.offset
+        })
       }
     }
   })

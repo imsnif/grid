@@ -10,15 +10,13 @@ const {
   getDirection
 } = require('../services/grid-info')
 
-function updateStateLocation (state, x, y, implementation) {
+function updateStateLocation (state, x, y) {
   state.x = x
   state.y = y
-  if (implementation && typeof implementation.changeSize === 'function') {
-    implementation.changeLocation(state, x, y)
-  }
+  state.emit('changeBounds', {x, y, width: state.width, height: state.height, offset: state.grid.offset})
 }
 
-module.exports = function locationChanger (state, implementation) {
+module.exports = function locationChanger (state) {
   return ({
     overrideLocation: function overrideLocation ({x, y, width, height} = {}) {
       assert(
@@ -32,9 +30,7 @@ module.exports = function locationChanger (state, implementation) {
       state.y = y
       state.width = width
       state.height = height
-      if (implementation && typeof implementation.changeBounds === 'function') {
-        implementation.changeBounds(state)
-      }
+      state.emit('changeBounds', {x, y, width, height, offset: state.grid.offset})
     },
     changeLocation: function changeLocation (x, y) {
       assert(validate.isInteger(x), `${x} is not numeric`)
@@ -44,7 +40,7 @@ module.exports = function locationChanger (state, implementation) {
       assert(x >= 0, 'location is outside of grid')
       assert(y >= 0, 'location is outside of grid')
       const blockingPanes = findBlockingPanes(state, x, y)
-      if (blockingPanes.length === 0) return updateStateLocation(state, x, y, implementation)
+      if (blockingPanes.length === 0) return updateStateLocation(state, x, y)
       throw new Error('location blocked by one or more other panes')
     },
     changeOrMaxLocation: function changeLocation (x, y) {
@@ -55,14 +51,14 @@ module.exports = function locationChanger (state, implementation) {
       assert(x >= 0, 'location is outside of grid')
       assert(y >= 0, 'location is outside of grid')
       const blockingPanes = findBlockingPanes(state, x, y)
-      if (blockingPanes.length === 0) return updateStateLocation(state, x, y, implementation)
+      if (blockingPanes.length === 0) return updateStateLocation(state, x, y)
       const direction = findDirection(state, x, y)
       const axis = findAxis(state, x, y)
       const maxedLoc = mLoc(state, direction)
       const finalX = axis === 'horizontal' ? maxedLoc.x : state.x
       const finalY = axis === 'vertical' ? maxedLoc.y : state.y
       if (finalX === state.x && finalY === state.y) throw new Error('location blocked by one or more other panes')
-      return updateStateLocation(state, finalX, finalY, implementation)
+      return updateStateLocation(state, finalX, finalY)
     },
     squashIntoLocation: function squashIntoLocation (x, y) {
       assert(validate.isInteger(x), `${x} is not numeric`)
@@ -95,7 +91,7 @@ module.exports = function locationChanger (state, implementation) {
       assert(validate.isObject(directions), `${directions} shold be an object`)
       const direction = getDirection(directions)
       const chosenLocation = maxOrSkipLocation(state, direction)
-      updateStateLocation(state, chosenLocation.x, chosenLocation.y, implementation)
+      updateStateLocation(state, chosenLocation.x, chosenLocation.y)
     }
   })
 }

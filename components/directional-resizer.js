@@ -3,7 +3,7 @@ const validate = require('validate.js')
 const occupy = require('../services/occupy-pane')
 const { pushOrResizePanesOutOfTheWay } = require('../services/multi-pane-action')
 
-module.exports = function sizeChanger (state, implementation) {
+module.exports = function sizeChanger (state) {
   return ({
     decreaseSizeDirectional: function decreaseSizeDirectional (direction, amount) {
       assert(
@@ -34,9 +34,7 @@ module.exports = function sizeChanger (state, implementation) {
       state.y = y
       state.width = width
       state.height = height
-      if (implementation && typeof implementation.changeSize === 'function') {
-        implementation.changeBounds(state)
-      }
+      state.emit('changeBounds', {x, y, width, height, offset: state.grid.offset})
     },
     increaseSizeDirectional: function increaseSizeDirectional (direction, amount) {
       assert(
@@ -64,9 +62,7 @@ module.exports = function sizeChanger (state, implementation) {
       state.y = y
       state.width = width
       state.height = height
-      if (implementation && typeof implementation.changeSize === 'function') {
-        implementation.changeBounds(state)
-      }
+      state.emit('changeBounds', {x, y, width, height, offset: state.grid.offset})
     },
     increaseAndFillSize: function increaseAndFillSize (direction, amount) {
       assert(

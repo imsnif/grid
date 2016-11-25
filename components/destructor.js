@@ -1,9 +1,7 @@
-module.exports = function destructor (state, implementation) {
+module.exports = function destructor (state) {
   return ({
     close: function destroy () {
-      if (implementation && typeof implementation.close === 'function') {
-        implementation.close(state)
-      }
+      state.emit('close')
     }
   })
 }
