@@ -30,6 +30,8 @@ module.exports = function findNextGaps (grid, coords, gaps = [], blockers = []) 
       return findNextGaps(grid, {x: 0, y: highestBlockingPoint},
         gaps.concat(gap)
       ) // erase blockers
+    } else {
+      return gaps.concat(gap)
     }
   } catch (e) {
     if (e.coords) {
