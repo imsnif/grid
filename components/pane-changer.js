@@ -2,8 +2,9 @@ const findNextGaps = require('../services/find-next-gaps')
 
 module.exports = function paneChanger (state) {
   return ({
-    maxAllPanes: function maxAllPanes () {
+    maxAllPanes: function maxAllPanes (opts = {}) {
       state.panes
+      .filter(p => p.id !== opts.exclude)
       .forEach(p => {
         const directions = ['left', 'right', 'up', 'down']
         directions.forEach(d => {
