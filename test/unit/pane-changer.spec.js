@@ -41,7 +41,7 @@ test('maxAllPanes() - can max size multiple panes in all directions', t => {
 })
 
 test('findGaps() - can find all gaps in a grid with multiple panes', t => {
-  t.plan(3)
+  t.plan(4)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, x: 0, y: 0, width: 400, height: 300})
@@ -50,9 +50,9 @@ test('findGaps() - can find all gaps in a grid with multiple panes', t => {
     grid.add(StubPane, {id: 4, x: 1200, y: 0, width: 400, height: 300})
     grid.add(StubPane, {id: 5, x: 0, y: 300, width: 400, height: 300})
     grid.add(StubPane, {id: 6, x: 800, y: 300, width: 400, height: 300})
-    grid.add(StubPane, {id: 7, x: 0, y: 600, width: 1600, height: 300})
+    grid.add(StubPane, {id: 7, x: 0, y: 600, width: 1570, height: 300})
     const gaps = grid.findGaps()
-    t.equals(gaps.length, 2, 'two gaps found')
+    t.equals(gaps.length, 3, 'three gaps found')
     t.deepEquals(_.pick(gaps[0], ['x', 'y', 'width', 'height']), {
       x: 400,
       y: 300,
@@ -65,6 +65,12 @@ test('findGaps() - can find all gaps in a grid with multiple panes', t => {
       width: 400,
       height: 300
     }, 'second gap reported properly')
+    t.deepEquals(_.pick(gaps[2], ['x', 'y', 'width', 'height']), {
+      x: 1570,
+      y: 600,
+      width: 30,
+      height: 300
+    }, 'third gap reported properly')
   } catch (e) {
     t.fail(e.toString())
     t.end()
