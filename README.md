@@ -9,6 +9,7 @@ The units of width, height and offset are dependent upon the implementation, but
 * **width:** The width of the grid. (eg. 1600)
 * **height:** The height of the grid. (eg. 900)
 * **offset:** If this grid is part of a larger grid system and needs to be offset, this optional parameter can be provided. (eg. {x: 100, y: 0})
+
 ##### State
 * **offset:** The current offset of the grid (eg. {x: 100, y: 0})
 * **width:** The current width of the grid (eg. 1600)
@@ -26,8 +27,10 @@ Adds a pane to the grid. If an x,y location is not specified, the grid chooses t
     * **id** (**required**) - {string} desired id of pane - must be unique across this grid
     * **x** - {integer} desired x position of pane. Must be specified along with y or it will be ignored.
     * **y** - {integer} desired y position of pane. Mus tbe specified along with x or it will be ignored.
+
 ###### Returns
 The created Pane Object
+
 ###### Side Effects
 Creates a pane object and places it in the panes array of the state.
 ## License
