@@ -40,6 +40,31 @@ test('maxAllPanes() - can max size multiple panes in all directions', t => {
   }
 })
 
+test('maxAllPanes() - can max size multiple panes excluding one pane', t => {
+  t.plan(2)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPane, {id: 1, x: 400, y: 300, width: 400, height: 300})
+    grid.add(StubPane, {id: 2, x: 800, y: 300, width: 400, height: 300})
+    grid.maxAllPanes({exclude: 1})
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 400,
+      y: 300,
+      width: 400,
+      height: 300
+    }, 'first pane maxed up, down and left')
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 800,
+      y: 0,
+      width: 800,
+      height: 900
+    }, 'second pane maxed up, down and right')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('findGaps() - can find all gaps in a grid with multiple panes', t => {
   t.plan(4)
   try {
