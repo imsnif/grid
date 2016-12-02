@@ -55,6 +55,7 @@ undefined
 
 ###### Side Effects
 Removes pane from grid and emits the 'close' event from the pane.
+Note: this does not destroy the constructed pane object. If this behaviour is desired, it should be called as a result of emitting the 'close' event on the pane.
 
 ## License
 MIT
