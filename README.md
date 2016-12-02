@@ -45,5 +45,16 @@ The pane with the desired id.
 ###### Side Effects
 None
 
+##### **grid.remove**(paneId)
+Removes pane with paneId from grid.
+###### Arguments
+  * **paneId:** {string} - the id of the pane to remove
+
+###### Returns
+undefined
+
+###### Side Effects
+Removes pane from grid and emits the 'close' event from the pane.
+
 ## License
 MIT
