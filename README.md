@@ -80,5 +80,32 @@ undefined
 ###### Side Effects
 Maxes all panes in grid
 
+##### **grid.findGaps**()
+Finds all gaps in the grid and returns their coordinates.
+###### Arguments
+None.
+
+###### Returns
+An array of all gaps in grid. Eg.
+```javascript
+[
+  {
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100
+  },
+  {
+    x: 500,
+    y: 400,
+    width: 50,
+    height: 75
+  }
+]
+```
+
+###### Side Effects
+None
+
 ## License
 MIT
