@@ -57,5 +57,16 @@ undefined
 Removes pane from grid and emits the 'close' event from the pane.
 Note: this does not destroy the constructed pane object. If this behaviour is desired, it should be called as a result of emitting the 'close' event on the pane.
 
+##### **grid.expel**(paneId)
+Removes pane with desired paneId from the grid and returns its constructed object.
+###### Arguments
+  * **paneId:** {string} - the id of the pane to expel
+
+###### Returns
+The constructed 'wrapped' object of the pane.
+
+###### Side Effects
+Removes pane from grid and removes all listeners from the pane 'close' event.
+
 ## License
 MIT
