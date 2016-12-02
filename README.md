@@ -105,7 +105,20 @@ An array of all gaps in grid. Eg.
 ```
 
 ###### Side Effects
-None
+None.
+
+##### **grid.switchPanes**(firstId, secondId)
+Switches location and size between the two specified panes
+###### Arguments
+  * **firstId** {string} First pane Id
+  * **secondId** {string} Second pane Id
+
+###### Returns
+undefined
+
+###### Side Effects
+Switches between the two specified panes.
+Throws if one or more of the provided ids does not exist.
 
 ## License
 MIT
