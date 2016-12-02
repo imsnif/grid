@@ -68,5 +68,17 @@ The constructed 'wrapped' object of the pane.
 ###### Side Effects
 Removes pane from grid and removes all listeners from the pane 'close' event.
 
+##### **grid.maxAllPanes**(opts)
+Maxes the size of all panes in the grid in all directions (up/down/left/right)
+###### Arguments
+  * **opts:**
+    * **exclude** {string} paneId to exclude - it will not be resized
+
+###### Returns
+undefined
+
+###### Side Effects
+Maxes all panes in grid
+
 ## License
 MIT
