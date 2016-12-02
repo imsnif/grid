@@ -33,5 +33,17 @@ The created Pane Object
 
 ###### Side Effects
 Creates a pane object and places it in the panes array of the state.
+
+##### **grid.getPane**(id)
+Returns pane with provided id. Throws an exception if the pane does not exist.
+###### Arguments
+  * **id:** {string} - the id of the pane
+
+###### Returns
+The pane with the desired id.
+
+###### Side Effects
+None
+
 ## License
 MIT
