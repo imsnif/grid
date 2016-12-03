@@ -133,6 +133,21 @@ Represents a pane in the grid. This is a wrapper around an implementation object
 * **y:** This pane's y location.
 
 #### Methods
+##### **pane.changeSize**(width, height)
+Changes size of pane.
+###### Arguments
+  * **width** {integer} The desired new width of the pane
+  * **height** {integer} The desired new height of the pane
+
+###### Returns
+undefined
+
+###### Side Effects
+Changes the size of the pane to the desired size.
+Emits a 'changeBounds' event with the new pane bounds.
+Throws if width or height are not integers.
+Throws if width or height are larger than the grid or smaller than 0.
+Throws if the pane's new bounds are blocked by another pane.
 
 ## License
 MIT
