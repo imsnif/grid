@@ -4,7 +4,7 @@ module.exports = { pushOrShrinkPane, movePanesOutOfTheWay, pushOrResizePanesOutO
 
 function pushOrShrinkPane (pane, direction, amount) {
   const oppositeDirection = getOppositeDirection(direction)
-  pane.maxSize({[oppositeDirection]: true})
+  pane.maxSize(oppositeDirection)
   const newLocationForPane = {x: pane.x + amount.x, y: pane.y + amount.y}
   const blockingPanes = findBlockingPanes(pane, newLocationForPane.x, newLocationForPane.y)
   const newLocationIsInOfGrid = inGrid(newLocationForPane, pane)
@@ -14,7 +14,7 @@ function pushOrShrinkPane (pane, direction, amount) {
     return true
   }
   if (blockingPanes.length > 0) {
-    pane.maxSize({[direction]: true})
+    pane.maxSize(direction)
     const paneNextLocation = {x: pane.x + amount.x, y: pane.y + amount.y}
     if (movePanesOutOfTheWay(pane, direction, amount)) {
       pane.changeLocation(paneNextLocation.x, paneNextLocation.y)
@@ -33,7 +33,7 @@ function pushOrShrinkPane (pane, direction, amount) {
 
 function pushPane (pane, direction, amount) {
   const oppositeDirection = getOppositeDirection(direction)
-  pane.maxSize({[oppositeDirection]: true})
+  pane.maxSize(oppositeDirection)
   const newLocationForPane = {x: pane.x + amount.x, y: pane.y + amount.y}
   const blockingPanes = findBlockingPanes(pane, newLocationForPane.x, newLocationForPane.y)
   const newLocationIsInOfGrid = inGrid(newLocationForPane, pane)
@@ -64,7 +64,7 @@ function pushPanesOutOfTheWay (pane, direction, amount) {
 
 function resizePane (pane, direction, amount) {
   const oppositeDirection = getOppositeDirection(direction)
-  pane.maxSize({[oppositeDirection]: true})
+  pane.maxSize(oppositeDirection)
   const blockingPanes = findBlockingPanes(pane, amount.x, amount.y)
   const canBeShrunk = canShrinkPaneBy(pane, amount, direction)
   if (canBeShrunk) {

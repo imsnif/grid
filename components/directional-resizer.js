@@ -56,7 +56,7 @@ module.exports = function sizeChanger (state) {
           Object.assign({}, state, {x, y, width, height})
         )
       } catch (e) {
-        return state.maxSize({[direction]: true})
+        return state.maxSize(direction)
       }
       state.x = x
       state.y = y

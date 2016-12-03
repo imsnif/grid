@@ -7,9 +7,7 @@ module.exports = function paneChanger (state) {
       .filter(p => p.id !== opts.exclude)
       .forEach(p => {
         const directions = ['left', 'right', 'up', 'down']
-        directions.forEach(d => {
-          p.maxSize({[d]: true})
-        })
+        directions.forEach(d => p.maxSize(d))
       })
     },
     findGaps: function findGaps () {

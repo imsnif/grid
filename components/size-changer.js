@@ -20,33 +20,30 @@ module.exports = function sizeChanger (state) {
       state.height = height
       state.emit('changeBounds', {x: state.x, y: state.y, width, height, offset: state.grid.offset})
     },
-    maxSize: function maxSize (directions) {
-      assert(validate.isObject(directions), `${directions} shold be an object`)
-      const changed = Object.keys(directions)
-        .filter(d => d)
-        .filter(d => {
-          if (d === 'up' || d === 'down') {
-            const { height, y } = max(state, d)
-            state.height = height
-            state.y = y
-          } else if (d === 'left' || d === 'right') {
-            const { width, x } = max(state, d)
-            state.width = width
-            state.x = x
-          } else {
-            throw new Error(`${d} should be one of 'up/down/left/right'`)
-          }
-          return true
-        })
-      if (changed) {
-        state.emit('changeBounds', {
-          x: state.x,
-          y: state.y,
-          width: state.width,
-          height: state.height,
-          offset: state.grid.offset
-        })
+    maxSize: function maxSize (direction) {
+      assert(
+        direction === 'up' ||
+        direction === 'down' ||
+        direction === 'left' ||
+        direction === 'right',
+        `${direction} should be one of 'up/down/left/right'`
+      )
+      if (direction === 'up' || direction === 'down') {
+        const { height, y } = max(state, direction)
+        state.height = height
+        state.y = y
+      } else if (direction === 'left' || direction === 'right') {
+        const { width, x } = max(state, direction)
+        state.width = width
+        state.x = x
       }
+      state.emit('changeBounds', {
+        x: state.x,
+        y: state.y,
+        width: state.width,
+        height: state.height,
+        offset: state.grid.offset
+      })
     }
   })
 }
