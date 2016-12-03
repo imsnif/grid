@@ -149,5 +149,36 @@ Throws if width or height are not integers.
 Throws if width or height are larger than the grid or smaller than 0.
 Throws if the pane's new bounds are blocked by another pane.
 
+##### **pane.maxSize**(direction)
+Increases pane size up until an obstacle or the grid's edge.
+For example, if the pane was:
+```javascript
+{
+  x: 100,
+  y: 100,
+  width: 100,
+  height: 100
+}
+```
+Calling pane.maxSize('left'), assuming there were no other panes in the way, would make it:
+```javascript
+{
+  x: 0,
+  y: 100,
+  width: 200,
+  height: 100
+}
+```
+###### Arguments
+  * **direction** {string} Can be one of up/down/left/right
+
+###### Returns
+undefined
+
+###### Side Effects
+Changes the size of the pane in the desired direction up until an obstacle or the edge of the grid. If the direction is left or right, it will also change the pane's x,y coordinates as needed.
+Emits a 'changeBounds' event with the new pane bounds.
+Throws if direction is not up/down/left/right.
+
 ## License
 MIT
