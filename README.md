@@ -120,5 +120,19 @@ undefined
 Switches between the two specified panes.
 Throws if one or more of the provided ids does not exist.
 
+### Pane
+Represents a pane in the grid. This is a wrapper around an implementation object (eg. an electron BrowserWindow instance)
+
+##### State
+* **wrapped:** The wrapped object.
+* **grid:** The grid to which this pane belongs.
+* **id:** The id of this pane.
+* **width:** The width of this pane.
+* **height:** The height of this pane.
+* **x:** This pane's x location.
+* **y:** This pane's y location.
+
+#### Methods
+
 ## License
 MIT
