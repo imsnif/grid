@@ -73,14 +73,14 @@ test('wrapper.changeSize(width, size): bad parameters', t => {
   }
 })
 
-test('wrapper.maxSize(opts): can max pane size down', t => {
+test('wrapper.maxSize(direction): can max pane size down', t => {
   t.plan(2)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     const pane = grid.add(StubPane, {id: 1, width: 400, height: 600})
     const changeBounds = sinon.spy()
     pane.once('changeBounds', changeBounds)
-    grid.getPane(1).maxSize({down: true})
+    grid.getPane(1).maxSize('down')
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 0,
@@ -94,14 +94,14 @@ test('wrapper.maxSize(opts): can max pane size down', t => {
   }
 })
 
-test('wrapper.maxSize(opts): bad params', t => {
+test('wrapper.maxSize(direction): bad params', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 600})
     t.throws(
-      () => grid.getPane(1).maxSize({down: true, foo: 'bar'}),
-      Error,
+      () => grid.getPane(1).maxSize('foo'),
+      /foo should be one of 'up\/down\/left\/right'/,
       'cannot resize with bad params'
     )
   } catch (e) {
@@ -110,7 +110,7 @@ test('wrapper.maxSize(opts): bad params', t => {
   }
 })
 
-test('wrapper.maxSize(opts): can max pane size down with obstructing panes', t => {
+test('wrapper.maxSize(direction): can max pane size down with obstructing panes', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -118,7 +118,7 @@ test('wrapper.maxSize(opts): can max pane size down with obstructing panes', t =
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 400})
     grid.add(StubPane, {id: 3, width: 400, height: 200, x: 0, y: 700})
     grid.add(StubPane, {id: 4, width: 400, height: 200, x: 500, y: 700})
-    grid.getPane(1).maxSize({down: true})
+    grid.getPane(1).maxSize('down')
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 0,
@@ -131,12 +131,12 @@ test('wrapper.maxSize(opts): can max pane size down with obstructing panes', t =
   }
 })
 
-test('wrapper.maxSize(opts): can max pane size up', t => {
+test('wrapper.maxSize(direction): can max pane size up', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
-    grid.getPane(1).maxSize({up: true})
+    grid.getPane(1).maxSize('up')
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 0,
@@ -149,7 +149,7 @@ test('wrapper.maxSize(opts): can max pane size up', t => {
   }
 })
 
-test('wrapper.maxSize(opts): can max pane size up with obstructing panes', t => {
+test('wrapper.maxSize(direction): can max pane size up with obstructing panes', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -157,7 +157,7 @@ test('wrapper.maxSize(opts): can max pane size up with obstructing panes', t => 
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 400})
     grid.add(StubPane, {id: 3, width: 400, height: 200, x: 0, y: 200})
     grid.add(StubPane, {id: 4, width: 400, height: 200, x: 500, y: 200})
-    grid.getPane(1).maxSize({up: true})
+    grid.getPane(1).maxSize('up')
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 600,
@@ -170,12 +170,12 @@ test('wrapper.maxSize(opts): can max pane size up with obstructing panes', t => 
   }
 })
 
-test('wrapper.maxSize(opts): can max pane size right', t => {
+test('wrapper.maxSize(direction): can max pane size right', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200})
-    grid.getPane(1).maxSize({right: true})
+    grid.getPane(1).maxSize('right')
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 0,
@@ -188,7 +188,7 @@ test('wrapper.maxSize(opts): can max pane size right', t => {
   }
 })
 
-test('wrapper.maxSize(opts): can max pane size right with obstructing panes', t => {
+test('wrapper.maxSize(direction): can max pane size right with obstructing panes', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -196,7 +196,7 @@ test('wrapper.maxSize(opts): can max pane size right with obstructing panes', t 
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 600, y: 0})
     grid.add(StubPane, {id: 3, width: 400, height: 200, x: 1000, y: 0})
     grid.add(StubPane, {id: 4, width: 400, height: 200, x: 1000, y: 300})
-    grid.getPane(1).maxSize({right: true})
+    grid.getPane(1).maxSize('right')
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 0,
@@ -209,12 +209,12 @@ test('wrapper.maxSize(opts): can max pane size right with obstructing panes', t 
   }
 })
 
-test('wrapper.maxSize(opts): can max pane size left', t => {
+test('wrapper.maxSize(direction): can max pane size left', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
     grid.add(StubPane, {id: 1, width: 400, height: 200, x: 1200, y: 0})
-    grid.getPane(1).maxSize({left: true})
+    grid.getPane(1).maxSize('left')
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 0,
       y: 0,
@@ -227,7 +227,7 @@ test('wrapper.maxSize(opts): can max pane size left', t => {
   }
 })
 
-test('wrapper.maxSize(opts): can max pane size left with obstructing pane', t => {
+test('wrapper.maxSize(direction): can max pane size left with obstructing pane', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
@@ -235,7 +235,7 @@ test('wrapper.maxSize(opts): can max pane size left with obstructing pane', t =>
     grid.add(StubPane, {id: 2, width: 400, height: 200, x: 500, y: 0})
     grid.add(StubPane, {id: 3, width: 400, height: 200, x: 100, y: 0})
     grid.add(StubPane, {id: 4, width: 400, height: 200, x: 100, y: 400})
-    grid.getPane(1).maxSize({left: true})
+    grid.getPane(1).maxSize('left')
     t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
       x: 900,
       y: 0,
@@ -248,7 +248,7 @@ test('wrapper.maxSize(opts): can max pane size left with obstructing pane', t =>
   }
 })
 
-test('wrapper.maxSize(opts): can max pane location up with obstructing panes', t => {
+test('wrapper.maxOrSkipLoc(opts): can max pane location up with obstructing panes', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)

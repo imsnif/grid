@@ -1268,7 +1268,7 @@ test('wrapper.maxOrSkipLoc(opts): can max pane location up', t => {
   }
 })
 
-test('wrapper.maxSize(opts): can max pane location up with obstructing panes', t => {
+test('wrapper.maxOrSkipLoc(opts): can max pane location up with obstructing panes', t => {
   t.plan(1)
   try {
     const grid = new Grid(WIDTH, HEIGHT)
