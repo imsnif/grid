@@ -195,5 +195,21 @@ Changes the pane location to the specified coordinates.
 Emits a 'changeBounds' event with the new pane bounds.
 Throws if the specified coordinates are blocked or out of the grid bounds.
 
+##### **pane.changeOrMaxLocation**(x, y)
+Changes location of pane to specified coordinates, or to the maximum in specified direction if there is an obstacle and the direction is clear enough.
+
+###### Arguments
+  * **x** {integer} The new x location of the pane
+  * **y** {integer} The new y location of the pane
+
+###### Returns
+undefined
+
+###### Side Effects
+Changes the pane location to the relevant coordinates.
+Emits a 'changeBounds' event with the new pane bounds.
+Throws if the specified coordinates are blocked and the direction is unclear (if the new coordinates do not have the same x or same y value as the current coordinates).
+Throws if the the pane's location was unchanged (the coordinates are blocked, the direction could be established but the maximum up to that point is blocked by another pane).
+
 ## License
 MIT
