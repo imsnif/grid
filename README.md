@@ -180,5 +180,20 @@ Changes the size of the pane in the desired direction up until an obstacle or th
 Emits a 'changeBounds' event with the new pane bounds.
 Throws if direction is not up/down/left/right.
 
+##### **pane.changeLocation**(x, y)
+Changes location of pane to specified coordinates.
+
+###### Arguments
+  * **x** {integer} The new x location of the pane
+  * **y** {integer} The new y location of the pane
+
+###### Returns
+undefined
+
+###### Side Effects
+Changes the pane location to the specified coordinates.
+Emits a 'changeBounds' event with the new pane bounds.
+Throws if the specified coordinates are blocked or out of the grid bounds.
+
 ## License
 MIT
