@@ -148,6 +148,32 @@ test('wrapper.changeOrMaxLocation(x, y): change location maxes pane location in 
   }
 })
 
+test('wrapper.changeOrMaxLocation(x, y): change location does nothing if direction is unclear', t => {
+  t.plan(3)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, x: 0, y: 0, width: 400, height: 600})
+    const pane = grid.add(StubPaneWithIdAndLocation, {id: 2, x: 450, y: 0, width: 400, height: 600})
+    const changeBounds = sinon.spy()
+    pane.once('changeBounds', changeBounds)
+    t.throws(
+      () => grid.getPane(2).changeOrMaxLocation(350, 10),
+      /cannot detect direction/,
+      'throws proper error'
+    )
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 450,
+      y: 0,
+      width: 400,
+      height: 600
+    }, 'pane location unchanged')
+    t.ok(changeBounds.notCalled, 'changeBounds event not emitted')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('wrapper.changeOrMaxLocation(x, y): changes location of pane if there is room', t => {
   t.plan(1)
   try {
