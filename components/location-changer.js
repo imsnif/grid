@@ -68,8 +68,9 @@ module.exports = function locationChanger (state) {
       assert(state.grid.height >= state.height + y, 'location is outside of grid')
       assert(x >= 0, 'location is outside of grid')
       assert(y >= 0, 'location is outside of grid')
+      const direction = findDirection(state, x, y)
+      if (!direction) throw new Error('cannot detect direction')
       try {
-        const direction = findDirection(state, x, y)
         const amount = findMovedAmount(state, x, y)
         state.maxLoc({[direction]: true})
         if (movePanesOutOfTheWay(state, direction, amount)) return state.changeLocation(x, y)
