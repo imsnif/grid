@@ -211,5 +211,23 @@ Emits a 'changeBounds' event with the new pane bounds.
 Throws if the specified coordinates are blocked and the direction is unclear (if the new coordinates do not have the same x or same y value as the current coordinates).
 Throws if the the pane's location was unchanged (the coordinates are blocked, the direction could be established but the maximum up to that point is blocked by another pane).
 
+##### **pane.squashIntoLocation**(x, y)
+Changes location of pane to specified coordinates, and pushes other panes out of the way (or shrinks them if they are on the edge of the grid) in order to achieve this.
+
+###### Arguments
+  * **x** {integer} The new x location of the pane
+  * **y** {integer} The new y location of the pane
+
+###### Returns
+undefined
+
+###### Side Effects
+Changes the pane location to the relevant coordinates.
+Changes obstructing pane's location or size in order to accomodate this if needed.
+Emits a 'changeBounds' event with the new pane bounds.
+Emits a 'changeBounds' events from obstructing panes with their new bounds as needed.
+Throws if the specified coordinates are blocked and the direction is unclear (if the new coordinates do not have the same x or same y value as the current coordinates).
+Throws if there is no room for pane and cannot move other panes out of the way in order to accommodate this.
+
 ## License
 MIT
