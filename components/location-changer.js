@@ -53,6 +53,7 @@ module.exports = function locationChanger (state) {
       const blockingPanes = findBlockingPanes(state, x, y)
       if (blockingPanes.length === 0) return updateStateLocation(state, x, y)
       const direction = findDirection(state, x, y)
+      if (!direction) throw new Error('cannot detect direction')
       const axis = findAxis(state, x, y)
       const maxedLoc = mLoc(state, direction)
       const finalX = axis === 'horizontal' ? maxedLoc.x : state.x
