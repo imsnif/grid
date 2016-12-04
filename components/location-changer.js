@@ -72,16 +72,21 @@ module.exports = function locationChanger (state) {
       if (!direction) throw new Error('cannot detect direction')
       try {
         const amount = findMovedAmount(state, x, y)
-        state.maxLoc({[direction]: true})
+        state.maxLoc(direction)
         if (movePanesOutOfTheWay(state, direction, amount)) return state.changeLocation(x, y)
         throw new Error('no room to squash pane')
       } catch (e) {
         throw new Error('location is blocked by one or more panes')
       }
     },
-    maxLoc: function maxLoc (directions) {
-      assert(validate.isObject(directions), `${directions} shold be an object`)
-      const direction = getDirection(directions) // TODO: just accept one direction and forgo the object
+    maxLoc: function maxLoc (direction) {
+      assert(
+        direction === 'up' ||
+        direction === 'down' ||
+        direction === 'left' ||
+        direction === 'right',
+        `${direction} must be one of up/down/left/right`
+      )
       const chosenLocation = mLoc(state, direction)
       if (direction === 'up' || direction === 'down') {
         updateStateLocation(state, state.x, chosenLocation.y)
@@ -89,7 +94,7 @@ module.exports = function locationChanger (state) {
         updateStateLocation(state, chosenLocation.x, state.y)
       }
     },
-    maxOrSkipLoc: function maxLoc (directions) {
+    maxOrSkipLoc: function maxOrSkipLoc (directions) {
       assert(validate.isObject(directions), `${directions} shold be an object`)
       const direction = getDirection(directions)
       const chosenLocation = maxOrSkipLocation(state, direction)

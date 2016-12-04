@@ -42,7 +42,7 @@ function pushPane (pane, direction, amount) {
     return true
   }
   if (blockingPanes.length > 0) {
-    pane.maxLoc({[direction]: true})
+    pane.maxLoc(direction)
     if (pushPanesOutOfTheWay(pane, direction, amount)) {
       pane.changeLocation(newLocationForPane.x, newLocationForPane.y)
       return true
