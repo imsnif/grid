@@ -258,6 +258,38 @@ test('wrapper.squashIntoLocation(x, y): can squash pane into location by pushing
   }
 })
 
+test('wrapper.squashIntoLocation(x, y): no-op if direction is not clear', t => {
+  t.plan(4)
+  try {
+    const grid = new Grid(WIDTH, HEIGHT)
+    grid.add(StubPaneWithIdAndLocation, {id: 1, width: 400, height: 600, x: 50, y: 0})
+    const pane = grid.add(StubPaneWithIdAndLocation, {id: 2, width: 400, height: 600, x: 450, y: 0})
+    const changeBounds = sinon.spy()
+    pane.once('changeBounds', changeBounds)
+    t.throws(
+      () => grid.getPane(2).squashIntoLocation(400, 10),
+      /cannot detect direction/,
+      'proper error thrown'
+    )
+    t.deepEquals(_.pick(grid.getPane(2), ['x', 'y', 'width', 'height']), {
+      x: 450,
+      y: 0,
+      width: 400,
+      height: 600
+    }, 'pane bounds unchanged')
+    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
+      x: 50,
+      y: 0,
+      width: 400,
+      height: 600
+    }, 'second pane\'s bounds unchanged')
+    t.ok(changeBounds.notCalled, 'changeBounds event not emitted')
+  } catch (e) {
+    t.fail(e.toString())
+    t.end()
+  }
+})
+
 test('wrapper.squashIntoLocation(x, y): can squash pane into location by resizing obstacle', t => {
   t.plan(2)
   try {
