@@ -6,8 +6,7 @@ const {
   findBlockingPanes,
   findDirection,
   findAxis,
-  findMovedAmount,
-  getDirection
+  findMovedAmount
 } = require('../services/grid-info')
 
 function updateStateLocation (state, x, y) {
@@ -94,9 +93,14 @@ module.exports = function locationChanger (state) {
         updateStateLocation(state, chosenLocation.x, state.y)
       }
     },
-    maxOrSkipLoc: function maxOrSkipLoc (directions) {
-      assert(validate.isObject(directions), `${directions} shold be an object`)
-      const direction = getDirection(directions)
+    maxOrSkipLoc: function maxOrSkipLoc (direction) {
+      assert(
+        direction === 'up' ||
+        direction === 'down' ||
+        direction === 'left' ||
+        direction === 'right',
+        `${direction} must be one of up/down/left/right`
+      )
       const chosenLocation = maxOrSkipLocation(state, direction)
       updateStateLocation(state, chosenLocation.x, chosenLocation.y)
     }

@@ -1,5 +1,4 @@
 const occupy = require('./occupy-pane')
-const assert = require('assert')
 
 module.exports = {
   findBlockingPanes,
@@ -8,8 +7,7 @@ module.exports = {
   canShrinkPaneBy,
   findDirection,
   findAxis,
-  findMovedAmount,
-  getDirection
+  findMovedAmount
 }
 
 function findBlockingPanes (state, x, y) {
@@ -75,16 +73,4 @@ function findMovedAmount (state, x, y) {
     : direction === 'up' ? {y: y - state.y, x: 0}
     : direction === 'down' ? {y: y - state.y, x: 0}
     : {x: 0, y: 0}
-}
-
-function getDirection (directions) {
-  return Object.keys(directions)
-    .filter(d => d)
-    .filter(d => {
-      assert(
-        d === 'up' || d === 'down' || d === 'left' || d === 'right',
-        `${d} should be one of 'up/down/left/right'`
-      )
-      return d
-    })[0]
 }
