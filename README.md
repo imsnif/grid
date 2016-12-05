@@ -229,5 +229,19 @@ Emits a 'changeBounds' events from obstructing panes with their new bounds as ne
 Throws if the specified coordinates are blocked and the direction is unclear (if the new coordinates do not have the same x or same y value as the current coordinates).
 Throws if there is no room for pane and cannot move other panes out of the way in order to accommodate this.
 
+##### **pane.maxLoc**(direction)
+Changes the location of the pane up until the nearest obstacle in the desired direction. If there is no obstacle in that direction, it moces it to the edge of the grid.
+
+###### Arguments
+  * **direction** {string} The desired direction, one of up/down/left/right
+
+###### Returns
+undefined
+
+###### Side Effects
+Changes the pane location to the maximum location in the desired direction.
+Emits a 'changeBounds' event with the new pane bounds.
+Throws if the direction is not one of up/down/left/right
+
 ## License
 MIT
