@@ -257,5 +257,23 @@ Changes the pane location to the maximum location in the desired direction.
 Emits a 'changeBounds' event with the new pane bounds.
 Throws if the direction is not one of up/down/left/right
 
+##### **pane.decreaseSizeDirectional**(direction, amount)
+Decreases the size of the pane in the specified direction by the specified amount.
+
+###### Arguments
+  * **direction** {string} The desired direction, one of up/down/left/right
+  * **amount** {integer} The desired amount, must be a whole number.
+
+###### Returns
+undefined
+
+###### Side Effects
+Changes the pane bounds.
+Emits a 'changeBounds' event with the new pane bounds.
+Throws if the direction is not one of up/down/left/right
+Throws if amount is not an integer.
+Throws if direction is horizontal and amount is less than pane width.
+Throws if direction is vertical and amount is less than pane height.
+
 ## License
 MIT
