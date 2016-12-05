@@ -243,5 +243,19 @@ Changes the pane location to the maximum location in the desired direction.
 Emits a 'changeBounds' event with the new pane bounds.
 Throws if the direction is not one of up/down/left/right
 
+##### **pane.maxOrSkipLoc**(direction)
+Changes the location of the pane up until the nearest obstacle in the desired direction. If the pane is right next to an obstacle, it moves the pane to the other side of that obstacle. If there is no obstacle in that direction, it moces it to the edge of the grid.
+
+###### Arguments
+  * **direction** {string} The desired direction, one of up/down/left/right
+
+###### Returns
+undefined
+
+###### Side Effects
+Changes the pane location to the maximum location in the desired direction.
+Emits a 'changeBounds' event with the new pane bounds.
+Throws if the direction is not one of up/down/left/right
+
 ## License
 MIT
