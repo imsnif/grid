@@ -248,27 +248,6 @@ test('wrapper.maxSize(direction): can max pane size left with obstructing pane',
   }
 })
 
-test('wrapper.maxOrSkipLoc(opts): can max pane location up with obstructing panes', t => {
-  t.plan(1)
-  try {
-    const grid = new Grid(WIDTH, HEIGHT)
-    grid.add(StubPane, {id: 1, width: 400, height: 200, x: 0, y: 700})
-    grid.add(StubPane, {id: 2, width: 400, height: 200, x: 0, y: 400})
-    grid.add(StubPane, {id: 3, width: 400, height: 200, x: 0, y: 200})
-    grid.add(StubPane, {id: 4, width: 400, height: 200, x: 500, y: 200})
-    grid.getPane(1).maxOrSkipLoc({up: true})
-    t.deepEquals(_.pick(grid.getPane(1), ['x', 'y', 'width', 'height']), {
-      x: 0,
-      y: 600,
-      width: 400,
-      height: 200
-    }, 'pane location changed')
-  } catch (e) {
-    t.fail(e.toString())
-    t.end()
-  }
-})
-
 test('wrapper.decreaseSizeDirectional(direction, amount): can decrease size directionally up', t => {
   t.plan(2)
   try {
