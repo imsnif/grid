@@ -293,5 +293,24 @@ Throws if amount is not an integer.
 Throws if direction is horizontal and amount + pane.width is greater than the grid width.
 Throws if direction is vertical and amount + pane.height is greater than the grid height.
 
+##### **pane.increaseAndFillSize**(direction, amount)
+Increases the size of the pane in the specified direction by the specified amount. Squashes panes out of the way as necessary. (See pane.squashIntoLocation)
+Note: the decision not to have a 'decreaseAndFillSize' method is intentional. If this behaviour is desired, it can be achieved by using the 'increaseSizeDirectional' method followed by the grid.maxAllPanes method.
+
+###### Arguments
+  * **direction** {string} The desired direction, one of up/down/left/right
+  * **amount** {integer} The desired amount, must be a whole number.
+
+###### Returns
+undefined
+
+###### Side Effects
+Changes the pane bounds.
+Emits a 'changeBounds' event with the new pane bounds.
+Throws if the direction is not one of up/down/left/right
+Throws if amount is not an integer.
+Throws if direction is horizontal and amount + pane.width is greater than the grid width.
+Throws if direction is vertical and amount + pane.height is greater than the grid height.
+
 ## License
 MIT
