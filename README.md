@@ -312,5 +312,17 @@ Throws if amount is not an integer.
 Throws if direction is horizontal and amount + pane.width is greater than the grid width.
 Throws if direction is vertical and amount + pane.height is greater than the grid height.
 
+##### **pane.close**(direction, amount)
+Emits the 'close' event. This method is used internally by the grid when a pane is removed from the grid. It should probably not be used on its own, seeing as it does not remove the pane from the grid.
+
+###### Arguments
+None
+
+###### Returns
+undefined
+
+###### Side Effects
+Emits a 'close' event.
+
 ## License
 MIT
