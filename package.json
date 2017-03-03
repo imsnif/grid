@@ -37,7 +37,7 @@
     "parser": "babel-eslint"
   },
   "dependencies": {
-    "bluebird": "^3.4.1",
+    "bluebird": "^3.5.0",
     "find-sequence": "^1.0.1",
     "validate.js": "^0.11.0"
   }
