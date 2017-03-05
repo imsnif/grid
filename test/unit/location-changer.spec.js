@@ -83,7 +83,6 @@ test('wrapper.overrideLocation({x, y, width, height}): can override pane locatio
       width: 200,
       height: 200
     }, 'pane location and size overridden')
-    spy.withArgs({x: 1200, y: 300, width: 200, height: 200}).calledOnce
     spy.restore()
   } catch (e) {
     t.fail(e.toString())

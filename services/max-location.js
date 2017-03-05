@@ -55,4 +55,3 @@ function movedInDirection (d, x, y, state) {
   if ((d === 'left' || d === 'right') && (state.x === x)) return false
   return true
 }
-
